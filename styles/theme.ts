@@ -1,0 +1,72 @@
+export const theme = {
+  colors: {
+    bg: "#f7f4ed",
+    surface: "#ffffff",
+    surface2: "#f3efe7",
+    border: "#e4ddd2",
+    divider: "#eee8de",
+    ink: "#2a3131",
+    ink2: "#697371",
+    ink3: "#949d9a",
+    inverse: "#ffffff",
+    primary: "#3b6b4b",
+    primaryDark: "#234a32",
+    primarySoft: "#e8f3ea",
+    primarySofter: "#f3f8f4",
+    accent: "#d8a63b",
+    accentDark: "#9a6d13",
+    accentSoft: "#f8edd2",
+    success: "#4f8a5f",
+    successBg: "#e8f5eb",
+    warning: "#c88a20",
+    warningBg: "#fbf0d8",
+    danger: "#ba5a49",
+    dangerBg: "#f9e9e6",
+  },
+  typography: {
+    title: {
+      fontSize: 32,
+      fontWeight: "700",
+      lineHeight: 38,
+    },
+    subtitle: {
+      fontSize: 20,
+      fontWeight: "600",
+      lineHeight: 26,
+    },
+    body: {
+      fontSize: 16,
+      fontWeight: "400",
+      lineHeight: 24,
+    },
+    caption: {
+      fontSize: 14,
+      fontWeight: "500",
+      lineHeight: 20,
+    },
+    button: {
+      fontSize: 16,
+      fontWeight: "700",
+      lineHeight: 20,
+    },
+  },
+  radius: {
+    xs: 8,
+    sm: 12,
+    md: 16,
+    lg: 20,
+    xl: 28,
+    pill: 999,
+  },
+  spacing: {
+    xs: 8,
+    sm: 12,
+    md: 16,
+    lg: 24,
+    xl: 32,
+    screenX: 24,
+    screenY: 32,
+  },
+} as const;
+
+export type Theme = typeof theme;
