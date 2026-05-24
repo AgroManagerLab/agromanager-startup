@@ -3,6 +3,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import LoginScreen from './components/Login/LoginScreen';
 
 type RootStackParamList = {
   Home: undefined;
@@ -15,21 +16,7 @@ function HomeScreen() {
   const navigation = useNavigation();
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <View style={styles.container}>
-        <Text style={styles.eyebrow}>Agro Manager</Text>
-        <Text style={styles.title}>Base inicial limpa</Text>
-        <Text style={styles.description}>
-          O projeto agora usa React Navigation stack, sem expo-router e sem tabs.
-        </Text>
-        <TouchableOpacity
-          activeOpacity={0.85}
-          style={styles.button}
-          onPress={() => navigation.navigate('Details' as never)}>
-          <Text style={styles.buttonText}>Abrir detalhes</Text>
-        </TouchableOpacity>
-      </View>
-    </SafeAreaView>
+    <LoginScreen />
   );
 }
 
@@ -62,7 +49,7 @@ export default function App() {
           headerTitleStyle: styles.headerTitle,
           contentStyle: styles.screen,
         }}>
-        <Stack.Screen name="Home" component={HomeScreen} options={{ title: 'Início' }} />
+        <Stack.Screen name="Home" component={LoginScreen} options={{ title: 'Início' }} />
         <Stack.Screen name="Details" component={DetailsScreen} options={{ title: 'Detalhes' }} />
       </Stack.Navigator>
     </NavigationContainer>
