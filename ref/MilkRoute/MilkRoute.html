@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>MilkRoute — Telas do MVP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=JetBrains+Mono:wght@500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  html, body { margin: 0; padding: 0; background: #f0eee9; font-family: 'Manrope', system-ui, sans-serif; }
+  * { box-sizing: border-box; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel" src="ios-frame.jsx"></script>
+<script type="text/babel" src="design-canvas.jsx"></script>
+<script type="text/babel" src="screens/tokens.jsx"></script>
+<script type="text/babel" src="screens/data.jsx"></script>
+<script type="text/babel" src="screens/login.jsx"></script>
+<script type="text/babel" src="screens/admin.jsx"></script>
+<script type="text/babel" src="screens/leiteiro.jsx"></script>
+<script type="text/babel" src="screens/produtor.jsx"></script>
+
+<script type="text/babel" data-presets="env,react">
+const W = 402, H = 874;
+
+function App() {
+  return (
+    <DesignCanvas>
+      {/* ── Comum ─────────────────────────────────────────────────────── */}
+      <DCSection id="comum" title="Comum a todos os perfis" subtitle="REQ-01 · Gestão de Acesso Multi-tenant">
+        <DCArtboard id="login"        label="Login · padrão"      width={W} height={H}><LoginScreen /></DCArtboard>
+        <DCArtboard id="login-error"  label="Login · erro de credencial" width={W} height={H}><LoginScreen variant="error" /></DCArtboard>
+      </DCSection>
+
+      {/* ── Admin ─────────────────────────────────────────────────────── */}
+      <DCSection id="admin" title="Administrador da cooperativa" subtitle="REQ-02 · Cadastros & listagem · RF-04 projeção">
+        <DCArtboard id="admin-home"           label="Início · Dashboard A"        width={W} height={H}><AdminHome /></DCArtboard>
+        <DCArtboard id="admin-home-alt"       label="Início · Dashboard B (variação)" width={W} height={H}><AdminHomeAlt /></DCArtboard>
+        <DCArtboard id="admin-cadastros"      label="Cadastros · hub"             width={W} height={H}><AdminCadastrosHub /></DCArtboard>
+        <DCArtboard id="admin-cad-produtor"   label="Cadastro · Produtor"         width={W} height={H}><AdminCadastroProdutor /></DCArtboard>
+        <DCArtboard id="admin-cad-rota"       label="Cadastro · Rota"             width={W} height={H}><AdminCadastroRota /></DCArtboard>
+        <DCArtboard id="admin-cad-leiteiro"   label="Cadastro · Leiteiro"         width={W} height={H}><AdminCadastroLeiteiro /></DCArtboard>
+        <DCArtboard id="admin-list"           label="Listagem · Produtores"       width={W} height={H}><AdminListagemProdutores /></DCArtboard>
+        <DCArtboard id="admin-detail"         label="Detalhamento · Produtor"     width={W} height={H}><AdminDetalhamentoProdutor /></DCArtboard>
+      </DCSection>
+
+      {/* ── Leiteiro ──────────────────────────────────────────────────── */}
+      <DCSection id="leiteiro" title="Leiteiro (motorista)" subtitle="RF-03 · Coração do MVP · registro com câmera + offline">
+        <DCArtboard id="leit-home"    label="Início · Rota do dia"             width={W} height={H}><LeiteiroHome /></DCArtboard>
+        <DCArtboard id="leit-list"    label="Listagem · Minha rota"            width={W} height={H}><LeiteiroListagemProdutores /></DCArtboard>
+        <DCArtboard id="leit-reg-a"   label="Registro · Padrão (A)"            width={W} height={H}><RegistroColetaDefault /></DCArtboard>
+        <DCArtboard id="leit-reg-b"   label="Registro · Câmera primeiro (B)"   width={W} height={H}><RegistroColetaCameraFirst /></DCArtboard>
+        <DCArtboard id="leit-reg-c"   label="Registro · Wizard 2 etapas (C)"   width={W} height={H}><RegistroColetaWizard /></DCArtboard>
+        <DCArtboard id="leit-hist"    label="Histórico · suas coletas"         width={W} height={H}><LeiteiroHistorico /></DCArtboard>
+      </DCSection>
+
+      {/* ── Produtor ──────────────────────────────────────────────────── */}
+      <DCSection id="produtor" title="Produtor" subtitle="RF-04 · Volume acumulado + projeção de pagamento">
+        <DCArtboard id="prod-home"      label="Início · Hero escuro (A)"   width={W} height={H}><ProdutorHome /></DCArtboard>
+        <DCArtboard id="prod-home-alt"  label="Início · Calmo + gráfico (B)" width={W} height={H}><ProdutorHomeAlt /></DCArtboard>
+        <DCArtboard id="prod-hist"      label="Histórico · todas as coletas" width={W} height={H}><ProdutorHistorico /></DCArtboard>
+      </DCSection>
+    </DesignCanvas>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
