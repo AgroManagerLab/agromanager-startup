@@ -1,0 +1,224 @@
+Documento de Requisitos de Software
+AgroManager — MVP Mobile
+Versão 1.0
+Seção 4 — Requisitos do Sistema
+4. Requisitos do Sistema
+Esta seção descreve os requisitos funcionais do sistema AgroManager para a entrega do MVP, organizados por funcionalidades guarda-chuva (recursos do sistema). Cada funcionalidade guarda-chuva é decomposta em requisitos funcionais específicos, identificados de forma única para facilitar rastreabilidade e verificação.
+O escopo desta entrega contempla a aplicação móvel construída em React Native (apenas frontend), com dados mockados, voltada à operação de coleta de leite em cooperativas/laticínios. Três perfis de usuário são considerados: administrador da cooperativa, leiteiro (motorista) e produtor.
+Convenções de identificação adotadas:
+RF-XX: identifica uma funcionalidade guarda-chuva (recurso do sistema).
+REQ-XX.Y: identifica um requisito funcional específico associado à funcionalidade RF-XX.
+Prioridade: Alta, Média ou Baixa, classificada conforme escala IEEE de 1 (mínimo) a 9 (máximo) para Benefício, Penalidade, Custo e Risco.
+4.1 RF-01 — Gestão de Acesso Multi-tenant
+4.1.1 Descrição e Prioridade
+Funcionalidade guarda-chuva responsável pela autenticação dos três perfis de usuário do sistema (administrador da cooperativa, leiteiro e produtor) e pela garantia de que cada usuário acesse exclusivamente os dados pertencentes à cooperativa (tenant) à qual está vinculado. Em um modelo multi-tenant, o isolamento entre cooperativas é premissa de segurança e confiabilidade do sistema, impedindo, por exemplo, que um leiteiro de uma cooperativa registre coletas em rotas de outra cooperativa.
+Prioridade: Alta — base obrigatória para qualquer outra funcionalidade do sistema.
+Prioridade
+Benefício
+Penalidade
+Custo
+Risco
+Alta
+9
+9
+5
+7
+4.1.2 Sequências de estímulo/resposta
+O usuário abre o aplicativo → o sistema apresenta a tela de login com campos para e-mail e senha.
+O usuário informa credenciais válidas → o sistema valida, identifica o perfil e o tenant, e direciona para a tela inicial correspondente ao perfil.
+O usuário informa credenciais inválidas → o sistema exibe mensagem de erro e mantém o usuário na tela de login.
+O usuário aciona logout → o sistema encerra a sessão local e retorna à tela de login.
+4.1.3 Requisitos funcionais
+ID
+Descrição
+REQ-01.1
+O sistema deve apresentar uma tela de login contendo, no mínimo, os campos e-mail e senha, e um botão de autenticação.
+REQ-01.2
+O sistema deve validar as credenciais informadas e, em caso de sucesso, identificar o perfil do usuário entre administrador da cooperativa, leiteiro e produtor.
+REQ-01.3
+O sistema deve exibir mensagem de erro clara, sem expor detalhes técnicos, quando as credenciais forem inválidas, mantendo o usuário na tela de login.
+REQ-01.4
+O sistema deve associar cada usuário autenticado à cooperativa (tenant) à qual ele pertence, de modo que todas as operações subsequentes ocorram exclusivamente no escopo dessa cooperativa.
+REQ-01.5
+O sistema deve direcionar o usuário, após autenticação bem-sucedida, para a tela inicial correspondente ao seu perfil (administrador, leiteiro ou produtor).
+REQ-01.6
+O sistema deve disponibilizar uma ação de logout acessível ao usuário autenticado em qualquer tela interna, encerrando a sessão e retornando à tela de login.
+REQ-01.7
+O sistema deve impedir o acesso a telas internas sem autenticação prévia, redirecionando para a tela de login quando não houver sessão ativa.
+4.2 RF-02 — Cadastros Operacionais
+4.2.1 Descrição e Prioridade
+Funcionalidade guarda-chuva que reúne os cadastros básicos necessários para a operação de coleta de leite: produtores cooperados, rotas de coleta e leiteiros. Estes cadastros são pré-requisitos para o registro de coletas e estabelecem o vínculo operacional entre quem coleta (leiteiro), por onde coleta (rota) e de quem coleta (produtor). Esta funcionalidade também contempla a tela de listagem de produtores e a tela de detalhamento de produtor (com histórico de coletas), atendendo aos requisitos de telas de listagem e detalhamento exigidos para o aplicativo.
+Prioridade: Alta — sem estes cadastros, a operação de coleta não pode ocorrer.
+Prioridade
+Benefício
+Penalidade
+Custo
+Risco
+Alta
+8
+8
+5
+5
+4.2.2 Sequências de estímulo/resposta
+O administrador acessa o módulo de cadastros → o sistema apresenta as opções de cadastrar Produtor, Rota e Leiteiro.
+O administrador preenche os dados de um novo produtor e confirma → o sistema valida os dados, registra o produtor vinculado à cooperativa e exibe confirmação.
+O administrador cadastra uma rota e a associa a um leiteiro → o sistema vincula o leiteiro à rota dentro do tenant da cooperativa.
+O usuário (administrador ou leiteiro) acessa a listagem de produtores → o sistema apresenta a lista filtrada conforme o perfil (administrador vê todos os produtores da cooperativa; leiteiro vê apenas os produtores da sua rota).
+O usuário toca em um produtor da listagem → o sistema apresenta a tela de detalhamento daquele produtor, incluindo o histórico de coletas.
+4.2.3 Requisitos funcionais
+Cadastro de Produtor
+ID
+Descrição
+REQ-02.1
+O sistema deve permitir ao administrador da cooperativa cadastrar um produtor informando, no mínimo, nome, identificador da fazenda/propriedade e rota associada.
+REQ-02.2
+O sistema deve permitir ao administrador da cooperativa definir uma senha inicial para o produtor no momento do cadastro, possibilitando o acesso do produtor ao aplicativo.
+REQ-02.3
+O sistema deve associar automaticamente o produtor cadastrado à cooperativa (tenant) do administrador autenticado.
+REQ-02.4
+O sistema deve permitir ao administrador editar e excluir produtores cadastrados.
+Cadastro de Rota
+ID
+Descrição
+REQ-02.5
+O sistema deve permitir ao administrador da cooperativa cadastrar uma rota informando, no mínimo, um nome ou identificador da rota.
+REQ-02.6
+O sistema deve permitir associar produtores a uma rota, refletindo a sequência de coleta da operação.
+REQ-02.7
+O sistema deve permitir ao administrador editar e excluir rotas cadastradas.
+Cadastro de Leiteiro
+ID
+Descrição
+REQ-02.8
+O sistema deve permitir ao administrador da cooperativa cadastrar um leiteiro informando, no mínimo, nome, e-mail (utilizado como credencial de acesso) e senha inicial.
+REQ-02.9
+O sistema deve permitir vincular o leiteiro a uma ou mais rotas da cooperativa.
+REQ-02.10
+O sistema deve associar automaticamente o leiteiro cadastrado à cooperativa (tenant) do administrador autenticado.
+Listagem de Produtores
+ID
+Descrição
+REQ-02.11
+O sistema deve apresentar uma tela de listagem de produtores com suporte a rolagem vertical.
+REQ-02.12
+O sistema deve filtrar a listagem de produtores conforme o perfil autenticado: o administrador da cooperativa visualiza todos os produtores do tenant; o leiteiro visualiza apenas os produtores associados à(s) sua(s) rota(s).
+REQ-02.13
+O sistema deve disponibilizar mecanismo de busca ou filtro na listagem, permitindo ao usuário localizar produtores por nome ou identificador.
+REQ-02.14
+O sistema deve apresentar, para cada item da listagem, no mínimo o nome do produtor e a rota associada.
+Detalhamento de Produtor
+ID
+Descrição
+REQ-02.15
+O sistema deve apresentar uma tela de detalhamento ao selecionar um produtor na listagem, exibindo os dados cadastrais completos (nome, fazenda, rota associada).
+REQ-02.16
+A tela de detalhamento de produtor deve apresentar o histórico de coletas do produtor, contendo data, volume registrado e referência à foto da régua de marcação.
+REQ-02.17
+A tela de detalhamento deve apresentar o volume acumulado do produtor no mês corrente.
+REQ-02.18
+A tela de detalhamento deve apresentar a projeção de pagamento do produtor para o mês corrente, conforme regras definidas em RF-04.
+4.3 RF-03 — Registro e Acompanhamento de Coleta de Leite
+4.3.1 Descrição e Prioridade
+Funcionalidade guarda-chuva central do MVP, responsável pelo registro da coleta de leite pelo leiteiro durante a execução da rota e pelo acompanhamento das coletas pelos demais perfis. O registro inclui a captura obrigatória de uma fotografia da régua de marcação do refrigerador do produtor, utilizando a câmera do dispositivo móvel — recurso nativo que serve tanto como evidência operacional quanto como mecanismo de auditoria em caso de divergência de volume. A funcionalidade prevê operação em modo offline, com sincronização posterior dos registros e fotos quando houver conectividade.
+Prioridade: Alta — coração funcional do MVP.
+Prioridade
+Benefício
+Penalidade
+Custo
+Risco
+Alta
+9
+9
+7
+7
+4.3.2 Sequências de estímulo/resposta
+O leiteiro autenticado acessa a listagem de produtores da sua rota → o sistema apresenta os produtores associados.
+O leiteiro seleciona um produtor da rota → o sistema apresenta a tela de registro de coleta para aquele produtor.
+O leiteiro informa o volume coletado e aciona a câmera do dispositivo → o sistema abre a câmera nativa para captura da foto da régua de marcação.
+O leiteiro confirma o registro → o sistema persiste a coleta localmente, marcando-a como pendente de sincronização caso esteja offline, ou sincronizada caso haja conectividade.
+O leiteiro acessa uma coleta previamente registrada por ele e edita o volume ou a foto → o sistema atualiza o registro localmente e marca como pendente de sincronização.
+O dispositivo recupera conectividade → o sistema sincroniza automaticamente as coletas pendentes (registros e fotos).
+O administrador da cooperativa acessa a tela de detalhamento de um produtor → o sistema apresenta as coletas já sincronizadas daquele produtor.
+O produtor autenticado acessa o aplicativo → o sistema apresenta as suas coletas sincronizadas e o volume acumulado no mês.
+4.3.3 Requisitos funcionais
+Registro de Coleta pelo Leiteiro
+ID
+Descrição
+REQ-03.1
+O sistema deve permitir ao leiteiro registrar uma coleta selecionando um produtor da listagem da sua rota.
+REQ-03.2
+O sistema deve solicitar, no registro de coleta, o volume coletado em litros, aceitando valores numéricos positivos.
+REQ-03.3
+O sistema deve exigir, como parte obrigatória do registro de coleta, a captura de uma fotografia da régua de marcação do refrigerador, utilizando a câmera nativa do dispositivo móvel.
+REQ-03.4
+O sistema deve impedir a confirmação do registro de coleta caso a fotografia da régua não tenha sido capturada.
+REQ-03.5
+O sistema deve registrar automaticamente, junto a cada coleta, a data e a hora do registro, o leiteiro responsável e o produtor associado.
+REQ-03.6
+O sistema deve validar que o produtor selecionado pertence a uma rota associada ao leiteiro autenticado, impedindo registros fora desse vínculo.
+Operação Offline e Sincronização
+ID
+Descrição
+REQ-03.7
+O sistema deve permitir o registro de coletas mesmo quando o dispositivo estiver sem conexão de rede, persistindo os dados e a fotografia em armazenamento local.
+REQ-03.8
+O sistema deve marcar visualmente, na interface do leiteiro, as coletas pendentes de sincronização, distinguindo-as das já sincronizadas.
+REQ-03.9
+O sistema deve sincronizar automaticamente as coletas pendentes (registros e fotos) quando o dispositivo recuperar conectividade.
+REQ-03.10
+O sistema deve manter as coletas pendentes invisíveis para os perfis administrador da cooperativa e produtor até que sejam efetivamente sincronizadas.
+Edição de Coleta pelo Leiteiro
+ID
+Descrição
+REQ-03.11
+O sistema deve permitir ao leiteiro editar a qualquer momento o volume e a fotografia de coletas que ele mesmo tenha registrado.
+REQ-03.12
+Caso a edição ocorra com o dispositivo offline, o sistema deve persistir a alteração localmente e marcá-la como pendente de sincronização.
+REQ-03.13
+Caso a coleta editada já esteja sincronizada, o sistema deve enviar a atualização ao servidor na próxima sincronização, atualizando o registro visível à cooperativa e ao produtor.
+REQ-03.14
+O sistema deve registrar a data e a hora da última edição realizada pelo leiteiro em cada coleta.
+Acompanhamento pela Cooperativa e pelo Produtor
+ID
+Descrição
+REQ-03.15
+O sistema deve permitir ao administrador da cooperativa visualizar, na tela de detalhamento de cada produtor, o histórico de coletas sincronizadas com data, volume e fotografia da régua.
+REQ-03.16
+O sistema deve permitir ao produtor autenticado visualizar suas próprias coletas sincronizadas, com data, volume e fotografia da régua.
+REQ-03.17
+O sistema deve apresentar ao produtor o volume total acumulado no mês corrente, calculado a partir da soma dos volumes de suas coletas sincronizadas no período.
+4.4 RF-04 — Projeção de Pagamento ao Produtor
+4.4.1 Descrição e Prioridade
+Funcionalidade guarda-chuva responsável por apresentar ao produtor uma estimativa do valor que ele receberá ao final do mês com base no volume coletado. No escopo deste MVP, a projeção utiliza um preço base por litro mockado no frontend, sem considerar bonificações por qualidade do leite — funcionalidade prevista para versões futuras. A projeção fornece transparência ao produtor e materializa o valor percebido do aplicativo na ponta cooperada.
+Prioridade: Média — agrega valor relevante ao produtor, mas depende de RF-03 para existir.
+Prioridade
+Benefício
+Penalidade
+Custo
+Risco
+Média
+7
+5
+3
+3
+4.4.2 Sequências de estímulo/resposta
+O produtor autenticado acessa a tela inicial do aplicativo → o sistema calcula e apresenta a projeção de pagamento do mês corrente.
+Uma nova coleta sincronizada é incorporada ao histórico do produtor → o sistema atualiza o volume acumulado e a projeção apresentada.
+O administrador da cooperativa acessa o detalhamento de um produtor → o sistema apresenta a projeção de pagamento do produtor no mês corrente.
+4.4.3 Requisitos funcionais
+ID
+Descrição
+REQ-04.1
+O sistema deve calcular a projeção de pagamento do produtor para o mês corrente conforme a fórmula: projeção = soma dos volumes coletados no mês × preço base por litro.
+REQ-04.2
+O sistema deve utilizar, no escopo deste MVP, um preço base por litro mockado no frontend, com valor padrão definido em moeda brasileira (BRL).
+REQ-04.3
+O sistema deve considerar, para o cálculo da projeção, exclusivamente as coletas sincronizadas do produtor no mês corrente.
+REQ-04.4
+O sistema deve apresentar a projeção de pagamento ao produtor em sua tela inicial, exibindo claramente o valor estimado, o volume acumulado no mês e o preço base por litro utilizado no cálculo.
+REQ-04.5
+O sistema deve apresentar a projeção de pagamento ao administrador da cooperativa na tela de detalhamento do produtor.
+REQ-04.6
+O sistema deve atualizar a projeção apresentada sempre que houver alteração no conjunto de coletas sincronizadas do mês corrente, incluindo novos registros e edições.
+REQ-04.7
+O sistema deve indicar de forma explícita ao usuário que se trata de uma projeção (valor estimado), e não do valor final a ser pago.
