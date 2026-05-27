@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, Text, Pressable } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { palette } from '../../../theme/palette';
+import { colors } from '../../../theme/styles';
+import { styles } from './styles';
 
 export interface TabItem {
   key: string;
@@ -18,20 +19,22 @@ interface TabBarProps {
 export function TabBar({ items, activeIndex, onSelect }: TabBarProps) {
   const insets = useSafeAreaInsets();
   return (
-    <View
-      className="flex-row bg-surface border-t border-border pt-2 px-2"
-      style={{ paddingBottom: insets.bottom + 8 }}
-    >
+    <View style={[styles.tabBarContainer, { paddingBottom: insets.bottom + 8 }]}>
       {items.map((item, i) => {
         const active = i === activeIndex;
-        const color = active ? palette.primary : palette.ink3;
+        const color = active ? colors.primary : colors.ink3;
         return (
-          <Pressable key={item.key} onPress={() => onSelect(i)} className="flex-1 items-center py-1.5 gap-1">
-            <View className="h-6 justify-center">{item.renderIcon(color)}</View>
-            <Text className={`text-xs ${active ? 'font-ui-extrabold text-primary' : 'font-ui-semibold text-ink3'}`}>
+          <TouchableOpacity
+            key={item.key}
+            activeOpacity={0.7}
+            onPress={() => onSelect(i)}
+            style={styles.tabBarItem}
+          >
+            <View style={styles.tabBarIconWrap}>{item.renderIcon(color)}</View>
+            <Text style={active ? styles.tabBarLabelActive : styles.tabBarLabelInactive}>
               {item.label}
             </Text>
-          </Pressable>
+          </TouchableOpacity>
         );
       })}
     </View>

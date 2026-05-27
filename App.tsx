@@ -1,4 +1,3 @@
-import './global.css';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StatusBar } from 'expo-status-bar';
@@ -20,6 +19,7 @@ import {
 } from '@expo-google-fonts/jetbrains-mono';
 import LoginScreen from './components/Login/LoginScreen';
 import { ProducerNavigator } from './components/Producer/navigation/ProducerNavigator';
+import { styles } from './App.styles';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -48,7 +48,7 @@ export default function App() {
   }, [fontsLoaded]);
 
   if (!fontsLoaded) {
-    return <View className="flex-1 bg-bg" />;
+    return <View style={styles.loading} />;
   }
 
   return (
