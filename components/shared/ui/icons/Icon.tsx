@@ -1,13 +1,13 @@
 import React from 'react';
 import Svg, { Path, Circle, Rect } from 'react-native-svg';
-import { palette } from '../../../../theme/palette';
+import { colors } from '../../../../theme/styles';
 
 export interface IconProps {
   size?: number;
   color?: string;
 }
 
-export function HomeIcon({ size = 24, color = palette.ink }: IconProps) {
+export function HomeIcon({ size = 24, color = colors.ink }: IconProps) {
   return (
     <Svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
       <Path d="M3 11l9-8 9 8M5 10v10h14V10" />
@@ -15,7 +15,7 @@ export function HomeIcon({ size = 24, color = palette.ink }: IconProps) {
   );
 }
 
-export function HistoryIcon({ size = 24, color = palette.ink }: IconProps) {
+export function HistoryIcon({ size = 24, color = colors.ink }: IconProps) {
   return (
     <Svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
       <Path d="M3 12a9 9 0 109-9c-2.5 0-4.7 1-6.4 2.6L3 8" />
@@ -24,7 +24,7 @@ export function HistoryIcon({ size = 24, color = palette.ink }: IconProps) {
   );
 }
 
-export function SettingsIcon({ size = 24, color = palette.ink }: IconProps) {
+export function SettingsIcon({ size = 24, color = colors.ink }: IconProps) {
   return (
     <Svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
       <Circle cx={12} cy={12} r={3} />
@@ -33,7 +33,7 @@ export function SettingsIcon({ size = 24, color = palette.ink }: IconProps) {
   );
 }
 
-export function WalletIcon({ size = 24, color = palette.ink }: IconProps) {
+export function WalletIcon({ size = 24, color = colors.ink }: IconProps) {
   return (
     <Svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
       <Rect x={3} y={6} width={18} height={14} rx={2.5} />
@@ -42,7 +42,7 @@ export function WalletIcon({ size = 24, color = palette.ink }: IconProps) {
   );
 }
 
-export function CheckIcon({ size = 22, color = palette.ink }: IconProps) {
+export function CheckIcon({ size = 22, color = colors.ink }: IconProps) {
   return (
     <Svg width={size} height={size} viewBox="0 0 22 22" fill="none" stroke={color} strokeWidth={2.6} strokeLinecap="round" strokeLinejoin="round">
       <Path d="M4 11.5l4.5 4.5L18 6" />
@@ -50,7 +50,7 @@ export function CheckIcon({ size = 22, color = palette.ink }: IconProps) {
   );
 }
 
-export function InfoIcon({ size = 14, color = palette.ink }: IconProps) {
+export function InfoIcon({ size = 14, color = colors.ink }: IconProps) {
   return (
     <Svg width={size} height={size} viewBox="0 0 14 14" fill="none" stroke={color} strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
       <Circle cx={7} cy={7} r={6} />

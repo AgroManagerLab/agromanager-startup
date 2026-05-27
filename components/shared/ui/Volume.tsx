@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text } from 'react-native';
 import { NumText } from './NumText';
+import { styles } from './styles';
 
 interface VolumeProps {
   value: number;
@@ -11,13 +12,11 @@ interface VolumeProps {
 export function Volume({ value, unit = 'L', variant = 'compact' }: VolumeProps) {
   const hero = variant === 'hero';
   return (
-    <View className="flex-row items-baseline gap-1.5">
-      <NumText className={`font-mono-bold tracking-tightest ${hero ? 'text-7xl text-white' : 'text-4xl text-ink'}`}>
+    <View style={styles.volumeRow}>
+      <NumText style={hero ? styles.volumeHeroNumber : styles.volumeCompactNumber}>
         {value.toLocaleString('pt-BR')}
       </NumText>
-      <Text className={`font-ui-semibold ${hero ? 'text-3xl text-white/70' : 'text-xs text-ink2'}`}>
-        {unit}
-      </Text>
+      <Text style={hero ? styles.volumeHeroUnit : styles.volumeCompactUnit}>{unit}</Text>
     </View>
   );
 }
