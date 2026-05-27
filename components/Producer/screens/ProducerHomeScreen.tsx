@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, ScrollView } from 'react-native';
+import { View, Text, ScrollView, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useShallow } from 'zustand/react/shallow';
 import { Wordmark } from '../../shared/ui/Wordmark';
@@ -15,6 +15,7 @@ import {
   selectProjection,
   selectSyncedCollections,
 } from '../stores/producerStore';
+import { palette } from '../../../theme/palette';
 
 export function ProducerHomeScreen() {
   const insets = useSafeAreaInsets();
@@ -25,35 +26,29 @@ export function ProducerHomeScreen() {
   const recent = useProducerStore(useShallow(selectSyncedCollections)).slice(0, 3);
 
   return (
-    <View className="flex-1 bg-bg">
-      <View className="bg-primaryDark px-5 pb-6" style={{ paddingTop: insets.top + 8 }}>
-        <View className="flex-row items-center justify-between mb-5">
+    <View style={styles.container}>
+      <View style={[styles.header, { paddingTop: insets.top + 8 }]}>
+        <View style={styles.headerTop}>
           <Wordmark tone="light" />
-          <View className="w-10 h-10 rounded-full bg-white/[0.14] items-center justify-center">
+          <View style={styles.settingsBtn}>
             <SettingsIcon size={20} color="#fff" />
           </View>
         </View>
-        <Text className="font-ui-semibold text-base text-white/75">
-          Boa tarde, {producer.name.split(' ')[0]}
-        </Text>
-        <Text className="font-ui-extrabold text-3xl text-white tracking-snug mt-0.5">
-          {producer.farm}
-        </Text>
-        <View className="mt-6 gap-1">
-          <Text className="font-ui-extrabold text-sm text-white/70 tracking-wide uppercase">
-            Volume do mês · maio
-          </Text>
+        <Text style={styles.greeting}>Boa tarde, {producer.name.split(' ')[0]}</Text>
+        <Text style={styles.farm}>{producer.farm}</Text>
+        <View style={styles.volumeSection}>
+          <Text style={styles.volumeLabel}>Volume do mês · maio</Text>
           <Volume value={monthVolume} variant="hero" />
         </View>
         <ProjectionCard projection={projection} monthVolume={monthVolume} pricePerLiter={pricePerLiter} />
       </View>
 
-      <ScrollView className="flex-1" contentContainerClassName="p-5">
-        <View className="flex-row items-baseline justify-between mb-2.5">
-          <Text className="font-ui-extrabold text-md text-ink tracking-snug">Últimas coletas</Text>
-          <Text className="font-ui-bold text-base text-primary">Ver tudo</Text>
+      <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent}>
+        <View style={styles.listHeader}>
+          <Text style={styles.listTitle}>Últimas coletas</Text>
+          <Text style={styles.viewAll}>Ver tudo</Text>
         </View>
-        <Card className="overflow-hidden">
+        <Card style={styles.card}>
           {recent.map((h, i) => (
             <View key={h.id}>
               {i > 0 ? <Divider /> : null}
@@ -65,3 +60,78 @@ export function ProducerHomeScreen() {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: palette.bg,
+  },
+  header: {
+    backgroundColor: palette.primaryDark,
+    paddingHorizontal: 20,
+    paddingBottom: 24,
+  },
+  headerTop: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 20,
+  },
+  settingsBtn: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: 'rgba(255,255,255,0.14)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  greeting: {
+    fontFamily: 'Manrope_600SemiBold',
+    fontSize: 13,
+    color: 'rgba(255,255,255,0.75)',
+  },
+  farm: {
+    fontFamily: 'Manrope_800ExtraBold',
+    fontSize: 22,
+    color: '#fff',
+    letterSpacing: -0.4,
+    marginTop: 2,
+  },
+  volumeSection: {
+    marginTop: 24,
+    gap: 4,
+  },
+  volumeLabel: {
+    fontFamily: 'Manrope_800ExtraBold',
+    fontSize: 12,
+    color: 'rgba(255,255,255,0.70)',
+    letterSpacing: 0.5,
+    textTransform: 'uppercase',
+  },
+  scroll: {
+    flex: 1,
+  },
+  scrollContent: {
+    padding: 20,
+  },
+  listHeader: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
+    justifyContent: 'space-between',
+    marginBottom: 10,
+  },
+  listTitle: {
+    fontFamily: 'Manrope_800ExtraBold',
+    fontSize: 14,
+    color: palette.ink,
+    letterSpacing: -0.4,
+  },
+  viewAll: {
+    fontFamily: 'Manrope_700Bold',
+    fontSize: 13,
+    color: palette.primary,
+  },
+  card: {
+    overflow: 'hidden',
+  },
+});

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, FlatList } from 'react-native';
+import { View, Text, FlatList, StyleSheet } from 'react-native';
 import { useShallow } from 'zustand/react/shallow';
 import { ScreenHeader } from '../../shared/ui/ScreenHeader';
 import { Card } from '../../shared/ui/Card';
@@ -13,6 +13,7 @@ import {
   selectAvgPerDay,
   selectSyncedCollections,
 } from '../stores/producerStore';
+import { palette } from '../../../theme/palette';
 
 export function ProducerHistoryScreen() {
   const pricePerLiter = useProducerStore((s) => s.pricePerLiter);
@@ -21,32 +22,28 @@ export function ProducerHistoryScreen() {
   const synced = useProducerStore(useShallow(selectSyncedCollections));
 
   return (
-    <View className="flex-1 bg-bg">
+    <View style={styles.container}>
       <ScreenHeader title="Minhas coletas" subtitle={`Maio · ${synced.length} sincronizadas`} />
 
-      <View className="px-5 pb-3.5">
-        <Card className="p-3.5">
-          <View className="flex-row justify-between items-baseline">
+      <View style={styles.summaryWrap}>
+        <Card style={styles.summaryCard}>
+          <View style={styles.summaryRow}>
             <View>
-              <Text className="font-ui-extrabold text-xs text-ink3 tracking-wide uppercase">
-                Total do mês
-              </Text>
+              <Text style={styles.summaryLabel}>Total do mês</Text>
               <Volume value={monthVolume} variant="compact" />
             </View>
-            <View className="items-end">
-              <Text className="font-ui-extrabold text-xs text-ink3 tracking-wide uppercase">
-                Média / dia
-              </Text>
-              <NumText className="font-mono-bold text-3xl text-ink mt-0.5">
-                {avg.toFixed(1).replace('.', ',')} <Text className="text-sm text-ink2">L</Text>
+            <View style={styles.avgWrap}>
+              <Text style={styles.summaryLabel}>Média / dia</Text>
+              <NumText style={styles.avgValue}>
+                {avg.toFixed(1).replace('.', ',')} <Text style={styles.avgUnit}>L</Text>
               </NumText>
             </View>
           </View>
         </Card>
       </View>
 
-      <View className="flex-1 px-5">
-        <Card className="flex-1 overflow-hidden mb-5">
+      <View style={styles.listWrap}>
+        <Card style={styles.listCard}>
           <FlatList
             data={synced}
             keyExtractor={(item) => item.id}
@@ -58,3 +55,51 @@ export function ProducerHistoryScreen() {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: palette.bg,
+  },
+  summaryWrap: {
+    paddingHorizontal: 20,
+    paddingBottom: 14,
+  },
+  summaryCard: {
+    padding: 14,
+  },
+  summaryRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'baseline',
+  },
+  summaryLabel: {
+    fontFamily: 'Manrope_800ExtraBold',
+    fontSize: 11,
+    color: palette.ink3,
+    letterSpacing: 0.5,
+    textTransform: 'uppercase',
+  },
+  avgWrap: {
+    alignItems: 'flex-end',
+  },
+  avgValue: {
+    fontFamily: 'JetBrainsMono_700Bold',
+    fontSize: 22,
+    color: palette.ink,
+    marginTop: 2,
+  },
+  avgUnit: {
+    fontSize: 12,
+    color: palette.ink2,
+  },
+  listWrap: {
+    flex: 1,
+    paddingHorizontal: 20,
+  },
+  listCard: {
+    flex: 1,
+    overflow: 'hidden',
+    marginBottom: 20,
+  },
+});

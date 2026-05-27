@@ -1,9 +1,10 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { PhotoStripe } from '../../shared/ui/PhotoStripe';
 import { SyncBadge } from '../../shared/ui/SyncBadge';
 import { NumText } from '../../shared/ui/NumText';
 import { Coleta } from '../types';
+import { palette } from '../../../theme/palette';
 
 interface ColetaRowProps {
   row: Coleta;
@@ -15,21 +16,21 @@ export function ColetaRow({ row, variant = 'compact', pricePerLiter = 0 }: Colet
   if (variant === 'detailed') {
     const value = row.volume * pricePerLiter;
     return (
-      <View className="flex-row items-center gap-3 py-3.5 px-4">
+      <View style={styles.detailedRow}>
         <PhotoStripe variant="md" />
-        <View className="flex-1 min-w-0">
-          <Text className="font-ui-extrabold text-lg text-ink tracking-snug">{row.date}</Text>
-          <View className="flex-row items-center gap-1.5 mt-0.5">
-            <NumText className="font-mono-bold text-sm text-ink2">{row.time}</NumText>
-            <View className="w-[3px] h-[3px] rounded-full bg-ink3" />
+        <View style={styles.info}>
+          <Text style={styles.detailedDate}>{row.date}</Text>
+          <View style={styles.detailedMeta}>
+            <NumText style={styles.detailedTime}>{row.time}</NumText>
+            <View style={styles.dot} />
             <SyncBadge state="synced" />
           </View>
         </View>
-        <View className="items-end">
-          <NumText className="font-mono-extrabold text-2xl text-ink">
-            {row.volume} <Text className="text-sm text-ink2">L</Text>
+        <View style={styles.detailedRight}>
+          <NumText style={styles.detailedVolume}>
+            {row.volume} <Text style={styles.unit}>L</Text>
           </NumText>
-          <NumText className="font-mono-bold text-xs text-ink3 mt-0.5">
+          <NumText style={styles.detailedValue}>
             R$ {value.toFixed(2).replace('.', ',')}
           </NumText>
         </View>
@@ -38,15 +39,93 @@ export function ColetaRow({ row, variant = 'compact', pricePerLiter = 0 }: Colet
   }
 
   return (
-    <View className="flex-row items-center gap-3 py-3 px-3.5">
+    <View style={styles.compactRow}>
       <PhotoStripe variant="sm" />
-      <View className="flex-1 min-w-0">
-        <Text className="font-ui-extrabold text-md text-ink">{row.date}</Text>
-        <NumText className="font-mono text-sm text-ink2 mt-0.5">{row.time}</NumText>
+      <View style={styles.info}>
+        <Text style={styles.compactDate}>{row.date}</Text>
+        <NumText style={styles.compactTime}>{row.time}</NumText>
       </View>
-      <NumText className="font-mono-extrabold text-xl text-ink">
-        {row.volume} <Text className="text-sm text-ink2">L</Text>
+      <NumText style={styles.compactVolume}>
+        {row.volume} <Text style={styles.unit}>L</Text>
       </NumText>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  detailedRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+  },
+  compactRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 14,
+  },
+  info: {
+    flex: 1,
+    minWidth: 0,
+  },
+  detailedDate: {
+    fontFamily: 'Manrope_800ExtraBold',
+    fontSize: 15,
+    color: palette.ink,
+    letterSpacing: -0.4,
+  },
+  detailedMeta: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    marginTop: 2,
+  },
+  detailedTime: {
+    fontFamily: 'JetBrainsMono_700Bold',
+    fontSize: 12,
+    color: palette.ink2,
+  },
+  dot: {
+    width: 3,
+    height: 3,
+    borderRadius: 1.5,
+    backgroundColor: palette.ink3,
+  },
+  detailedRight: {
+    alignItems: 'flex-end',
+  },
+  detailedVolume: {
+    fontFamily: 'JetBrainsMono_800ExtraBold',
+    fontSize: 20,
+    color: palette.ink,
+  },
+  detailedValue: {
+    fontFamily: 'JetBrainsMono_700Bold',
+    fontSize: 11,
+    color: palette.ink3,
+    marginTop: 2,
+  },
+  compactDate: {
+    fontFamily: 'Manrope_800ExtraBold',
+    fontSize: 14,
+    color: palette.ink,
+  },
+  compactTime: {
+    fontFamily: 'JetBrainsMono_500Medium',
+    fontSize: 12,
+    color: palette.ink2,
+    marginTop: 2,
+  },
+  compactVolume: {
+    fontFamily: 'JetBrainsMono_800ExtraBold',
+    fontSize: 18,
+    color: palette.ink,
+  },
+  unit: {
+    fontSize: 12,
+    color: palette.ink2,
+  },
+});
