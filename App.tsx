@@ -1,8 +1,7 @@
 import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
-import { View } from 'react-native';
+import { useEffect, useState } from 'react';
+import { View, StyleSheet } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import * as SplashScreen from 'expo-splash-screen';
 import {
@@ -17,20 +16,14 @@ import {
   JetBrainsMono_700Bold,
   JetBrainsMono_800ExtraBold,
 } from '@expo-google-fonts/jetbrains-mono';
-import LoginScreen from './components/Login/LoginScreen';
-import { ProducerNavigator } from './components/Producer/navigation/ProducerNavigator';
-import { styles } from './App.styles';
+import { migrateDatabase } from './src/global/database';
+import { colors } from './src/global/theme';
+import { RootNavigator } from './src/global/routes/RootNavigator';
 
 SplashScreen.preventAutoHideAsync();
 
-export type RootStackParamList = {
-  Home: undefined;
-  Producer: undefined;
-};
-
-const Stack = createNativeStackNavigator<RootStackParamList>();
-
 export default function App() {
+  const [dbReady, setDbReady] = useState(false);
   const [fontsLoaded] = useFonts({
     Manrope_500Medium,
     Manrope_600SemiBold,
@@ -42,12 +35,17 @@ export default function App() {
   });
 
   useEffect(() => {
-    if (fontsLoaded) {
+    migrateDatabase();
+    setDbReady(true);
+  }, []);
+
+  useEffect(() => {
+    if (fontsLoaded && dbReady) {
       SplashScreen.hideAsync();
     }
-  }, [fontsLoaded]);
+  }, [fontsLoaded, dbReady]);
 
-  if (!fontsLoaded) {
+  if (!fontsLoaded || !dbReady) {
     return <View style={styles.loading} />;
   }
 
@@ -55,11 +53,15 @@ export default function App() {
     <SafeAreaProvider>
       <NavigationContainer>
         <StatusBar style="dark" />
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="Home" component={LoginScreen} />
-          <Stack.Screen name="Producer" component={ProducerNavigator} />
-        </Stack.Navigator>
+        <RootNavigator />
       </NavigationContainer>
     </SafeAreaProvider>
   );
 }
+
+const styles = StyleSheet.create({
+  loading: {
+    flex: 1,
+    backgroundColor: colors.bg,
+  },
+});
