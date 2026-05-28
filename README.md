@@ -9,6 +9,8 @@ npm install
 npm start
 ```
 
+
+
 ## Estrutura atual
 
 - `App.tsx`: ponto de entrada da aplicação

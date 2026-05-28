@@ -130,5 +130,3 @@ function LoginScreen({ variant = 'default' }) {
     </Phone>
   );
 }
-
-Object.assign(window, { LoginScreen });
