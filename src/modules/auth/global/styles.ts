@@ -47,6 +47,11 @@ export const styles = StyleSheet.create({
     marginTop: 6,
     marginBottom: 18,
   },
+
+  // ─── Campo (rótulo + caixa com ícone + input + sufixo) ───
+  fieldWrap: {
+    marginBottom: 14,
+  },
   fieldLabel: {
     fontFamily: FONT.uiBold,
     fontSize: 14,
@@ -54,27 +59,78 @@ export const styles = StyleSheet.create({
     marginBottom: 6,
   },
   fieldBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
     backgroundColor: colors.surface,
     borderRadius: colors.radii.md,
     borderWidth: 1.5,
     borderColor: colors.border,
-    height: 56,
-    justifyContent: 'center',
+    minHeight: 56,
     paddingHorizontal: 16,
-    marginBottom: 16,
+  },
+  fieldBoxFocused: {
+    borderColor: colors.primary,
   },
   fieldInput: {
+    flex: 1,
     fontFamily: FONT.uiSemi,
     fontSize: 17,
     color: colors.ink,
   },
+  fieldSuffix: {
+    fontFamily: FONT.uiBold,
+    fontSize: 13,
+    color: colors.primary,
+  },
+
+  // ─── Erro (REQ-01.3) ───
+  errorBox: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 10,
+    backgroundColor: colors.dangerBg,
+    borderRadius: colors.radii.md,
+    borderWidth: 1,
+    borderColor: '#E7B9B2',
+    paddingVertical: 12,
+    paddingHorizontal: 14,
+    marginTop: 4,
+    marginBottom: 12,
+  },
+  errorContent: {
+    flex: 1,
+  },
+  errorTitle: {
+    fontFamily: FONT.uiBold,
+    fontSize: 14,
+    color: colors.danger,
+  },
+  errorDescription: {
+    fontFamily: FONT.ui,
+    fontSize: 13,
+    color: colors.danger,
+    opacity: 0.85,
+    marginTop: 2,
+  },
+
+  forgotWrap: {
+    alignItems: 'flex-end',
+    marginTop: 2,
+    marginBottom: 22,
+  },
+  forgot: {
+    fontFamily: FONT.uiBold,
+    fontSize: 14,
+    color: colors.primary,
+  },
+
   button: {
     height: 60,
     borderRadius: colors.radii.md,
     backgroundColor: colors.primary,
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 8,
   },
   buttonText: {
     fontFamily: FONT.uiBold,
@@ -82,11 +138,16 @@ export const styles = StyleSheet.create({
     color: '#fff',
     letterSpacing: -0.2,
   },
+
   footer: {
     textAlign: 'center',
     marginTop: 22,
     fontFamily: FONT.ui,
     fontSize: 13,
     color: colors.ink3,
+  },
+  footerStrong: {
+    fontFamily: FONT.uiBold,
+    color: colors.ink2,
   },
 });
