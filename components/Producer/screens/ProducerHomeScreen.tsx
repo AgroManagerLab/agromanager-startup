@@ -1,19 +1,21 @@
+import type { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
+import { useNavigation } from "@react-navigation/native";
 import React from 'react';
-import { View, Text, ScrollView } from 'react-native';
+import { Pressable, ScrollView, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useShallow } from 'zustand/react/shallow';
-import { Wordmark } from '../../shared/ui/Wordmark';
-import { SettingsIcon } from '../../shared/ui/icons/Icon';
-import { Volume } from '../../shared/ui/Volume';
 import { Card } from '../../shared/ui/Card';
 import { Divider } from '../../shared/ui/Divider';
-import { ProjectionCard } from '../components/ProjectionCard';
+import { Volume } from '../../shared/ui/Volume';
+import { Wordmark } from '../../shared/ui/Wordmark';
 import { ColetaRow } from '../components/ColetaRow';
+import { ProjectionCard } from '../components/ProjectionCard';
+import type { ProducerNavigatorParamList } from '../navigation/ProducerNavigator';
 import {
-  useProducerStore,
   selectMonthVolume,
   selectProjection,
   selectSyncedCollections,
+  useProducerStore,
 } from '../stores/producerStore';
 import { styles } from '../styles';
 
@@ -24,15 +26,13 @@ export function ProducerHomeScreen() {
   const monthVolume = useProducerStore(selectMonthVolume);
   const projection = useProducerStore(selectProjection);
   const recent = useProducerStore(useShallow(selectSyncedCollections)).slice(0, 3);
+  const navigation = useNavigation<BottomTabNavigationProp<ProducerNavigatorParamList>>();
 
   return (
     <View style={styles.homeContainer}>
       <View style={[styles.homeHeader, { paddingTop: insets.top + 8 }]}>
         <View style={styles.homeHeaderTop}>
           <Wordmark tone="light" />
-          <View style={styles.homeSettingsBtn}>
-            <SettingsIcon size={20} color="#fff" />
-          </View>
         </View>
         <Text style={styles.homeGreeting}>Boa tarde, {producer.name.split(' ')[0]}</Text>
         <Text style={styles.homeFarm}>{producer.farm}</Text>
@@ -46,7 +46,9 @@ export function ProducerHomeScreen() {
       <ScrollView style={styles.homeScroll} contentContainerStyle={styles.homeScrollContent}>
         <View style={styles.homeListHeader}>
           <Text style={styles.homeListTitle}>Últimas coletas</Text>
-          <Text style={styles.homeViewAll}>Ver tudo</Text>
+          <Pressable onPress={() => navigation.navigate('Historico')}>
+            <Text style={styles.homeViewAll}>Ver tudo</Text>
+          </Pressable>
         </View>
         <Card style={styles.homeListCard}>
           {recent.map((h, i) => (

@@ -1,11 +1,16 @@
+import { BottomTabBarProps, createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React from 'react';
-import { createBottomTabNavigator, BottomTabBarProps } from '@react-navigation/bottom-tabs';
-import { ProducerHomeScreen } from '../screens/ProducerHomeScreen';
-import { ProducerHistoryScreen } from '../screens/ProducerHistoryScreen';
 import { TabBar, TabItem } from '../../shared/ui/TabBar';
-import { HomeIcon, HistoryIcon } from '../../shared/ui/icons/Icon';
+import { HistoryIcon, HomeIcon } from '../../shared/ui/icons/Icon';
+import { ProducerHistoryScreen } from '../screens/ProducerHistoryScreen';
+import { ProducerHomeScreen } from '../screens/ProducerHomeScreen';
 
-const Tab = createBottomTabNavigator();
+const Tab = createBottomTabNavigator<ProducerNavigatorParamList>();
+
+export type ProducerNavigatorParamList = {
+  Inicio: undefined;
+  Historico: undefined;
+};
 
 const TAB_ITEMS: TabItem[] = [
   { key: 'Inicio', label: 'Início', renderIcon: (c) => <HomeIcon size={24} color={c} /> },
@@ -36,3 +41,4 @@ export function ProducerNavigator() {
     </Tab.Navigator>
   );
 }
+

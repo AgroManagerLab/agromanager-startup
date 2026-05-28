@@ -1,10 +1,10 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { Text, View } from 'react-native';
+import { NumText } from '../../shared/ui/NumText';
 import { PhotoStripe } from '../../shared/ui/PhotoStripe';
 import { SyncBadge } from '../../shared/ui/SyncBadge';
-import { NumText } from '../../shared/ui/NumText';
-import { Coleta } from '../types';
 import { styles } from '../styles';
+import { Coleta } from '../types';
 
 interface ColetaRowProps {
   row: Coleta;
