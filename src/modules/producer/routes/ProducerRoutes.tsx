@@ -1,10 +1,15 @@
+import { BottomTabBarProps, createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React from 'react';
-import { createBottomTabNavigator, BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { ProducerHomePage } from '../pages/ProducerHomePage';
 import { ProducerHistoryPage } from '../pages/ProducerHistoryPage';
 import { TabBar, TabItem, HomeIcon, HistoryIcon } from '../../../global/ui';
 
-const Tab = createBottomTabNavigator();
+export type ProducerNavigatorParamList = {
+  Inicio: undefined;
+  Historico: undefined;
+};
+
+const Tab = createBottomTabNavigator<ProducerNavigatorParamList>();
 
 const TAB_ITEMS: TabItem[] = [
   { key: 'Inicio', label: 'Início', renderIcon: (c) => <HomeIcon size={24} color={c} /> },
