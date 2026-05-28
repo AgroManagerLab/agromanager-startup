@@ -24,4 +24,4 @@ npm start
 
 ## Telas
 
-assets/images/Captura de Tela 2026-05-26 às 21.52.56.png
+![Tela do Produtor](<assets/images/Captura de Tela 2026-05-26 às 21.52.56.png>)
