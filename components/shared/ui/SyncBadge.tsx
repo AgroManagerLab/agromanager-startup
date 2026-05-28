@@ -1,7 +1,8 @@
 import React from 'react';
 import { View, Text } from 'react-native';
 import { CheckIcon } from './icons/Icon';
-import { palette } from '../../../theme/palette';
+import { colors } from '../../../theme/styles';
+import { styles } from './styles';
 
 interface SyncBadgeProps {
   state?: 'synced' | 'pending';
@@ -10,17 +11,13 @@ interface SyncBadgeProps {
 export function SyncBadge({ state = 'synced' }: SyncBadgeProps) {
   const pending = state === 'pending';
   return (
-    <View
-      className={`flex-row items-center self-start rounded-full gap-1.5 py-1 pl-2 pr-2.5 ${
-        pending ? 'bg-pendingBg' : 'bg-syncBg'
-      }`}
-    >
+    <View style={[styles.syncBadge, pending ? styles.syncBadgePending : styles.syncBadgeOk]}>
       {pending ? (
-        <View className="w-2 h-2 rounded-full bg-pending" />
+        <View style={styles.syncBadgeDot} />
       ) : (
-        <CheckIcon size={11} color={palette.syncOk} />
+        <CheckIcon size={11} color={colors.syncOk} />
       )}
-      <Text className={`font-ui-bold text-sm ${pending ? 'text-pendingInk' : 'text-syncInk'}`}>
+      <Text style={pending ? styles.syncBadgeTextPending : styles.syncBadgeTextOk}>
         {pending ? 'Pendente' : 'Sincronizada'}
       </Text>
     </View>

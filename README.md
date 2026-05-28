@@ -22,3 +22,8 @@ npm start
 - definir as primeiras telas de produto
 - organizar a navegação por fluxo
 - remover dependências ainda não utilizadas
+
+
+## Telas
+
+![Tela do Produtor](<assets/images/Captura de Tela 2026-05-26 às 21.52.56.png>)

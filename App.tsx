@@ -1,5 +1,3 @@
-import { JetBrainsMono_500Medium, JetBrainsMono_700Bold, JetBrainsMono_800ExtraBold } from '@expo-google-fonts/jetbrains-mono';
-import { Manrope_500Medium, Manrope_600SemiBold, Manrope_700Bold, Manrope_800ExtraBold } from '@expo-google-fonts/manrope';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useFonts } from 'expo-font';
@@ -8,9 +6,9 @@ import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import { View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { styles } from './App.styles';
 import LoginScreen from './components/Login';
 import { ProducerNavigator } from './components/Producer/navigation/ProducerNavigator';
-import './global.css';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -39,7 +37,7 @@ export default function App() {
   }, [fontsLoaded]);
 
   if (!fontsLoaded) {
-    return <View style={{ flex: 1, backgroundColor: '#f8f5ee' }} />;
+    return <View style={styles.loading} />;
   }
 
   return (
