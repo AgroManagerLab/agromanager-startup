@@ -92,7 +92,7 @@ export const styles = StyleSheet.create({
     backgroundColor: colors.dangerBg,
     borderRadius: colors.radii.md,
     borderWidth: 1,
-    borderColor: '#E7B9B2',
+    borderColor: colors.dangerBorder,
     paddingVertical: 12,
     paddingHorizontal: 14,
     marginTop: 4,
@@ -135,7 +135,7 @@ export const styles = StyleSheet.create({
   buttonText: {
     fontFamily: FONT.uiBold,
     fontSize: 17,
-    color: '#fff',
+    color: colors.contrast,
     letterSpacing: -0.2,
   },
 

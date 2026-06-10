@@ -1,11 +1,12 @@
 import React from 'react';
-import { View, Text, ScrollView } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Wordmark, SettingsIcon, Volume, Card, Divider } from '../../../global/ui';
-import { ProjectionCard } from '../global/ProjectionCard';
+import { colors } from '../../../global/theme';
+import { Card, Divider, SettingsIcon, Volume, Wordmark } from '../../../global/ui';
 import { ColetaRow } from '../global/ColetaRow';
-import { useProducerData } from '../service/useProducerData';
+import { ProjectionCard } from '../global/ProjectionCard';
 import { styles } from '../global/styles';
+import { useProducerData } from '../service/useProducerData';
 
 // Tela inicial do produtor: volume do mês + projeção + últimas coletas.
 // REQ-03.17 (volume acumulado) e REQ-04.4 / REQ-04.7 (projeção).
@@ -25,7 +26,7 @@ export function ProducerHomePage() {
         <View style={styles.homeHeaderTop}>
           <Wordmark tone="light" />
           <View style={styles.homeSettingsBtn}>
-            <SettingsIcon size={20} color="#fff" />
+            <SettingsIcon size={20} color={colors.contrast} />
           </View>
         </View>
         <Text style={styles.homeGreeting}>Boa tarde, {data.profile.name.split(' ')[0]}</Text>
