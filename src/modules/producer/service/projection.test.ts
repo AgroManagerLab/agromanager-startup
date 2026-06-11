@@ -1,4 +1,5 @@
 import { avgPerDay, calcProjection, sumSyncedVolume, syncedCollections } from './projection';
+import { buildProducerHomeSummary } from './producerService';
 import type { Coleta } from '../@types/producer';
 
 const collections: Coleta[] = [
@@ -26,5 +27,20 @@ describe('producer projection', () => {
 
   it('returns 0 average when there are no synced collections', () => {
     expect(avgPerDay([{ id: 'x', date: '1', time: '1', volume: 9, status: 'pending' }])).toBe(0);
+  });
+
+  it('builds the home summary from derived producer data', () => {
+    const summary = buildProducerHomeSummary({
+      profile: { id: 'P-014', name: 'Joao Silva', farm: 'Sítio Verde', route: 'Rota A' },
+      pricePerLiter: 2.45,
+      collections: collections,
+      synced: collections.slice(0, 2),
+      monthVolume: 280,
+      projection: 686,
+      avgPerDay: 140,
+    });
+
+    expect(summary.firstName).toBe('Joao');
+    expect(summary.recentCollections).toHaveLength(2);
   });
 });
