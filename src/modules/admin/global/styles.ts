@@ -9,25 +9,21 @@ export const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
     padding: 24,
-    gap: 10,
+    gap: 16,
   },
-  title: {
+  card: {
+    padding: 20,
+  },
+  body: {
     fontFamily: FONT.uiExtra,
-    fontSize: 28,
+    fontSize: 18,
     color: colors.ink,
-    letterSpacing: -0.6,
-  },
-  subtitle: {
-    fontFamily: FONT.ui,
-    fontSize: 15,
-    color: colors.ink2,
+    letterSpacing: -0.2,
     textAlign: 'center',
   },
   link: {
-    marginTop: 12,
+    alignSelf: 'center',
   },
   linkText: {
     fontFamily: FONT.uiBold,

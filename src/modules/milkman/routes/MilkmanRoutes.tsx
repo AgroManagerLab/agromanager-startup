@@ -1,7 +1,15 @@
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
+import type { RootStackParamList } from '../../../global/@types/navigation';
 import { MilkmanHomePage } from '../pages/MilkmanHomePage';
 
-// SCAFFOLD — quando o módulo crescer, trocar por um navigator próprio.
+const Stack = createNativeStackNavigator<RootStackParamList>();
+
+// Scaffold do módulo Milkman: navegação própria, mesmo que hoje tenha uma tela só.
 export function MilkmanRoutes() {
-  return <MilkmanHomePage />;
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Milkman" component={MilkmanHomePage} />
+    </Stack.Navigator>
+  );
 }
