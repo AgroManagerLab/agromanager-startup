@@ -1,23 +1,32 @@
 import type { SQLiteDatabase } from 'expo-sqlite';
+import type {
+  CollectionRow,
+  CoopRow,
+  MilkmanRow,
+  ProducerRow,
+  RouteRow,
+} from '../@types/db';
 
 // Dados iniciais (mockados), espelhando ref/MilkRoute/screens/data.jsx.
 // Preço base por litro mockado no frontend — REQ-04.2.
-const COOP = { id: 'COOP-01', name: 'Coop. Vale do Leite', pricePerLiter: 2.45 };
+const COOP: CoopRow = { id: 'COOP-01', name: 'Coop. Vale do Leite', price_per_liter: 2.45 };
 
-const ROUTES = [
+const ROUTES: Omit<RouteRow, 'coop_id'>[] = [
   { id: 'R-N', name: 'Rota Norte', identifier: 'N-01' },
   { id: 'R-S', name: 'Rota Sul', identifier: 'S-01' },
   { id: 'R-L', name: 'Rota Leste', identifier: 'L-01' },
 ];
 
-const MILKMAN = {
+const MILKMAN: Omit<MilkmanRow, 'coop_id'> = {
   id: 'M-01',
   name: 'Ricardo Pereira',
   email: 'ricardo@coopvaleleite.coop.br',
   password: 'milkroute',
 };
 
-const PRODUCERS = [
+const PRODUCERS: (Omit<ProducerRow, 'coop_id' | 'route_id' | 'password'> & {
+  routeId: string;
+})[] = [
   { id: 'P-014', routeId: 'R-N', name: 'João Carvalho', farm: 'Faz. Santa Luzia' },
   { id: 'P-022', routeId: 'R-N', name: 'Maria Oliveira', farm: 'Faz. Boa Esperança' },
   { id: 'P-031', routeId: 'R-S', name: 'Pedro Santos', farm: 'Sítio do Vale' },
@@ -28,7 +37,7 @@ const PRODUCERS = [
 ];
 
 // Coletas sincronizadas do produtor logado (P-014) — REQ-03.16 / REQ-03.17.
-const COLLECTIONS_P014 = [
+const COLLECTIONS_P014: Pick<CollectionRow, 'id' | 'date' | 'time' | 'volume'>[] = [
   { id: 'C-13', date: '13 mai', time: '06:14', volume: 138 },
   { id: 'C-12', date: '12 mai', time: '06:08', volume: 145 },
   { id: 'C-11', date: '11 mai', time: '06:21', volume: 132 },
@@ -49,7 +58,7 @@ export function seedDatabase(db: SQLiteDatabase): void {
     db.runSync('INSERT INTO coops (id, name, price_per_liter) VALUES (?, ?, ?);', [
       COOP.id,
       COOP.name,
-      COOP.pricePerLiter,
+      COOP.price_per_liter,
     ]);
 
     for (const r of ROUTES) {
