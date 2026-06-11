@@ -1,6 +1,6 @@
 import React from 'react';
-import { Text, View } from 'react-native';
-import { colors } from '../../../global/theme';
+import { StyleSheet, Text, View } from 'react-native';
+import { colors, FONT } from '../../../global/theme';
 
 interface IconProps {
   size?: number;
@@ -20,12 +20,31 @@ export function AlertIcon({ size = 20, color = colors.danger }: IconProps) {
 }
 
 function PlaceholderIcon({ size = 20, color = colors.ink3, label }: IconProps & { label: string }) {
+  const containerStyle = {
+    width: size,
+    height: size,
+  };
+
+  const textStyle = {
+    color,
+    fontSize: size * 0.72,
+    lineHeight: size * 0.72,
+  };
+
   return (
-    <View style={{ width: size, height: size, alignItems: 'center', justifyContent: 'center' }}>
+    <View style={[styles.placeholderContainer, containerStyle]}>
       {/* TODO: substituir por asset vetorial dedicado quando o pacote visual estiver pronto. */}
-      <Text style={{ color, fontSize: size * 0.72, lineHeight: size * 0.72, fontFamily: 'Manrope_700Bold' }}>
-        {label}
-      </Text>
+      <Text style={[styles.placeholderText, textStyle]}>{label}</Text>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  placeholderContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  placeholderText: {
+    fontFamily: FONT.uiBold,
+  },
+});

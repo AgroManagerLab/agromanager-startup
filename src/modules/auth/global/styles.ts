@@ -18,6 +18,9 @@ export const styles = StyleSheet.create({
     marginTop: 24,
     marginBottom: 'auto',
   },
+  brandCopy: {
+    alignItems: 'center',
+  },
   brandTitle: {
     fontFamily: FONT.uiExtra,
     fontSize: 32,
