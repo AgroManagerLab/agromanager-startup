@@ -1,19 +1,20 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import React, { useState } from 'react';
+import { Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import type { RootStackParamList } from '../../../global/@types/navigation';
-import { authenticate, routeForProfile } from '../service/authService';
 import { CowMark } from '../global/CowMark';
-import { MailIcon, LockIcon, AlertIcon } from '../global/icons';
+import { AlertIcon, LockIcon, MailIcon } from '../global/icons';
 import { styles } from '../global/styles';
+import { useAuth } from '../service/useAuth';
 
 type Nav = NativeStackNavigationProp<RootStackParamList, 'Login'>;
 
 // Tela de login comum aos perfis — RF-01 / REQ-01.1, REQ-01.3, REQ-01.5.
 export function LoginPage() {
   const navigation = useNavigation<Nav>();
+  const { signIn } = useAuth();
   const [email, setEmail] = useState('joao@coopvaleleite.coop.br');
   const [password, setPassword] = useState('milkroute');
   const [showPassword, setShowPassword] = useState(false);
@@ -21,13 +22,14 @@ export function LoginPage() {
   const [error, setError] = useState(false);
 
   function handleLogin() {
-    if (!email.trim() || !password) {
+    const signInResult = signIn(email, password);
+    if (!signInResult.ok || !signInResult.routeName) {
       setError(true);
       return;
     }
+
     setError(false);
-    const result = authenticate(email);
-    navigation.reset({ index: 0, routes: [{ name: routeForProfile(result.profile) }] });
+    navigation.reset({ index: 0, routes: [{ name: signInResult.routeName }] });
   }
 
   return (
@@ -35,7 +37,7 @@ export function LoginPage() {
       <View style={styles.content}>
         <View style={styles.brand}>
           <CowMark size={156} />
-          <View style={{ alignItems: 'center' }}>
+          <View style={styles.brandCopy}>
             <Text style={styles.brandTitle}>
               Milk<Text style={styles.brandAccent}>Route</Text>
             </Text>

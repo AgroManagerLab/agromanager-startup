@@ -33,6 +33,12 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  headerBackText: {
+    fontFamily: FONT.uiExtra,
+    fontSize: 28,
+    color: colors.ink,
+    lineHeight: 28,
+  },
   headerSpacer: {
     width: 44,
   },
@@ -59,7 +65,7 @@ export const styles = StyleSheet.create({
   volumeHeroNumber: {
     fontFamily: FONT.monoBold,
     fontSize: 64,
-    color: '#fff',
+    color: colors.contrast,
     letterSpacing: -2,
   },
   volumeCompactNumber: {
@@ -71,7 +77,7 @@ export const styles = StyleSheet.create({
   volumeHeroUnit: {
     fontFamily: FONT.uiSemi,
     fontSize: 22,
-    color: 'rgba(255,255,255,0.70)',
+    color: colors.contrast70,
   },
   volumeCompactUnit: {
     fontFamily: FONT.uiSemi,
@@ -110,10 +116,24 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 8,
   },
+  wordmarkMark: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: colors.accent,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  wordmarkMarkText: {
+    fontFamily: FONT.uiExtra,
+    fontSize: 10,
+    lineHeight: 10,
+    color: colors.contrast,
+  },
   wordmarkTextLight: {
     fontFamily: FONT.uiExtra,
     fontSize: 15,
-    color: '#fff',
+    color: colors.contrast,
     letterSpacing: -0.4,
   },
   wordmarkTextDark: {
