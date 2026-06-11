@@ -6,6 +6,7 @@ import { Card, Divider, SettingsIcon, Volume, Wordmark } from '../../../global/u
 import { ColetaRow } from '../global/ColetaRow';
 import { ProjectionCard } from '../global/ProjectionCard';
 import { styles } from '../global/styles';
+import { buildProducerHomeSummary } from '../service/producerService';
 import { useProducerData } from '../service/useProducerData';
 
 // Tela inicial do produtor: volume do mês + projeção + últimas coletas.
@@ -18,7 +19,7 @@ export function ProducerHomePage() {
     return <View style={styles.homeContainer} />;
   }
 
-  const recent = data.synced.slice(0, 3);
+  const home = buildProducerHomeSummary(data);
 
   return (
     <View style={styles.homeContainer}>
@@ -29,7 +30,7 @@ export function ProducerHomePage() {
             <SettingsIcon size={20} color={colors.contrast} />
           </View>
         </View>
-        <Text style={styles.homeGreeting}>Boa tarde, {data.profile.name.split(' ')[0]}</Text>
+        <Text style={styles.homeGreeting}>Boa tarde, {home.firstName}</Text>
         <Text style={styles.homeFarm}>{data.profile.farm}</Text>
         <View style={styles.homeVolumeSection}>
           <Text style={styles.homeVolumeLabel}>Volume do mês · maio</Text>
@@ -48,7 +49,7 @@ export function ProducerHomePage() {
           <Text style={styles.homeViewAll}>Ver tudo</Text>
         </View>
         <Card style={styles.homeListCard}>
-          {recent.map((h, i) => (
+          {home.recentCollections.map((h, i) => (
             <View key={h.id}>
               {i > 0 ? <Divider /> : null}
               <ColetaRow row={h} variant="compact" />
