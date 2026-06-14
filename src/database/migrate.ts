@@ -12,9 +12,6 @@ export function migrateDatabase(): void {
 
   if (currentVersion < SCHEMA_VERSION) {
     db.execSync(SCHEMA_SQL);
-    if (currentVersion < 2) {
-      db.execSync('ALTER TABLE producers ADD COLUMN route_order INTEGER DEFAULT 0;');
-    }
     db.execSync(`PRAGMA user_version = ${SCHEMA_VERSION};`);
   }
 

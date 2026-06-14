@@ -1,16 +1,15 @@
 import React from 'react';
-import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { ScrollView, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { colors } from '../../global/themes';
 import { Card, Divider, SettingsIcon, Volume, Wordmark, ProjectionCard, ColetaRow } from '../../components';
-import { CURRENT_PRODUCER_ID, loadProducerData, buildProducerHomeSummary } from '../../services/producerService';
+import { buildProducerHomeSummary } from '../../services/producerService';
+import { useProducerData } from '../../services/useProducerData';
 import { styles } from './styles';
 
 export function ProducerHomePage() {
   const insets = useSafeAreaInsets();
-  const navigation = useNavigation<any>();
-  const data = loadProducerData(CURRENT_PRODUCER_ID);
+  const data = useProducerData();
 
   if (!data) {
     return <View style={styles.homeContainer} />;
@@ -43,9 +42,7 @@ export function ProducerHomePage() {
       <ScrollView style={styles.homeScroll} contentContainerStyle={styles.homeScrollContent}>
         <View style={styles.homeListHeader}>
           <Text style={styles.homeListTitle}>Últimas coletas</Text>
-          <TouchableOpacity activeOpacity={0.7} onPress={() => navigation.navigate('Historico')}>
-            <Text style={styles.homeViewAll}>Ver tudo</Text>
-          </TouchableOpacity>
+          <Text style={styles.homeViewAll}>Ver tudo</Text>
         </View>
         <Card style={styles.homeListCard}>
           {home.recentCollections.map((h, i) => (

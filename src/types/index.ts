@@ -3,14 +3,10 @@ export type CollectionStatus = 'synced' | 'pending';
 export type UserProfile = 'producer' | 'admin' | 'milkman';
 
 export type RootStackParamList = {
+  Login: undefined;
   ProducerTabs: undefined;
-  AdminTabs: undefined;
-  MilkmanTabs: undefined;
-  AdminCadastroProdutor: { producerId?: string } | undefined;
-  AdminCadastroRota: { routeId?: string } | undefined;
-  AdminCadastroLeiteiro: { milkmanId?: string } | undefined;
-  AdminDetalhamentoProdutor: { producerId: string };
-  MilkmanRegistroColeta: { producerId: string };
+  Admin: undefined;
+  Milkman: undefined;
 };
 
 export interface AuthResult {
@@ -46,7 +42,6 @@ export interface ProducerRow {
   name: string;
   farm: string;
   password: string;
-  route_order: number;
 }
 
 export interface CollectionRow {
@@ -62,12 +57,14 @@ export interface CollectionRow {
   updated_at: string;
 }
 
+export type ColetaStatus = CollectionStatus;
+
 export interface Coleta {
   id: string;
   date: string;
   time: string;
   volume: number;
-  status: CollectionStatus;
+  status: ColetaStatus;
 }
 
 export interface ProducerProfile {
@@ -87,86 +84,12 @@ export interface ProducerData {
   avgPerDay: number;
 }
 
-// ─── Milkman types ───
-export interface MilkmanProfile {
-  id: string;
-  name: string;
-  routeId: string;
-  routeName: string;
-}
-
-export interface RouteProducer {
-  id: string;
-  name: string;
-  farm: string;
-  seq: number;
-  hue: number;
-  status: 'synced' | 'pending' | 'next';
-  volume?: number;
+export interface AdminHomeData {
+  title: string;
+  description: string;
 }
 
 export interface MilkmanHomeData {
-  profile: MilkmanProfile;
-  todayCollected: number;
-  totalProducers: number;
-  doneCount: number;
-  pendingCount: number;
-  syncedCount: number;
-  nextStops: RouteProducer[];
-}
-
-export interface MilkmanCollectionRow {
-  id: string;
-  producer: string;
-  farm: string;
-  volume: number;
-  time: string;
-  status: CollectionStatus;
-}
-
-// ─── Admin types ───
-export interface AdminDashboardData {
-  coopName: string;
-  adminName: string;
-  monthVolume: number;
-  todayVolume: number;
-  projection: number;
-  pricePerLiter: number;
-  totalProducers: number;
-  totalRoutes: number;
-  totalMilkmen: number;
-  routeStatuses: RouteStatusRow[];
-}
-
-export interface RouteStatusRow {
-  milkmanName: string;
-  routeName: string;
-  done: number;
-  total: number;
-  status: 'rota' | 'concluida' | 'esperando';
-}
-
-export interface AdminProducerSummary {
-  id: string;
-  name: string;
-  farm: string;
-  route: string;
-  monthVolume: number;
-  hue: number;
-}
-
-export interface CadastroFormData {
-  name: string;
-  farm?: string;
-  email?: string;
-  password: string;
-  routeId?: string;
-}
-
-export interface AdminHistoryRow {
-  date: string;
-  time: string;
-  volume: number;
-  leiteiro: string;
-  status: CollectionStatus;
+  title: string;
+  description: string;
 }

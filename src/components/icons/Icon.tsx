@@ -41,39 +41,3 @@ export function CheckIcon({ size = 22, color = colors.ink }: IconProps) {
 export function InfoIcon({ size = 14, color = colors.ink }: IconProps) {
   return <PlaceholderIcon size={size} color={color} label="i" />;
 }
-
-export function PlusIcon({ size = 24, color = colors.ink }: IconProps) {
-  return <PlaceholderIcon size={size} color={color} label="+" />;
-}
-
-export function UsersIcon({ size = 24, color = colors.ink }: IconProps) {
-  return <PlaceholderIcon size={size} color={color} label="👥" />;
-}
-
-export function CameraIcon({ size = 24, color = colors.ink }: IconProps) {
-  return <PlaceholderIcon size={size} color={color} label="📷" />;
-}
-
-export function SearchIcon({ size = 22, color = colors.ink }: IconProps) {
-  return <PlaceholderIcon size={size} color={color} label="🔍" />;
-}
-
-export function EditIcon({ size = 22, color = colors.ink }: IconProps) {
-  return <PlaceholderIcon size={size} color={color} label="✎" />;
-}
-
-export function ChevronIcon({ size = 14, color = colors.ink }: IconProps) {
-  return <PlaceholderIcon size={size} color={color} label="›" />;
-}
-
-export function RouteIcon({ size = 24, color = colors.ink }: IconProps) {
-  return <PlaceholderIcon size={size} color={color} label="⇢" />;
-}
-
-export function TruckIcon({ size = 24, color = colors.ink }: IconProps) {
-  return <PlaceholderIcon size={size} color={color} label="🚛" />;
-}
-
-export function LogoutIcon({ size = 22, color = colors.ink }: IconProps) {
-  return <PlaceholderIcon size={size} color={color} label="↩" />;
-}

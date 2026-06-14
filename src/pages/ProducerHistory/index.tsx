@@ -1,11 +1,11 @@
 import React from 'react';
 import { View, Text, FlatList } from 'react-native';
 import { ScreenHeader, Card, Divider, Volume, NumText, ColetaRow } from '../../components';
-import { CURRENT_PRODUCER_ID, loadProducerData } from '../../services/producerService';
+import { useProducerData } from '../../services/useProducerData';
 import { styles } from './styles';
 
 export function ProducerHistoryPage() {
-  const data = loadProducerData(CURRENT_PRODUCER_ID);
+  const data = useProducerData();
 
   if (!data) {
     return <View style={styles.historyContainer} />;

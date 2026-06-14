@@ -1,15 +1,9 @@
-import { getDatabase } from '../database';
-import type { AuthResult } from '../types';
+import type { RootStackParamList, UserProfile, AuthResult } from '../types';
+import { findMilkmanIdByEmail } from './userRepository';
 
-function findMilkmanIdByEmail(normalizedEmail: string): string | undefined {
-  const db = getDatabase();
-  const row = db.getFirstSync<{ id: string }>(
-    'SELECT id FROM milkmen WHERE lower(email) = ?;',
-    [normalizedEmail],
-  );
-  return row ? row.id : undefined;
-}
-
+// Autenticação mockada sobre o SQLite — RF-01 / REQ-01.2.
+// Identifica o perfil pelo e-mail informado. Nesta fase só o módulo Produtor
+// está implementado; admin/leiteiro caem em telas "Em breve".
 export function determineProfileFromEmail(normalized: string, milkmanId?: string): AuthResult {
   if (milkmanId) return { profile: 'milkman', userId: milkmanId };
   if (normalized.startsWith('admin')) return { profile: 'admin', userId: 'ADMIN' };
@@ -20,4 +14,14 @@ export function authenticate(email: string): AuthResult {
   const normalized = email.trim().toLowerCase();
   const milkmanId = findMilkmanIdByEmail(normalized);
   return determineProfileFromEmail(normalized, milkmanId);
+}
+
+const ROUTE_BY_PROFILE: Record<UserProfile, keyof RootStackParamList> = {
+  producer: 'ProducerTabs',
+  admin: 'Admin',
+  milkman: 'Milkman',
+};
+
+export function routeForProfile(profile: UserProfile): keyof RootStackParamList {
+  return ROUTE_BY_PROFILE[profile];
 }

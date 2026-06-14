@@ -7,21 +7,16 @@ export const styles = StyleSheet.create({
     backgroundColor: colors.bg,
   },
   content: {
-    flexGrow: 1,
-    paddingHorizontal: 28,
-    paddingTop: 16,
-    paddingBottom: 24,
-  },
-  spacer: {
     flex: 1,
-  },
-  formSection: {
-    gap: 4,
+    paddingHorizontal: 28,
+    paddingTop: 8,
+    paddingBottom: 24,
   },
   brand: {
     alignItems: 'center',
     gap: 14,
-    marginTop: 8,
+    marginTop: 24,
+    marginBottom: 'auto',
   },
   brandCopy: {
     alignItems: 'center',
@@ -31,7 +26,6 @@ export const styles = StyleSheet.create({
     fontSize: 32,
     color: colors.ink,
     letterSpacing: -1,
-    lineHeight: 32,
   },
   brandAccent: {
     color: colors.primary,
@@ -47,7 +41,6 @@ export const styles = StyleSheet.create({
     fontSize: 22,
     color: colors.ink,
     letterSpacing: -0.6,
-    lineHeight: 24,
     marginTop: 8,
   },
   welcomeSubtitle: {
@@ -79,11 +72,6 @@ export const styles = StyleSheet.create({
   },
   fieldBoxFocused: {
     borderColor: colors.primary,
-    shadowColor: colors.primary,
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.12,
-    shadowRadius: 6,
-    elevation: 4,
   },
   fieldInput: {
     flex: 1,

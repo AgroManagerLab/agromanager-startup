@@ -55,3 +55,7 @@ export const colors = {
 
 export type Colors = typeof colors;
 export type Theme = typeof colors;
+
+export function useTheme(): Theme {
+  return colors;
+}
