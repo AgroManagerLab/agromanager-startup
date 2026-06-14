@@ -16,9 +16,9 @@ import {
   JetBrainsMono_700Bold,
   JetBrainsMono_800ExtraBold,
 } from '@expo-google-fonts/jetbrains-mono';
-import { migrateDatabase } from './src/global/database';
-import { colors } from './src/global/theme';
-import { RootNavigator } from './src/global/routes/RootNavigator';
+import { migrateDatabase } from './src/database';
+import { colors } from './src/global/themes';
+import RootScreens from './src/screens';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -53,7 +53,7 @@ export default function App() {
     <SafeAreaProvider>
       <NavigationContainer>
         <StatusBar style="dark" />
-        <RootNavigator />
+        <RootScreens />
       </NavigationContainer>
     </SafeAreaProvider>
   );

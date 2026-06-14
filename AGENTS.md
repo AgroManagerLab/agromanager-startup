@@ -22,17 +22,26 @@ telas de referência em [`ref/MilkRoute/screens/`](./ref/MilkRoute/screens).
 ## Estrutura
 
 ```
-App.tsx                # boot: fontes + migração do banco + RootNavigator
-src/global/            # camada compartilhada: theme, ui, database, @types, routes
-src/modules/<modulo>/  # uma feature por módulo (producer, admin, milkman, auth)
-                       # cada módulo tem: assets, @types, database, global, pages, routes, service
+App.tsx                # boot: fontes + migração do banco + RootScreens
+src/
+  components/          # UI reutilizável (Card, Volume, TabBar, ícones...)
+  constants/           # valores fixos compartilhados
+  context/             # AuthContext (sessão do usuário)
+  database/            # conexão SQLite, schema, seed, migração
+  global/themes.tsx    # tokens de cor e tipografia (tema claro único)
+  pages/               # uma pasta por tela com index.tsx + styles.ts
+  routes/              # navegação separada (auth.tsx + app.tsx)
+  screens/             # switcher raiz (auth vs app)
+  services/            # queries SQL, regras de negócio, hooks de dados
+  types/               # tipos compartilhados
+  utils/               # funções puras (ex.: projeção de pagamento)
 ref/                   # mockups de design e DRS (não é código do app; ignorado no lint)
 rules/                 # regras do projeto (abaixo)
 .specs/                # planejamento spec-driven (visão, roadmap, memória, specs)
 ```
 
-Hoje só o módulo **producer** está implementado; **admin** e **milkman** são
-scaffolds ("Em breve"); **auth** tem o login funcional que direciona por perfil.
+Hoje as páginas **Login**, **ProducerHome** e **ProducerHistory** estão
+implementadas; **AdminHome** e **MilkmanHome** são scaffolds ("Em breve").
 
 ## Comandos
 
@@ -50,17 +59,17 @@ leiteiro, produtores e as coletas do produtor logado (P-014) no primeiro boot.
 
 ## Regras do projeto (LEITURA OBRIGATÓRIA)
 
-- [`rules/architecture.md`](./rules/architecture.md) — estrutura de pastas, a
-  fórmula de 7 pastas por módulo, camada `global`, como criar um novo módulo.
+- [`rules/architecture.md`](./rules/architecture.md) — estrutura de pastas flat,
+  camadas pages→services→database, como criar um novo módulo/página.
 - [`rules/data-and-state.md`](./rules/data-and-state.md) — expo-sqlite como única
   fonte de dados, camadas pages→service→database, rastreabilidade de REQ, testes.
 - [`rules/ui-and-style.md`](./rules/ui-and-style.md) — tema claro único, tokens de
-  cor/fonte globais, primitivos de `src/global/ui`, diretrizes de design pt-BR.
+  cor/fonte em `src/global/themes.tsx`, componentes em `src/components/`, pt-BR.
 
 ## Convenções rápidas
 
-- Não criar pasta `components/`. Reutilizáveis cross-module em `src/global/ui`;
-  do módulo, no `global/` do módulo.
-- Telas terminam em `*Page.tsx`; navigators em `*Routes.tsx`; queries em `*Queries.ts`.
+- Componentes reutilizáveis em `src/components/`.
+- Páginas em `src/pages/<Nome>/index.tsx` + `styles.ts`.
+- Navigators em `src/routes/`; queries em `src/services/*Queries.ts`.
 - Comente regras de negócio com o ID do requisito (ex.: `// REQ-04.1`).
 - Sempre rode `npx tsc --noEmit`, `npm run lint` e `npm test` antes de concluir.
