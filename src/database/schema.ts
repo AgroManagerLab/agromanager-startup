@@ -1,4 +1,4 @@
-export const SCHEMA_VERSION = 1;
+export const SCHEMA_VERSION = 2;
 
 export const SCHEMA_SQL = `
 CREATE TABLE IF NOT EXISTS coops (
@@ -31,7 +31,16 @@ CREATE TABLE IF NOT EXISTS producers (
   name TEXT NOT NULL,
   farm TEXT NOT NULL,
   password TEXT NOT NULL,
+  route_order INTEGER DEFAULT 0,
   FOREIGN KEY (coop_id) REFERENCES coops (id),
+  FOREIGN KEY (route_id) REFERENCES routes (id)
+);
+
+CREATE TABLE IF NOT EXISTS milkman_routes (
+  milkman_id TEXT NOT NULL,
+  route_id TEXT NOT NULL,
+  PRIMARY KEY (milkman_id, route_id),
+  FOREIGN KEY (milkman_id) REFERENCES milkmen (id),
   FOREIGN KEY (route_id) REFERENCES routes (id)
 );
 
