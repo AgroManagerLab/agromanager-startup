@@ -1,51 +1,73 @@
 # Regra: Arquitetura e estrutura de pastas
 
-O AgroManager é um app **Expo / React Native** mantido o **mais simples possível**.
-Stack permitida: **React Native + expo-sqlite**. Nada além disso (sem libs de
-estado, sem ORM, sem back-end neste escopo).
+O AgroManager segue a arquitetura de estrutura flat
+com camadas bem definidas.
 
 ## Layout do projeto
 
 ```
-App.tsx                      # boot: carrega fontes, roda migração do banco, monta o RootNavigator
+App.tsx                      # boot: carrega fontes, roda migração do banco, monta o RootScreens
 src/
-  global/                    # camada compartilhada por TODOS os módulos (não é um módulo de feature)
-    theme/                   # design tokens: cores (tema claro único) + tipografia
-    ui/                      # primitivos visuais reutilizáveis (Card, Volume, MoneyBRL, TabBar, ícones...)
-    database/                # cliente expo-sqlite, schema, seed, migração
-    @types/                  # tipos compartilhados (navegação, linhas do banco)
-    routes/                  # RootNavigator (stack raiz, direciona por perfil)
-  modules/
-    <modulo>/                # uma feature por módulo (producer, admin, milkman, auth)
+  components/                # componentes de UI reutilizáveis (Card, Volume, TabBar, ícones...)
+  constants/                 # valores fixos compartilhados (preço do leite, IDs...)
+  context/                   # estado global (AuthContext — sessão do usuário)
+  database/                  # cliente expo-sqlite, schema, seed, migração
+  global/
+    themes.tsx               # tokens de cor + tipografia + hook useTheme (tema claro único)
+  pages/                     # uma pasta por tela, cada uma com index.tsx + styles.ts
+    Login/
+    ProducerHome/
+    ProducerHistory/
+    ProducerTabs.tsx          # bottom tabs do produtor (não é página, é navigator)
+    AdminHome/
+    MilkmanHome/
+  routes/                    # navegação separada por fluxo
+    auth.tsx                 # AuthNavigator (stack de login)
+    app.tsx                  # AppNavigator (stack principal do app autenticado)
+  screens/                   # switcher raiz: decide se mostra auth ou app
+    index.tsx
+  services/                  # regras de negócio, queries SQLite e hooks de dados
+  types/                     # contratos de tipos compartilhados
+    index.ts
+  utils/                     # funções auxiliares puras (ex.: projeção de pagamento)
 ```
 
-## Fórmula de pastas — OBRIGATÓRIA para cada módulo em `src/modules/`
-
-Cada módulo contém **somente** estas 7 pastas:
+## Responsabilidades
 
 | Pasta       | Conteúdo                                                              |
-|-------------|---------------------------------------------------------------------|
-| `assets`    | imagens/ícones específicos do módulo                                 |
-| `@types`    | tipos TypeScript do domínio do módulo                               |
-| `database`  | queries SQLite do módulo (usam o cliente de `src/global/database`)   |
-| `global`    | estilos e componentes reutilizáveis **dentro** do módulo            |
-| `pages`     | telas (uma tela = um arquivo `XxxPage.tsx`)                          |
-| `routes`    | navegação do módulo (`XxxRoutes.tsx`)                                |
-| `service`   | regra de negócio, hooks de dados e acesso ao banco                  |
+|-------------|-----------------------------------------------------------------------|
+| `components` | Componentes visuais reutilizáveis e independentes de tela            |
+| `constants`  | Valores fixos e configurações compartilhadas                          |
+| `context`    | Provedores e hooks de estado global (AuthContext)                    |
+| `database`   | Conexão SQLite, schema, seed e migração versionada                   |
+| `global`     | Tema único (cores, tipografia, hook useTheme)                        |
+| `pages`      | Telas da aplicação, uma pasta por tela com `index.tsx` + `styles.ts` |
+| `routes`     | Definição de navegação (auth stack + app stack)                      |
+| `screens`    | Switcher raiz que alterna entre auth e app conforme sessão           |
+| `services`   | Queries SQL, regras de negócio e hooks de dados                      |
+| `types`      | Tipos compartilhados entre camadas                                   |
+| `utils`      | Funções puras sem dependência de UI ou banco                         |
 
-Regras rígidas:
-- **NÃO** criar pasta `components/`. Componentes compartilhados entre módulos vão em
-  `src/global/ui`; componentes reutilizáveis de um módulo vão no `global/` daquele módulo.
-- `src/global/` é a **estilização global**: todo módulo importa cores/fontes de
-  `src/global/theme` e primitivos de `src/global/ui` para manter o mesmo esquema visual.
-- Módulos não importam pastas internas de outros módulos; o que for cross-module sobe para `src/global`.
+## Camadas de acesso
 
-## Novo módulo (scaffold)
+```
+pages  ──>  services (hook + regra)  ──>  database (queries SQLite)  ──>  getDatabase()
+```
 
-1. Criar `src/modules/<nome>` com as 7 pastas.
-2. Implementar `pages/`, `routes/` e `service/` reaproveitando `src/global`.
-3. Registrar o navigator do módulo em `src/global/routes/RootNavigator.tsx`.
+- Telas não falam diretamente com o banco.
+- Serviços encapsulam acesso a dados e regras de negócio.
+- Componentes não carregam regras de fluxo.
 
-Perfis do sistema (DRS RF-01): **admin (cooperativa)**, **milkman (leiteiro)**,
-**producer (produtor)**. Hoje só `producer` está implementado; `admin`/`milkman`
-são scaffolds.
+## Navegação
+
+- `src/screens/index.tsx` é o ponto de entrada da navegação.
+- Usuário não autenticado → `routes/auth.tsx` (Login).
+- Usuário autenticado → `routes/app.tsx` (navegação por perfil).
+- Cada perfil (producer, admin, milkman) tem seu próprio fluxo dentro do app stack.
+
+## Novo módulo/página
+
+1. Criar pasta em `src/pages/<Nome>/` com `index.tsx` + `styles.ts`.
+2. Adicionar a rota em `src/routes/app.tsx`.
+3. Implementar services usando `getDatabase()` de `src/database/`.
+4. Reaproveitar componentes de `src/components/` e tema de `src/global/themes.tsx`.
