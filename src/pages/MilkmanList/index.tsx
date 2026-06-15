@@ -17,7 +17,7 @@ import { getMilkmanRouteProducers } from '../../services/milkmanService';
 import type { RootStackParamList, RouteProducer } from '../../types';
 import { styles } from './styles';
 
-export function MilkmanListagemPage() {
+export function MilkmanListPage() {
   const { userId } = useAuth();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const producers = getMilkmanRouteProducers(userId!);
@@ -69,7 +69,7 @@ export function MilkmanListagemPage() {
                   producer={item}
                   onPress={() => {
                     if (item.status !== 'synced') {
-                      navigation.navigate('MilkmanRegistroColeta', {
+                       navigation.navigate('MilkmanRegisterCollection', {
                         producerId: item.id,
                       });
                     }

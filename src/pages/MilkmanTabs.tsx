@@ -2,8 +2,8 @@ import React from 'react';
 import { HomeIcon, UsersIcon, HistoryIcon, SettingsIcon } from '../components';
 import type { TabItem } from '../components';
 import { MilkmanHomePage } from './MilkmanHome';
-import { MilkmanListagemPage } from './MilkmanListagem';
-import { MilkmanHistoricoPage } from './MilkmanHistorico';
+import { MilkmanListPage } from './MilkmanList';
+import { MilkmanHistoryPage } from './MilkmanHistory';
 import { createProfileTabs, PERFIL_SCREEN } from './createProfileTabs';
 
 const TAB_ITEMS: TabItem[] = [
@@ -15,7 +15,7 @@ const TAB_ITEMS: TabItem[] = [
 
 export const MilkmanTabs = createProfileTabs(TAB_ITEMS, [
   ['Hoje', MilkmanHomePage],
-  ['Produtores', MilkmanListagemPage],
-  ['Historico', MilkmanHistoricoPage],
+  ['Produtores', MilkmanListPage],
+  ['Historico', MilkmanHistoryPage],
   PERFIL_SCREEN,
 ]);

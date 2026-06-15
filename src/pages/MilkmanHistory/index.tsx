@@ -17,7 +17,7 @@ import { styles } from './styles';
 
 type Filter = 'all' | 'synced' | 'pending';
 
-export function MilkmanHistoricoPage() {
+export function MilkmanHistoryPage() {
   const { userId } = useAuth();
   const groups = getMilkmanHistory(userId!);
   const [filter, setFilter] = useState<Filter>('all');
@@ -85,7 +85,7 @@ export function MilkmanHistoricoPage() {
                   {group.rows.map((row, i) => (
                     <View key={row.id}>
                       {i > 0 ? <Divider /> : null}
-                      <ColetaRowLeiteiro row={row} />
+                      <MilkmanCollectionRowComponent row={row} />
                     </View>
                   ))}
                 </Card>
@@ -98,7 +98,7 @@ export function MilkmanHistoricoPage() {
   );
 }
 
-function ColetaRowLeiteiro({ row }: { row: MilkmanCollectionRow }) {
+function MilkmanCollectionRowComponent({ row }: { row: MilkmanCollectionRow }) {
   return (
     <TouchableOpacity style={styles.coletaRow} activeOpacity={0.7}>
       <View style={styles.photoPlaceholder} />
