@@ -8,7 +8,7 @@ import { colors } from '../../global/themes';
 import { generatePassword } from '../../utils/password';
 import { styles, footerStyles } from './styles';
 
-export function AdminCadastroProdutorPage() {
+export function AdminRegisterProducerPage() {
   const navigation = useNavigation();
   const routes = getRoutes();
 

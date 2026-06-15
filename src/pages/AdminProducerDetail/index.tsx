@@ -11,16 +11,16 @@ import { getAdminProducerDetail } from '../../services/adminService';
 import { colors } from '../../global/themes';
 import { styles } from './styles';
 
-function ColetaRowAdmin({
+function AdminCollectionRow({
   date,
   time,
   volume,
-  leiteiro,
+  milkmanName,
 }: {
   date: string;
   time: string;
   volume: number;
-  leiteiro: string;
+  milkmanName: string;
 }) {
   return (
     <View style={styles.coletaRow}>
@@ -30,7 +30,7 @@ function ColetaRowAdmin({
           {date}
           <Text style={styles.coletaTime}>  {time}</Text>
         </Text>
-        <Text style={styles.coletaLeiteiro}>{leiteiro}</Text>
+        <Text style={styles.coletaLeiteiro}>{milkmanName}</Text>
       </View>
       <Text style={styles.coletaVolume}>
         {volume} <Text style={styles.coletaVolumeUnit}>L</Text>
@@ -39,9 +39,9 @@ function ColetaRowAdmin({
   );
 }
 
-export function AdminDetalhamentoProdutorPage() {
+export function AdminProducerDetailPage() {
   const navigation = useNavigation<any>();
-  const route = useRoute<RouteProp<RootStackParamList, 'AdminDetalhamentoProdutor'>>();
+  const route = useRoute<RouteProp<RootStackParamList, 'AdminProducerDetail'>>();
   const { producerId } = route.params;
 
   const detail = getAdminProducerDetail(producerId);
@@ -101,11 +101,11 @@ export function AdminDetalhamentoProdutorPage() {
             history.map((h, i) => (
               <React.Fragment key={`${h.date}-${h.time}`}>
                 {i > 0 && <Divider />}
-                <ColetaRowAdmin
+                <AdminCollectionRow
                   date={h.date}
                   time={h.time}
                   volume={h.volume}
-                  leiteiro={h.leiteiro}
+                  milkmanName={h.milkmanName}
                 />
               </React.Fragment>
             ))

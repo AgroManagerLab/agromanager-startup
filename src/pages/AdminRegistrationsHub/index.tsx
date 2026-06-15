@@ -40,7 +40,7 @@ function CadastroCard({
   );
 }
 
-export function AdminCadastrosHubPage() {
+export function AdminRegistrationsHubPage() {
   const navigation = useNavigation<any>();
   const data = loadAdminDashboard();
 
@@ -55,7 +55,7 @@ export function AdminCadastrosHubPage() {
           title="Produtor"
           subtitle="Nome, fazenda, rota, senha inicial"
           count={`${data.totalProducers} cadastrados`}
-          onPress={() => navigation.navigate('AdminCadastroProdutor')}
+          onPress={() => navigation.navigate('AdminRegisterProducer')}
         />
         <CadastroCard
           icon={<RouteIcon size={28} color={'#7A521B'} />}
@@ -64,7 +64,7 @@ export function AdminCadastrosHubPage() {
           title="Rota"
           subtitle="Sequência de coleta e produtores"
           count={`${data.totalRoutes} ativas`}
-          onPress={() => navigation.navigate('AdminCadastroRota')}
+          onPress={() => navigation.navigate('AdminRegisterRoute')}
         />
         <CadastroCard
           icon={<TruckIcon size={28} color={'#1F4D38'} />}
@@ -73,7 +73,7 @@ export function AdminCadastrosHubPage() {
           title="Leiteiro"
           subtitle="E-mail, senha e rotas vinculadas"
           count={`${data.totalMilkmen} cadastrados`}
-          onPress={() => navigation.navigate('AdminCadastroLeiteiro')}
+          onPress={() => navigation.navigate('AdminRegisterMilkman')}
         />
       </ScrollView>
     </View>

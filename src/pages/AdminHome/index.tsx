@@ -143,7 +143,7 @@ export function AdminHomePage() {
               textColor={colors.primaryDark}
               label="Cadastros"
               hint="Produtor · Rota · Leiteiro"
-              onPress={() => navigation.navigate('AdminCadastrosHub')}
+              onPress={() => navigation.navigate('AdminRegistrationsHub')}
             />
             <ShortcutCard
               icon={<UsersIcon size={22} color={colors.accentInk} />}
@@ -151,7 +151,7 @@ export function AdminHomePage() {
               textColor={colors.accentInk}
               label="Produtores"
               hint={`${data.totalProducers} ativos`}
-              onPress={() => navigation.navigate('AdminListagemProdutores')}
+              onPress={() => navigation.navigate('AdminProducerList')}
             />
           </View>
 

@@ -41,7 +41,7 @@ function ProdutorListItem({
   );
 }
 
-export function AdminListagemProdutoresPage() {
+export function AdminProducerListPage() {
   const navigation = useNavigation<any>();
   const routes = getRoutes();
   const dashboard = loadAdminDashboard();
@@ -63,7 +63,7 @@ export function AdminListagemProdutoresPage() {
           <TouchableOpacity
             activeOpacity={0.7}
             style={styles.headerPlus}
-            onPress={() => navigation.navigate('AdminCadastroProdutor')}
+            onPress={() => navigation.navigate('AdminRegisterProducer')}
           >
             <PlusIcon size={22} color="#fff" />
           </TouchableOpacity>
@@ -113,7 +113,7 @@ export function AdminListagemProdutoresPage() {
                 {i > 0 && <Divider />}
                 <ProdutorListItem
                   item={p}
-                  onPress={() => navigation.navigate('AdminDetalhamentoProdutor', { producerId: p.id })}
+                  onPress={() => navigation.navigate('AdminProducerDetail', { producerId: p.id })}
                 />
               </React.Fragment>
             ))}

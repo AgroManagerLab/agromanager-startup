@@ -16,7 +16,7 @@ interface ProducerOption {
   order: number;
 }
 
-export function AdminCadastroRotaPage() {
+export function AdminRegisterRoutePage() {
   const navigation = useNavigation();
   const allProducers = getAllProducers();
 
