@@ -109,6 +109,22 @@ export const styles = StyleSheet.create({
     color: colors.accentInk,
     letterSpacing: -0.8,
   },
+  moneyDarkRow: {
+    fontFamily: FONT.monoBold,
+    fontSize: 26,
+    color: '#fff',
+    letterSpacing: -1.5,
+  },
+  moneyDarkInt: {
+    fontFamily: FONT.monoExtra,
+    fontSize: 26,
+    letterSpacing: -1.5,
+  },
+  moneyDarkFrac: {
+    fontFamily: FONT.monoBold,
+    fontSize: 16,
+    letterSpacing: -0.8,
+  },
 
   // ─── Wordmark ──────────────────────────────────────────
   wordmarkRow: {
@@ -334,6 +350,46 @@ export const styles = StyleSheet.create({
   coletaUnit: {
     fontSize: 12,
     color: colors.ink2,
+  },
+
+  // ─── OfflineBanner ─────────────────────────────────────
+  offlineBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    backgroundColor: '#3D3530',
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+  },
+  offlineIcon: {
+    width: 16,
+    height: 16,
+    borderRadius: 8,
+    borderWidth: 1.8,
+    borderColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  offlineIconLine: {
+    position: 'absolute',
+    top: 7,
+    left: -1,
+    width: 18,
+    height: 1.8,
+    backgroundColor: '#fff',
+  },
+  offlineText: {
+    flex: 1,
+    fontSize: 13.5,
+    fontWeight: '600',
+    color: '#fff',
+    letterSpacing: -0.1,
+  },
+  offlineLabel: {
+    fontFamily: FONT.monoBold,
+    fontSize: 12,
+    color: '#fff',
+    opacity: 0.7,
   },
 
   // ─── SyncBadge ─────────────────────────────────────────
