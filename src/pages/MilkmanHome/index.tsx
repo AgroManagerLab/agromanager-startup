@@ -4,12 +4,10 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { colors } from '../../global/themes';
-import {
-  Card,
-  Divider,
-  Wordmark,
-  PlusIcon,
-} from '../../components';
+import { Card } from '../../components/Card';
+import { Divider } from '../../components/Divider';
+import { Wordmark } from '../../components/Wordmark';
+import { PlusIcon } from '../../components/icons/Icon';
 import { useAuth } from '../../context/AuthContext';
 import { loadMilkmanHomeData } from '../../services/milkmanService';
 import type { RootStackParamList } from '../../types';

@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import {
-  ScreenHeader, Field, Card, Divider, CheckIcon,
-} from '../../components';
+import { ScreenHeader } from '../../components/ScreenHeader';
+import { Field } from '../../components/Field';
+import { Card } from '../../components/Card';
+import { Divider } from '../../components/Divider';
+import { CheckIcon } from '../../components/icons/Icon';
 import { createRoute, getAllProducers } from '../../services/adminService';
 import { styles, footerStyles } from './styles';
 
@@ -53,7 +55,7 @@ export function AdminRegisterRoutePage() {
 
   function handleSave() {
     if (!name.trim() || !identifier.trim()) return;
-    const producerIds = producers.filter((p) => p.checked).map((p) => p.id);
+    const producerIds = producers.flatMap((p) => (p.checked ? [p.id] : []));
     createRoute({
       name: name.trim(),
       identifier: identifier.trim(),

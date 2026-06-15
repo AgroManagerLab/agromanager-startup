@@ -2,9 +2,11 @@ import React from 'react';
 import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
-import {
-  Wordmark, Card, Volume, Divider, SettingsIcon, PlusIcon, UsersIcon,
-} from '../../components';
+import { Wordmark } from '../../components/Wordmark';
+import { Card } from '../../components/Card';
+import { Volume } from '../../components/Volume';
+import { Divider } from '../../components/Divider';
+import { SettingsIcon, PlusIcon, UsersIcon } from '../../components/icons/Icon';
 import { loadAdminDashboard } from '../../services/adminService';
 import { colors, FONT } from '../../global/themes';
 import { styles } from './styles';

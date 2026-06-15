@@ -1,17 +1,15 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { View, Text, FlatList, TouchableOpacity, TextInput } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { colors } from '../../global/themes';
-import {
-  Card,
-  Divider,
-  ScreenHeader,
-  OfflineBanner,
-  SearchIcon,
-  SyncBadge,
-  Avatar,
-} from '../../components';
+import { Card } from '../../components/Card';
+import { Divider } from '../../components/Divider';
+import { ScreenHeader } from '../../components/ScreenHeader';
+import { OfflineBanner } from '../../components/OfflineBanner';
+import { SearchIcon } from '../../components/icons/Icon';
+import { SyncBadge } from '../../components/SyncBadge';
+import { Avatar } from '../../components/Avatar';
 import { useAuth } from '../../context/AuthContext';
 import { getMilkmanRouteProducers } from '../../services/milkmanService';
 import type { RootStackParamList, RouteProducer } from '../../types';
@@ -22,6 +20,22 @@ export function MilkmanListPage() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const producers = getMilkmanRouteProducers(userId!);
   const [search, setSearch] = useState('');
+
+  const renderProdRow = useCallback(
+    ({ item }: { item: RouteProducer }) => (
+      <LeiteiroProdRow
+        producer={item}
+        onPress={() => {
+          if (item.status !== 'synced') {
+            navigation.navigate('MilkmanRegisterCollection', {
+              producerId: item.id,
+            });
+          }
+        }}
+      />
+    ),
+    [navigation],
+  );
 
   const total = producers.length;
   const done = producers.filter((p) => p.status !== 'next').length;
@@ -64,18 +78,7 @@ export function MilkmanListPage() {
               data={filtered}
               keyExtractor={(item) => item.id}
               ItemSeparatorComponent={Divider}
-              renderItem={({ item }) => (
-                <LeiteiroProdRow
-                  producer={item}
-                  onPress={() => {
-                    if (item.status !== 'synced') {
-                       navigation.navigate('MilkmanRegisterCollection', {
-                        producerId: item.id,
-                      });
-                    }
-                  }}
-                />
-              )}
+              renderItem={renderProdRow}
             />
           )}
         </Card>

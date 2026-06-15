@@ -1,6 +1,6 @@
 import React from 'react';
-import { HomeIcon, UsersIcon, PlusIcon, SettingsIcon } from '../components';
-import type { TabItem } from '../components';
+import { HomeIcon, UsersIcon, PlusIcon, SettingsIcon } from '../components/icons/Icon';
+import type { TabItem } from '../components/TabBar';
 import { AdminHomePage } from './AdminHome';
 import { AdminProducerListPage } from './AdminProducerList';
 import { AdminRegistrationsHubPage } from './AdminRegistrationsHub';

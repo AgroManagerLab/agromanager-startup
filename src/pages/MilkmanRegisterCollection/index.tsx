@@ -4,11 +4,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { colors } from '../../global/themes';
-import {
-  CameraIcon,
-  CheckIcon,
-  Avatar,
-} from '../../components';
+import { CameraIcon, CheckIcon } from '../../components/icons/Icon';
+import { Avatar } from '../../components/Avatar';
 import { useAuth } from '../../context/AuthContext';
 import {
   getMilkmanRouteProducers,

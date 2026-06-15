@@ -1,4 +1,4 @@
-import { getDatabase } from '../database';
+import { getDatabase } from '../database/client';
 
 export function findMilkmanIdByEmail(normalizedEmail: string): string | undefined {
 	const db = getDatabase();

@@ -1,6 +1,8 @@
 import React from 'react';
 import { View, Text } from 'react-native';
-import { PhotoStripe, SyncBadge, NumText } from './';
+import { PhotoStripe } from './PhotoStripe';
+import { SyncBadge } from './SyncBadge';
+import { NumText } from './NumText';
 import type { Collection } from '../types';
 import { styles } from './styles';
 
