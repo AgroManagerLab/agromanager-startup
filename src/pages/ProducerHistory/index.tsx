@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, FlatList } from 'react-native';
-import { ScreenHeader, Card, Divider, Volume, NumText, ColetaRow } from '../../components';
+import { ScreenHeader, Card, Divider, Volume, NumText, CollectionRow } from '../../components';
 import { CURRENT_PRODUCER_ID, loadProducerData } from '../../services/producerService';
 import { styles } from './styles';
 
@@ -39,7 +39,7 @@ export function ProducerHistoryPage() {
             keyExtractor={(item) => item.id}
             ItemSeparatorComponent={Divider}
             renderItem={({ item }) => (
-              <ColetaRow row={item} variant="detailed" pricePerLiter={data.pricePerLiter} />
+              <CollectionRow row={item} variant="detailed" pricePerLiter={data.pricePerLiter} />
             )}
           />
         </Card>

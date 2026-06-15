@@ -3,7 +3,7 @@ import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { colors } from '../../global/themes';
-import { Card, Divider, SettingsIcon, Volume, Wordmark, ProjectionCard, ColetaRow } from '../../components';
+import { Card, Divider, SettingsIcon, Volume, Wordmark, ProjectionCard, CollectionRow } from '../../components';
 import { CURRENT_PRODUCER_ID, loadProducerData, buildProducerHomeSummary } from '../../services/producerService';
 import { styles } from './styles';
 
@@ -51,7 +51,7 @@ export function ProducerHomePage() {
           {home.recentCollections.map((h, i) => (
             <View key={h.id}>
               {i > 0 ? <Divider /> : null}
-              <ColetaRow row={h} variant="compact" />
+              <CollectionRow row={h} variant="compact" />
             </View>
           ))}
         </Card>
