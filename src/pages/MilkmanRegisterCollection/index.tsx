@@ -17,10 +17,10 @@ import {
 import type { RootStackParamList } from '../../types';
 import { styles } from './styles';
 
-export function MilkmanRegistroColetaPage() {
+export function MilkmanRegisterCollectionPage() {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const route = useRoute<RouteProp<RootStackParamList, 'MilkmanRegistroColeta'>>();
+  const route = useRoute<RouteProp<RootStackParamList, 'MilkmanRegisterCollection'>>();
   const { userId } = useAuth();
   const { producerId } = route.params;
 

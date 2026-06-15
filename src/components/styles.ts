@@ -275,7 +275,7 @@ export const styles = StyleSheet.create({
     color: colors.accentInk,
   },
 
-  // ─── ColetaRow ─────────────────────────────────────────
+  // ─── CollectionRow ─────────────────────────────────────
   coletaDetailedRow: {
     flexDirection: 'row',
     alignItems: 'center',

@@ -12,7 +12,7 @@ const PROFILE_LABEL: Record<string, string> = {
   producer: 'Produtor',
 };
 
-export function PerfilPlaceholder() {
+export function ProfilePlaceholder() {
   const insets = useSafeAreaInsets();
   const { signOut, profile, userId } = useAuth();
 

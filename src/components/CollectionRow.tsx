@@ -1,16 +1,16 @@
 import React from 'react';
 import { View, Text } from 'react-native';
 import { PhotoStripe, SyncBadge, NumText } from './';
-import type { Coleta } from '../types';
+import type { Collection } from '../types';
 import { styles } from './styles';
 
-interface ColetaRowProps {
-  row: Coleta;
+interface CollectionRowProps {
+  row: Collection;
   variant?: 'compact' | 'detailed';
   pricePerLiter?: number;
 }
 
-export function ColetaRow({ row, variant = 'compact', pricePerLiter = 0 }: ColetaRowProps) {
+export function CollectionRow({ row, variant = 'compact', pricePerLiter = 0 }: CollectionRowProps) {
   if (variant === 'detailed') {
     const value = row.volume * pricePerLiter;
     return (

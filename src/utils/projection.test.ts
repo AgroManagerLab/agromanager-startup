@@ -1,8 +1,8 @@
 import { avgPerDay, calcProjection, sumSyncedVolume, syncedCollections } from './projection';
 import { buildProducerHomeSummary } from '../services/producerService';
-import type { Coleta } from '../types';
+import type { Collection } from '../types';
 
-const collections: Coleta[] = [
+const collections: Collection[] = [
   { id: 'C-3', date: '13 mai', time: '06:14', volume: 138, status: 'synced' },
   { id: 'C-2', date: '12 mai', time: '06:08', volume: 142, status: 'synced' },
   { id: 'C-1', date: '11 mai', time: '07:22', volume: 100, status: 'pending' },

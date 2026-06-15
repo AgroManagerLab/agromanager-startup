@@ -109,7 +109,7 @@ export const styles = StyleSheet.create({
     color: colors.ink3,
   },
 
-  // ColetaRowAdmin
+  // AdminCollectionRow
   coletaRow: {
     flexDirection: 'row',
     alignItems: 'center',

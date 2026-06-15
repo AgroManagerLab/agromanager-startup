@@ -165,7 +165,7 @@ export function getAdminProducerDetail(producerId: string): {
   ) ?? { v: 0 };
 
   const history = db.getAllSync<AdminHistoryRow>(
-    `SELECT c.date, c.time, c.volume, COALESCE(m.name, '—') AS leiteiro, c.status
+    `SELECT c.date, c.time, c.volume, COALESCE(m.name, '—') AS milkmanName, c.status
      FROM collections c
      LEFT JOIN milkmen m ON m.id = c.milkman_id
      WHERE c.producer_id = ?

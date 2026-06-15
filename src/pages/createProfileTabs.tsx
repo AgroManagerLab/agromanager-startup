@@ -1,7 +1,7 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import type { BottomTabBarProps } from '@react-navigation/bottom-tabs';
-import { TabBar, PerfilPlaceholder } from '../components';
+import { TabBar, ProfilePlaceholder } from '../components';
 import type { TabItem } from '../components';
 
 type ScreenEntry = [string, React.ComponentType<any>];
@@ -43,4 +43,4 @@ export function createProfileTabs(
   };
 }
 
-export const PERFIL_SCREEN: ScreenEntry = ['Perfil', PerfilPlaceholder];
+export const PERFIL_SCREEN: ScreenEntry = ['Perfil', ProfilePlaceholder];

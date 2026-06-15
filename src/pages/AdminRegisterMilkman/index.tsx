@@ -7,7 +7,7 @@ import { createMilkman, getRoutes } from '../../services/adminService';
 import { generatePassword } from '../../utils/password';
 import { styles, footerStyles } from './styles';
 
-export function AdminCadastroLeiteiroPage() {
+export function AdminRegisterMilkmanPage() {
   const navigation = useNavigation();
   const routes = getRoutes();
 

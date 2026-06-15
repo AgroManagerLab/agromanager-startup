@@ -2,8 +2,8 @@ import React from 'react';
 import { HomeIcon, UsersIcon, PlusIcon, SettingsIcon } from '../components';
 import type { TabItem } from '../components';
 import { AdminHomePage } from './AdminHome';
-import { AdminListagemProdutoresPage } from './AdminListagemProdutores';
-import { AdminCadastrosHubPage } from './AdminCadastrosHub';
+import { AdminProducerListPage } from './AdminProducerList';
+import { AdminRegistrationsHubPage } from './AdminRegistrationsHub';
 import { createProfileTabs, PERFIL_SCREEN } from './createProfileTabs';
 
 const TAB_ITEMS: TabItem[] = [
@@ -15,7 +15,7 @@ const TAB_ITEMS: TabItem[] = [
 
 export const AdminTabs = createProfileTabs(TAB_ITEMS, [
   ['Inicio', AdminHomePage],
-  ['Produtores', AdminListagemProdutoresPage],
-  ['Cadastros', AdminCadastrosHubPage],
+  ['Produtores', AdminProducerListPage],
+  ['Cadastros', AdminRegistrationsHubPage],
   PERFIL_SCREEN,
 ]);

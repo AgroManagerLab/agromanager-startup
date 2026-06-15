@@ -1,6 +1,6 @@
 export { Avatar } from './Avatar';
 export { Card } from './Card';
-export { ColetaRow } from './ColetaRow';
+export { CollectionRow } from './CollectionRow';
 export { CowMark } from './CowMark';
 export { Logo } from './Logo';
 export { Divider } from './Divider';
@@ -9,7 +9,7 @@ export { FilterPill } from './FilterPill';
 export { MoneyBRL } from './MoneyBRL';
 export { NumText } from './NumText';
 export { OfflineBanner } from './OfflineBanner';
-export { PerfilPlaceholder } from './PerfilPlaceholder';
+export { ProfilePlaceholder } from './ProfilePlaceholder';
 export { PhotoStripe } from './PhotoStripe';
 export { ProjectionCard } from './ProjectionCard';
 export { ScreenHeader } from './ScreenHeader';

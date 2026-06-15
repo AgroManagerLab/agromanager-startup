@@ -6,11 +6,11 @@ export type RootStackParamList = {
   ProducerTabs: undefined;
   AdminTabs: undefined;
   MilkmanTabs: undefined;
-  AdminCadastroProdutor: { producerId?: string } | undefined;
-  AdminCadastroRota: { routeId?: string } | undefined;
-  AdminCadastroLeiteiro: { milkmanId?: string } | undefined;
-  AdminDetalhamentoProdutor: { producerId: string };
-  MilkmanRegistroColeta: { producerId: string };
+  AdminRegisterProducer: { producerId?: string } | undefined;
+  AdminRegisterRoute: { routeId?: string } | undefined;
+  AdminRegisterMilkman: { milkmanId?: string } | undefined;
+  AdminProducerDetail: { producerId: string };
+  MilkmanRegisterCollection: { producerId: string };
 };
 
 export interface AuthResult {
@@ -62,7 +62,7 @@ export interface CollectionRow {
   updated_at: string;
 }
 
-export interface Coleta {
+export interface Collection {
   id: string;
   date: string;
   time: string;
@@ -80,8 +80,8 @@ export interface ProducerProfile {
 export interface ProducerData {
   profile: ProducerProfile;
   pricePerLiter: number;
-  collections: Coleta[];
-  synced: Coleta[];
+  collections: Collection[];
+  synced: Collection[];
   monthVolume: number;
   projection: number;
   avgPerDay: number;
@@ -155,7 +155,7 @@ export interface AdminProducerSummary {
   hue: number;
 }
 
-export interface CadastroFormData {
+export interface RegistrationFormData {
   name: string;
   farm?: string;
   email?: string;
@@ -167,6 +167,6 @@ export interface AdminHistoryRow {
   date: string;
   time: string;
   volume: number;
-  leiteiro: string;
+  milkmanName: string;
   status: CollectionStatus;
 }

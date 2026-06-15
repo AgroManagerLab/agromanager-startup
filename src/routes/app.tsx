@@ -5,11 +5,11 @@ import { useAuth } from '../context/AuthContext';
 import { ProducerTabs } from '../pages/ProducerTabs';
 import { AdminTabs } from '../pages/AdminTabs';
 import { MilkmanTabs } from '../pages/MilkmanTabs';
-import { MilkmanRegistroColetaPage } from '../pages/MilkmanRegistroColeta';
-import { AdminCadastroProdutorPage } from '../pages/AdminCadastroProdutor';
-import { AdminCadastroRotaPage } from '../pages/AdminCadastroRota';
-import { AdminCadastroLeiteiroPage } from '../pages/AdminCadastroLeiteiro';
-import { AdminDetalhamentoProdutorPage } from '../pages/AdminDetalhamentoProdutor';
+import { MilkmanRegisterCollectionPage } from '../pages/MilkmanRegisterCollection';
+import { AdminRegisterProducerPage } from '../pages/AdminRegisterProducer';
+import { AdminRegisterRoutePage } from '../pages/AdminRegisterRoute';
+import { AdminRegisterMilkmanPage } from '../pages/AdminRegisterMilkman';
+import { AdminProducerDetailPage } from '../pages/AdminProducerDetail';
 
 type RouteName = keyof RootStackParamList;
 
@@ -30,11 +30,11 @@ export function AppNavigator() {
       <Stack.Screen name="ProducerTabs" component={ProducerTabs} />
       <Stack.Screen name="AdminTabs" component={AdminTabs} />
       <Stack.Screen name="MilkmanTabs" component={MilkmanTabs} />
-      <Stack.Screen name="MilkmanRegistroColeta" component={MilkmanRegistroColetaPage} />
-      <Stack.Screen name="AdminCadastroProdutor" component={AdminCadastroProdutorPage} />
-      <Stack.Screen name="AdminCadastroRota" component={AdminCadastroRotaPage} />
-      <Stack.Screen name="AdminCadastroLeiteiro" component={AdminCadastroLeiteiroPage} />
-      <Stack.Screen name="AdminDetalhamentoProdutor" component={AdminDetalhamentoProdutorPage} />
+      <Stack.Screen name="MilkmanRegisterCollection" component={MilkmanRegisterCollectionPage} />
+      <Stack.Screen name="AdminRegisterProducer" component={AdminRegisterProducerPage} />
+      <Stack.Screen name="AdminRegisterRoute" component={AdminRegisterRoutePage} />
+      <Stack.Screen name="AdminRegisterMilkman" component={AdminRegisterMilkmanPage} />
+      <Stack.Screen name="AdminProducerDetail" component={AdminProducerDetailPage} />
     </Stack.Navigator>
   );
 }

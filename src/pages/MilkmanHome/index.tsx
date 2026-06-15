@@ -82,7 +82,7 @@ export function MilkmanHomePage() {
             activeOpacity={0.7}
             onPress={() => {
               if (firstPending) {
-                navigation.navigate('MilkmanRegistroColeta', {
+                navigation.navigate('MilkmanRegisterCollection', {
                   producerId: firstPending.id,
                 });
               }
