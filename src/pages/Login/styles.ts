@@ -7,28 +7,21 @@ export const styles = StyleSheet.create({
     backgroundColor: colors.bg,
   },
   content: {
-    flex: 1,
+    flexGrow: 1,
     paddingHorizontal: 28,
-    paddingTop: 8,
+    paddingTop: 16,
     paddingBottom: 24,
+  },
+  spacer: {
+    flex: 1,
+  },
+  formSection: {
+    gap: 4,
   },
   brand: {
     alignItems: 'center',
     gap: 14,
-    marginTop: 24,
-    marginBottom: 'auto',
-  },
-  brandCopy: {
-    alignItems: 'center',
-  },
-  brandTitle: {
-    fontFamily: FONT.uiExtra,
-    fontSize: 32,
-    color: colors.ink,
-    letterSpacing: -1,
-  },
-  brandAccent: {
-    color: colors.primary,
+    marginTop: 8,
   },
   brandSubtitle: {
     fontFamily: FONT.uiSemi,
@@ -41,6 +34,7 @@ export const styles = StyleSheet.create({
     fontSize: 22,
     color: colors.ink,
     letterSpacing: -0.6,
+    lineHeight: 24,
     marginTop: 8,
   },
   welcomeSubtitle: {
@@ -72,6 +66,11 @@ export const styles = StyleSheet.create({
   },
   fieldBoxFocused: {
     borderColor: colors.primary,
+    shadowColor: colors.primary,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.12,
+    shadowRadius: 6,
+    elevation: 4,
   },
   fieldInput: {
     flex: 1,
@@ -145,5 +144,54 @@ export const styles = StyleSheet.create({
   footerStrong: {
     fontFamily: FONT.uiBold,
     color: colors.ink2,
+  },
+
+  // ── Dev quick-login card ──
+  devCard: {
+    marginTop: 32,
+    marginBottom: 24,
+    gap: 10,
+  },
+  devHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    marginBottom: 4,
+  },
+  devBadge: {
+    backgroundColor: colors.ink3,
+    borderRadius: colors.radii.xs,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+  },
+  devBadgeText: {
+    fontFamily: FONT.monoBold,
+    fontSize: 10,
+    color: colors.contrast,
+    letterSpacing: 0.8,
+  },
+  devTitle: {
+    fontFamily: FONT.uiBold,
+    fontSize: 13,
+    color: colors.ink3,
+    letterSpacing: 0.3,
+    textTransform: 'uppercase',
+  },
+  devBtn: {
+    borderRadius: colors.radii.sm,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+  },
+  devBtnLabel: {
+    fontFamily: FONT.uiExtra,
+    fontSize: 16,
+    color: colors.contrast,
+    letterSpacing: -0.3,
+  },
+  devBtnEmail: {
+    fontFamily: FONT.uiSemi,
+    fontSize: 12,
+    color: colors.contrast70,
+    marginTop: 2,
   },
 });
