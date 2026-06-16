@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Card, CowMark, MailIcon, LockIcon, AlertIcon } from '../../components';
+import { Card } from '../../components/Card';
+import { CowMark } from '../../components/CowMark';
+import { MailIcon, LockIcon, AlertIcon } from '../../components/AuthIcons';
 import { colors } from '../../global/themes';
 import { useAuth } from '../../context/AuthContext';
 import { styles } from './styles';

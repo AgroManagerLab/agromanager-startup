@@ -1,5 +1,5 @@
 import React from 'react';
-import { Image as RNImage, ImageStyle } from 'react-native';
+import { Image, ImageStyle } from 'react-native';
 
 interface LogoProps {
   size?: number;
@@ -12,7 +12,7 @@ const RATIO = WIDTH / HEIGHT;
 
 export function Logo({ size = 156, style }: LogoProps) {
   return (
-    <RNImage
+    <Image
       source={require('../../assets/images/logo.png')}
       style={[
         {

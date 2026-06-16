@@ -2,10 +2,11 @@ import React, { useState, useMemo } from 'react';
 import { View, Text, TextInput, TouchableOpacity, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { AdminProducerSummary } from '../../types';
-import {
-  ScreenHeader, Card, Divider, FilterPill,
-  SearchIcon, PlusIcon,
-} from '../../components';
+import { ScreenHeader } from '../../components/ScreenHeader';
+import { Card } from '../../components/Card';
+import { Divider } from '../../components/Divider';
+import { FilterPill } from '../../components/FilterPill';
+import { SearchIcon, PlusIcon } from '../../components/icons/Icon';
 import { getAdminProducers, getRoutes, loadAdminDashboard } from '../../services/adminService';
 import { colors } from '../../global/themes';
 import { styles } from './styles';

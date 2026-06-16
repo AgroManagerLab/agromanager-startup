@@ -1,6 +1,6 @@
 import React from 'react';
-import { HomeIcon, UsersIcon, HistoryIcon, SettingsIcon } from '../components';
-import type { TabItem } from '../components';
+import { HomeIcon, UsersIcon, HistoryIcon, SettingsIcon } from '../components/icons/Icon';
+import type { TabItem } from '../components/TabBar';
 import { MilkmanHomePage } from './MilkmanHome';
 import { MilkmanListPage } from './MilkmanList';
 import { MilkmanHistoryPage } from './MilkmanHistory';

@@ -1,4 +1,4 @@
-import { getDatabase } from '../database';
+import { getDatabase } from '../database/client';
 import type { AuthResult } from '../types';
 
 function findMilkmanIdByEmail(normalizedEmail: string): string | undefined {

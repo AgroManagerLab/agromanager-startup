@@ -1,11 +1,24 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { View, Text, FlatList } from 'react-native';
-import { ScreenHeader, Card, Divider, Volume, NumText, CollectionRow } from '../../components';
+import { ScreenHeader } from '../../components/ScreenHeader';
+import { Card } from '../../components/Card';
+import { Divider } from '../../components/Divider';
+import { Volume } from '../../components/Volume';
+import { NumText } from '../../components/NumText';
+import { CollectionRow } from '../../components/CollectionRow';
 import { CURRENT_PRODUCER_ID, loadProducerData } from '../../services/producerService';
+import type { Collection } from '../../types';
 import { styles } from './styles';
 
 export function ProducerHistoryPage() {
   const data = loadProducerData(CURRENT_PRODUCER_ID);
+
+  const renderCollection = useCallback(
+    ({ item }: { item: Collection }) => (
+      <CollectionRow row={item} variant="detailed" pricePerLiter={data?.pricePerLiter ?? 0} />
+    ),
+    [data?.pricePerLiter],
+  );
 
   if (!data) {
     return <View style={styles.historyContainer} />;
@@ -38,9 +51,7 @@ export function ProducerHistoryPage() {
             data={data.synced}
             keyExtractor={(item) => item.id}
             ItemSeparatorComponent={Divider}
-            renderItem={({ item }) => (
-              <CollectionRow row={item} variant="detailed" pricePerLiter={data.pricePerLiter} />
-            )}
+            renderItem={renderCollection}
           />
         </Card>
       </View>

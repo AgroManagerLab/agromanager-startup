@@ -1,6 +1,8 @@
 import React from 'react';
 import { View, Text } from 'react-native';
-import { MoneyBRL, NumText, WalletIcon, InfoIcon } from './';
+import { MoneyBRL } from './MoneyBRL';
+import { NumText } from './NumText';
+import { WalletIcon, InfoIcon } from './icons/Icon';
 import { colors } from '../global/themes';
 import { styles } from './styles';
 

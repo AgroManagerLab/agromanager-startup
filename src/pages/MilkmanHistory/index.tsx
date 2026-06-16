@@ -1,15 +1,13 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { View, Text, FlatList, TouchableOpacity } from 'react-native';
 import { colors } from '../../global/themes';
-import {
-  Card,
-  Divider,
-  ScreenHeader,
-  OfflineBanner,
-  FilterPill,
-  SyncBadge,
-  ChevronIcon,
-} from '../../components';
+import { Card } from '../../components/Card';
+import { Divider } from '../../components/Divider';
+import { ScreenHeader } from '../../components/ScreenHeader';
+import { OfflineBanner } from '../../components/OfflineBanner';
+import { FilterPill } from '../../components/FilterPill';
+import { SyncBadge } from '../../components/SyncBadge';
+import { ChevronIcon } from '../../components/icons/Icon';
 import { useAuth } from '../../context/AuthContext';
 import { getMilkmanHistory } from '../../services/milkmanService';
 import type { MilkmanCollectionRow } from '../../types';
@@ -22,6 +20,23 @@ export function MilkmanHistoryPage() {
   const groups = getMilkmanHistory(userId!);
   const [filter, setFilter] = useState<Filter>('all');
 
+  const renderGroup = useCallback(
+    ({ item: group }: { item: { date: string; rows: MilkmanCollectionRow[] } }) => (
+      <View>
+        <Text style={styles.dateLabel}>{formatGroupLabel(group.date)}</Text>
+        <Card style={styles.groupCard}>
+          {group.rows.map((row, i) => (
+            <View key={row.id}>
+              {i > 0 ? <Divider /> : null}
+              <MilkmanCollectionRowComponent row={row} />
+            </View>
+          ))}
+        </Card>
+      </View>
+    ),
+    [],
+  );
+
   const totalPending = groups.reduce(
     (a, g) => a + g.rows.filter((r) => r.status === 'pending').length,
     0,
@@ -31,15 +46,14 @@ export function MilkmanHistoryPage() {
     0,
   );
 
-  const filteredGroups = groups
-    .map((g) => ({
-      date: g.date,
-      rows:
-        filter === 'all'
-          ? g.rows
-          : g.rows.filter((r) => r.status === filter),
-    }))
-    .filter((g) => g.rows.length > 0);
+  const filteredGroups = groups.reduce<{ date: string; rows: MilkmanCollectionRow[] }[]>(
+    (acc, g) => {
+      const rows = filter === 'all' ? g.rows : g.rows.filter((r) => r.status === filter);
+      if (rows.length > 0) acc.push({ date: g.date, rows });
+      return acc;
+    },
+    [],
+  );
 
   return (
     <View style={styles.container}>
@@ -78,19 +92,7 @@ export function MilkmanHistoryPage() {
             data={filteredGroups}
             keyExtractor={(item) => item.date}
             contentContainerStyle={styles.listContent}
-            renderItem={({ item: group }) => (
-              <View>
-                <Text style={styles.dateLabel}>{formatGroupLabel(group.date)}</Text>
-                <Card style={styles.groupCard}>
-                  {group.rows.map((row, i) => (
-                    <View key={row.id}>
-                      {i > 0 ? <Divider /> : null}
-                      <MilkmanCollectionRowComponent row={row} />
-                    </View>
-                  ))}
-                </Card>
-              </View>
-            )}
+            renderItem={renderGroup}
           />
         )}
       </View>

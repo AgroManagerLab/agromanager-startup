@@ -3,10 +3,13 @@ import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import type { RouteProp } from '@react-navigation/native';
 import type { RootStackParamList } from '../../types';
-import {
-  ScreenHeader, Card, Divider, Volume, PhotoStripe,
-  EditIcon, HistoryIcon, MoneyBRL,
-} from '../../components';
+import { ScreenHeader } from '../../components/ScreenHeader';
+import { Card } from '../../components/Card';
+import { Divider } from '../../components/Divider';
+import { Volume } from '../../components/Volume';
+import { PhotoStripe } from '../../components/PhotoStripe';
+import { EditIcon, HistoryIcon } from '../../components/icons/Icon';
+import { MoneyBRL } from '../../components/MoneyBRL';
 import { getAdminProducerDetail } from '../../services/adminService';
 import { colors } from '../../global/themes';
 import { styles } from './styles';

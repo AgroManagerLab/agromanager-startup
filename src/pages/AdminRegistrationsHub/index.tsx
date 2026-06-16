@@ -1,9 +1,8 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import {
-  ScreenHeader, UsersIcon, RouteIcon, TruckIcon, ChevronIcon,
-} from '../../components';
+import { ScreenHeader } from '../../components/ScreenHeader';
+import { UsersIcon, RouteIcon, TruckIcon, ChevronIcon } from '../../components/icons/Icon';
 import { loadAdminDashboard } from '../../services/adminService';
 import { colors } from '../../global/themes';
 import { styles } from './styles';

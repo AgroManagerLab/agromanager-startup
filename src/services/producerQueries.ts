@@ -1,4 +1,4 @@
-import { getDatabase } from '../database';
+import { getDatabase } from '../database/client';
 import type { Collection, ProducerProfile } from '../types';
 
 interface ProfileQueryRow {
@@ -34,7 +34,7 @@ export function getProducerProfile(producerId: string): {
 
 // Coletas do produtor (mais recentes primeiro). REQ-03.16.
 export function getProducerCollections(producerId: string): Collection[] {
-  const db = getDb();
+  const db = getDatabase();
   return db.getAllSync<Collection>(
     `SELECT id, date, time, volume, status
        FROM collections

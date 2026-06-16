@@ -1,8 +1,8 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import type { BottomTabBarProps } from '@react-navigation/bottom-tabs';
-import { TabBar, ProfilePlaceholder } from '../components';
-import type { TabItem } from '../components';
+import { TabBar, type TabItem } from '../components/TabBar';
+import { ProfilePlaceholder } from '../components/ProfilePlaceholder';
 
 type ScreenEntry = [string, React.ComponentType<any>];
 

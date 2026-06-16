@@ -66,11 +66,6 @@ export const styles = StyleSheet.create({
   },
   fieldBoxFocused: {
     borderColor: colors.primary,
-    shadowColor: colors.primary,
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.12,
-    shadowRadius: 6,
-    elevation: 4,
   },
   fieldInput: {
     flex: 1,

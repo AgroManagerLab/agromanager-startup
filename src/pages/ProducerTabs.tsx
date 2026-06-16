@@ -1,6 +1,6 @@
 import React from 'react';
-import { HomeIcon, HistoryIcon, SettingsIcon } from '../components';
-import type { TabItem } from '../components';
+import { HomeIcon, HistoryIcon, SettingsIcon } from '../components/icons/Icon';
+import type { TabItem } from '../components/TabBar';
 import { ProducerHomePage } from './ProducerHome';
 import { ProducerHistoryPage } from './ProducerHistory';
 import { createProfileTabs, PERFIL_SCREEN } from './createProfileTabs';
