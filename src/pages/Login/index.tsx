@@ -37,10 +37,28 @@ export function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [focused, setFocused] = useState<'email' | 'password' | null>(null);
   const [error, setError] = useState(false);
+  const [recoveryRequested, setRecoveryRequested] = useState(false);
+
+  function handleEmailChange(value: string) {
+    setEmail(value);
+    setError(false);
+    setRecoveryRequested(false);
+  }
+
+  function handlePasswordChange(value: string) {
+    setPassword(value);
+    setError(false);
+  }
 
   function handleLogin() {
     const ok = signIn(email, password);
     setError(!ok);
+    setRecoveryRequested(false);
+  }
+
+  function handleForgotPassword() {
+    setError(false);
+    setRecoveryRequested(true);
   }
 
   return (
@@ -69,7 +87,7 @@ export function LoginPage() {
                 <TextInput
                   style={styles.fieldInput}
                   value={email}
-                  onChangeText={setEmail}
+                  onChangeText={handleEmailChange}
                   onFocus={() => setFocused('email')}
                   onBlur={() => setFocused(null)}
                   placeholder="seu@email.com.br"
@@ -87,7 +105,7 @@ export function LoginPage() {
                 <TextInput
                   style={styles.fieldInput}
                   value={password}
-                  onChangeText={setPassword}
+                  onChangeText={handlePasswordChange}
                   onFocus={() => setFocused('password')}
                   onBlur={() => setFocused(null)}
                   placeholder="Sua senha"
@@ -110,8 +128,26 @@ export function LoginPage() {
             )}
 
             <View style={styles.forgotWrap}>
-              <Text style={styles.forgot}>Esqueci a senha</Text>
+              <TouchableOpacity
+                activeOpacity={0.7}
+                onPress={handleForgotPassword}
+                style={styles.forgotButton}
+              >
+                <Text style={styles.forgot}>Esqueci a senha</Text>
+              </TouchableOpacity>
             </View>
+
+            {recoveryRequested && (
+              <View style={styles.recoveryBox}>
+                <MailIcon color={colors.primary} />
+                <View style={styles.recoveryContent}>
+                  <Text style={styles.recoveryTitle}>Recuperação solicitada</Text>
+                  <Text style={styles.recoveryDescription}>
+                    A cooperativa usará {email || 'seu e-mail'} para orientar a troca da senha.
+                  </Text>
+                </View>
+              </View>
+            )}
 
             <TouchableOpacity activeOpacity={0.85} style={styles.button} onPress={handleLogin}>
               <Text style={styles.buttonText}>Entrar</Text>
@@ -132,7 +168,7 @@ export function LoginPage() {
             </View>
             <DevEntry
               label="Administrador"
-              email="admin@dev.com"
+              email="admin@coopvaleleite.coop.br"
               color={colors.primaryDark}
             />
             <DevEntry
