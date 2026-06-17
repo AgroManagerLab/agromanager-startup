@@ -10,6 +10,7 @@ import { AdminRegisterProducerPage } from '../pages/AdminRegisterProducer';
 import { AdminRegisterRoutePage } from '../pages/AdminRegisterRoute';
 import { AdminRegisterMilkmanPage } from '../pages/AdminRegisterMilkman';
 import { AdminProducerDetailPage } from '../pages/AdminProducerDetail';
+import { ProducerCollectionDetailPage } from '../pages/ProducerCollectionDetail';
 
 type RouteName = keyof RootStackParamList;
 
@@ -35,6 +36,7 @@ export function AppNavigator() {
       <Stack.Screen name="AdminRegisterRoute" component={AdminRegisterRoutePage} />
       <Stack.Screen name="AdminRegisterMilkman" component={AdminRegisterMilkmanPage} />
       <Stack.Screen name="AdminProducerDetail" component={AdminProducerDetailPage} />
+      <Stack.Screen name="ProducerCollectionDetail" component={ProducerCollectionDetailPage} />
     </Stack.Navigator>
   );
 }

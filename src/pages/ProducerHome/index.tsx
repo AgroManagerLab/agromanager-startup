@@ -57,7 +57,11 @@ export function ProducerHomePage() {
           {home.recentCollections.map((h, i) => (
             <View key={h.id}>
               {i > 0 ? <Divider /> : null}
-              <CollectionRow row={h} variant="compact" />
+              <CollectionRow
+                row={h}
+                variant="compact"
+                onPress={() => navigation.navigate('ProducerCollectionDetail', { collectionId: h.id })}
+              />
             </View>
           ))}
         </Card>
