@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, ScrollView } from 'react-native';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useShallow } from 'zustand/react/shallow';
 import { Wordmark } from '../../shared/ui/Wordmark';
@@ -17,7 +18,13 @@ import {
 } from '../stores/producerStore';
 import { styles } from '../styles';
 
+type ProducerTabParamList = {
+  Inicio: undefined;
+  Historico: undefined;
+};
+
 export function ProducerHomeScreen() {
+  const navigation = useNavigation<NavigationProp<ProducerTabParamList>>();
   const insets = useSafeAreaInsets();
   const producer = useProducerStore((s) => s.producer);
   const pricePerLiter = useProducerStore((s) => s.pricePerLiter);
@@ -46,7 +53,14 @@ export function ProducerHomeScreen() {
       <ScrollView style={styles.homeScroll} contentContainerStyle={styles.homeScrollContent}>
         <View style={styles.homeListHeader}>
           <Text style={styles.homeListTitle}>Últimas coletas</Text>
-          <Text style={styles.homeViewAll}>Ver tudo</Text>
+          <TouchableOpacity
+            accessibilityRole="button"
+            activeOpacity={0.72}
+            hitSlop={8}
+            onPress={() => navigation.navigate('Historico')}
+          >
+            <Text style={styles.homeViewAll}>Ver tudo</Text>
+          </TouchableOpacity>
         </View>
         <Card style={styles.homeListCard}>
           {recent.map((h, i) => (
