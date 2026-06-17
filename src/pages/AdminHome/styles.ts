@@ -16,14 +16,14 @@ export const styles = StyleSheet.create({
   // Hero
   hero: {
     backgroundColor: colors.primaryDark,
-    paddingBottom: 22,
+    paddingBottom: 24,
     paddingHorizontal: 20,
   },
   heroTop: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 18,
+    marginBottom: 16,
   },
   heroSettings: {
     width: 40,
@@ -37,7 +37,6 @@ export const styles = StyleSheet.create({
     fontFamily: FONT.uiSemi,
     fontSize: 13,
     color: 'rgba(255,255,255,0.75)',
-    marginTop: 6,
   },
   heroGreeting: {
     fontFamily: FONT.uiExtra,
