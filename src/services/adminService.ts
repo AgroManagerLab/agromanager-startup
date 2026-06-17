@@ -175,7 +175,7 @@ export function getAdminProducerDetail(producerId: string): {
   );
 
   const price = db.getFirstSync<{ p: number }>(
-    'SELECT price_per_liter FROM coops LIMIT 1',
+    'SELECT price_per_liter AS p FROM coops LIMIT 1',
   ) ?? { p: 0 };
 
   return {
