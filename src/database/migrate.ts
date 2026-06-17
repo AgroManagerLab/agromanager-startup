@@ -1,6 +1,16 @@
+import type { SQLiteDatabase } from 'expo-sqlite';
+
 import { getDatabase } from './client';
 import { SCHEMA_SQL, SCHEMA_VERSION } from './schema';
 import { seedDatabase } from './seed';
+
+// Verifica se uma coluna já existe numa tabela.
+// O SCHEMA_SQL cria as tabelas já com o schema mais recente; em instalação
+// nova a coluna já existe e o ALTER incremental falharia com "duplicate column".
+function columnExists(db: SQLiteDatabase, table: string, column: string): boolean {
+  const cols = db.getAllSync<{ name: string }>(`PRAGMA table_info(${table});`);
+  return cols.some((c) => c.name === column);
+}
 
 // Cria as tabelas (guardadas por PRAGMA user_version) e popula o seed.
 // Deve ser chamada uma vez no boot do app (App.tsx).
@@ -12,7 +22,7 @@ export function migrateDatabase(): void {
 
   if (currentVersion < SCHEMA_VERSION) {
     db.execSync(SCHEMA_SQL);
-    if (currentVersion < 2) {
+    if (currentVersion < 2 && !columnExists(db, 'producers', 'route_order')) {
       db.execSync('ALTER TABLE producers ADD COLUMN route_order INTEGER DEFAULT 0;');
     }
     if (currentVersion < 3) {

@@ -189,6 +189,18 @@ export function TruckIcon({ size = 24, color = colors.ink }: IconProps) {
   );
 }
 
+export function MilkBottleIcon({ size = 24, color = colors.ink }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+      <Path
+        d="M9.5 3H14.5V5C16 6 17 7 17 9.5V19A2 2 0 0115 21H9A2 2 0 017 19V9.5C7 7 8 6 9.5 5V3z"
+        stroke={color} strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round"
+      />
+      <Path d="M7 12H17" stroke={color} strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" />
+    </Svg>
+  );
+}
+
 export function LogoutIcon({ size = 22, color = colors.ink }: IconProps) {
   return (
     <Svg width={size} height={size} viewBox="0 0 22 22" fill="none">
