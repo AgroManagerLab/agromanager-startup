@@ -7,7 +7,7 @@ import { Card } from '../../components/Card';
 import { Divider } from '../../components/Divider';
 import { SettingsIcon } from '../../components/icons/Icon';
 import { Volume } from '../../components/Volume';
-import { Wordmark } from '../../components/Wordmark';
+import { MilkrouteBrand } from '../../components/MilkrouteLogo';
 import { ProjectionCard } from '../../components/ProjectionCard';
 import { CollectionRow } from '../../components/CollectionRow';
 import { CURRENT_PRODUCER_ID, loadProducerData, buildProducerHomeSummary } from '../../services/producerService';
@@ -28,7 +28,7 @@ export function ProducerHomePage() {
     <View style={styles.homeContainer}>
       <View style={[styles.homeHeader, { paddingTop: insets.top + 8 }]}>
         <View style={styles.homeHeaderTop}>
-          <Wordmark tone="light" />
+          <MilkrouteBrand />
           <View style={styles.homeSettingsBtn}>
             <SettingsIcon size={20} color={colors.contrast} />
           </View>

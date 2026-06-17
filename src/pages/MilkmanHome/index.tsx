@@ -6,7 +6,7 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { colors } from '../../global/themes';
 import { Card } from '../../components/Card';
 import { Divider } from '../../components/Divider';
-import { Wordmark } from '../../components/Wordmark';
+import { MilkrouteBrand } from '../../components/MilkrouteLogo';
 import { PlusIcon } from '../../components/icons/Icon';
 import { useAuth } from '../../context/AuthContext';
 import { loadMilkmanHomeData } from '../../services/milkmanService';
@@ -37,7 +37,7 @@ export function MilkmanHomePage() {
         {/* Hero band */}
         <View style={[styles.hero, { paddingTop: insets.top + 16 }]}>
           <View style={styles.heroTop}>
-            <Wordmark tone="light" />
+            <MilkrouteBrand />
             <View style={styles.dateBadge}>
               <View style={styles.dateDot} />
               <Text style={styles.dateText}>{todayLabel}</Text>

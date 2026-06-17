@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
-import { Wordmark } from '../../components/Wordmark';
+import { MilkrouteBrand } from '../../components/MilkrouteLogo';
 import { Card } from '../../components/Card';
 import { Volume } from '../../components/Volume';
 import { Divider } from '../../components/Divider';
@@ -96,7 +96,7 @@ export function AdminHomePage() {
       <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent}>
         <View style={[styles.hero, { paddingTop: insets.top + 16 }]}>
           <View style={styles.heroTop}>
-            <Wordmark tone="light" />
+            <MilkrouteBrand />
             <View style={styles.heroSettings}>
               <SettingsIcon size={22} color="#fff" />
             </View>

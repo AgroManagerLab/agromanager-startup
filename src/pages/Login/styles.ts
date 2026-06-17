@@ -20,8 +20,15 @@ export const styles = StyleSheet.create({
   },
   brand: {
     alignItems: 'center',
-    gap: 14,
+    gap: 0,
     marginTop: 8,
+  },
+  brandTitle: {
+    fontFamily: FONT.uiExtra,
+    fontSize: 24,
+    color: colors.ink,
+    letterSpacing: -0.6,
+    marginBottom: 18,
   },
   brandSubtitle: {
     fontFamily: FONT.uiSemi,
