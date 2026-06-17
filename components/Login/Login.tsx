@@ -1,8 +1,11 @@
-import React, { type ReactNode } from 'react';
+import React, { type ReactNode, useState } from 'react';
 import { type NavigationProp, useNavigation } from '@react-navigation/native';
 import {
+  KeyboardAvoidingView,
+  Platform,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   type GestureResponderEvent,
   View,
@@ -11,7 +14,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 type RootStackParamList = {
   Home: undefined;
-  Details: undefined;
+  Producer: undefined;
 };
 
 type PhoneProps = {
@@ -22,9 +25,15 @@ type PhoneProps = {
 type FieldProps = {
   label: string;
   value?: string;
+  onChangeText?: (value: string) => void;
   placeholder?: string;
   suffix?: ReactNode;
   icon?: ReactNode;
+  autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters';
+  autoComplete?: 'email' | 'password' | 'current-password';
+  keyboardType?: 'default' | 'email-address';
+  secureTextEntry?: boolean;
+  textContentType?: 'emailAddress' | 'password';
 };
 
 type BigButtonProps = {
@@ -62,20 +71,46 @@ const MR = {
 function Phone({ children, bg = MR.bg }: PhoneProps) {
   return (
     <SafeAreaView style={[styles.phone, { backgroundColor: bg }]}>
-      {children}
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        style={styles.keyboardAvoidingView}
+      >
+        {children}
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
 
-function Field({ label, value, placeholder, suffix, icon }: FieldProps) {
+function Field({
+  label,
+  value,
+  onChangeText,
+  placeholder,
+  suffix,
+  icon,
+  autoCapitalize = 'sentences',
+  autoComplete,
+  keyboardType = 'default',
+  secureTextEntry,
+  textContentType,
+}: FieldProps) {
   return (
     <View style={styles.fieldWrap}>
       <Text style={styles.fieldLabel}>{label}</Text>
       <View style={styles.field}>
         {icon}
-        <Text style={[styles.fieldValue, !value && styles.fieldPlaceholder]}>
-          {value || placeholder}
-        </Text>
+        <TextInput
+          autoCapitalize={autoCapitalize}
+          autoComplete={autoComplete}
+          keyboardType={keyboardType}
+          onChangeText={onChangeText}
+          placeholder={placeholder}
+          placeholderTextColor={MR.ink3}
+          secureTextEntry={secureTextEntry}
+          style={styles.fieldInput}
+          textContentType={textContentType}
+          value={value}
+        />
         {suffix}
       </View>
     </View>
@@ -84,7 +119,12 @@ function Field({ label, value, placeholder, suffix, icon }: FieldProps) {
 
 function BigButton({ children, onPress }: BigButtonProps) {
   return (
-    <TouchableOpacity activeOpacity={0.86} style={styles.bigButton} onPress={onPress}>
+    <TouchableOpacity
+      accessibilityRole="button"
+      activeOpacity={0.86}
+      style={styles.bigButton}
+      onPress={onPress}
+    >
       <Text style={styles.bigButtonText}>{children}</Text>
     </TouchableOpacity>
   );
@@ -152,6 +192,9 @@ function CowMark({ size = 156 }: CowMarkProps) {
 export default function LoginScreen({ variant = 'default' }: LoginScreenProps) {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const showError = variant === 'error';
+  const [email, setEmail] = useState('ricardo@coopvaleleite.coop.br');
+  const [password, setPassword] = useState('12345678');
+  const [showPassword, setShowPassword] = useState(false);
 
   return (
     <Phone bg={MR.bg}>
@@ -173,16 +216,35 @@ export default function LoginScreen({ variant = 'default' }: LoginScreenProps) {
 
         <Field
           label="E-mail"
-          value="ricardo@coopvaleleite.coop.br"
+          value={email}
+          onChangeText={setEmail}
           placeholder="seu@email.com.br"
+          autoCapitalize="none"
+          autoComplete="email"
+          keyboardType="email-address"
+          textContentType="emailAddress"
           icon={<MailIcon />}
         />
         <Field
           label="Senha"
-          value={showError ? '••••' : '••••••••'}
+          value={password}
+          onChangeText={setPassword}
           placeholder="Sua senha"
+          autoCapitalize="none"
+          autoComplete="password"
+          secureTextEntry={!showPassword}
+          textContentType="password"
           icon={<LockIcon />}
-          suffix={<Text style={styles.showPassword}>MOSTRAR</Text>}
+          suffix={
+            <TouchableOpacity
+              accessibilityLabel={showPassword ? 'Ocultar senha' : 'Mostrar senha'}
+              accessibilityRole="button"
+              activeOpacity={0.7}
+              onPress={() => setShowPassword((visible) => !visible)}
+            >
+              <Text style={styles.showPassword}>{showPassword ? 'OCULTAR' : 'MOSTRAR'}</Text>
+            </TouchableOpacity>
+          }
         />
 
         {showError && (
@@ -199,7 +261,7 @@ export default function LoginScreen({ variant = 'default' }: LoginScreenProps) {
           <Text style={styles.forgot}>Esqueci a senha</Text>
         </View>
 
-        <BigButton onPress={() => navigation.navigate('Details')}>Entrar</BigButton>
+        <BigButton onPress={() => navigation.navigate('Producer')}>Entrar</BigButton>
 
         <Text style={styles.footer}>
           Ainda não é cooperado? <Text style={styles.footerStrong}>Fale com sua cooperativa</Text>
@@ -211,6 +273,9 @@ export default function LoginScreen({ variant = 'default' }: LoginScreenProps) {
 
 const styles = StyleSheet.create({
   phone: {
+    flex: 1,
+  },
+  keyboardAvoidingView: {
     flex: 1,
   },
   container: {
@@ -278,14 +343,13 @@ const styles = StyleSheet.create({
     gap: 10,
     paddingHorizontal: 14,
   },
-  fieldValue: {
+  fieldInput: {
     color: MR.ink,
     flex: 1,
     fontSize: 15,
     fontWeight: '600',
-  },
-  fieldPlaceholder: {
-    color: MR.ink3,
+    minWidth: 0,
+    paddingVertical: 0,
   },
   showPassword: {
     color: MR.primary,
