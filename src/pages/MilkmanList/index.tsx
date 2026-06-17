@@ -1,25 +1,58 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { View, Text, FlatList, TouchableOpacity, TextInput } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { colors } from '../../global/themes';
 import { Card } from '../../components/Card';
 import { Divider } from '../../components/Divider';
 import { ScreenHeader } from '../../components/ScreenHeader';
 import { OfflineBanner } from '../../components/OfflineBanner';
-import { SearchIcon } from '../../components/icons/Icon';
+import { SearchIcon, SyncIcon } from '../../components/icons/Icon';
 import { SyncBadge } from '../../components/SyncBadge';
 import { Avatar } from '../../components/Avatar';
 import { useAuth } from '../../context/AuthContext';
-import { getMilkmanRouteProducers } from '../../services/milkmanService';
+import { useConnectivity } from '../../context/ConnectivityContext';
+import {
+  getMilkmanRouteProducers,
+  syncPendingCollections,
+} from '../../services/milkmanService';
 import type { RootStackParamList, RouteProducer } from '../../types';
 import { styles } from './styles';
 
 export function MilkmanListPage() {
   const { userId } = useAuth();
+  const { isConnected } = useConnectivity();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const producers = getMilkmanRouteProducers(userId!);
   const [search, setSearch] = useState('');
+  const [refreshKey, setRefreshKey] = useState(0);
+  const wasOffline = useRef(false);
+
+  const producers = useMemo(() => getMilkmanRouteProducers(userId!), [userId, refreshKey]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Auto-sync when coming back online
+  useEffect(() => {
+    if (wasOffline.current && isConnected) {
+      const synced = syncPendingCollections(userId!);
+      if (synced > 0) setRefreshKey((k) => k + 1);
+    }
+    wasOffline.current = !isConnected;
+  }, [isConnected, userId]);
+
+  // Refresh data every time the screen gains focus
+  useFocusEffect(
+    useCallback(() => {
+      setRefreshKey((k) => k + 1);
+    }, []),
+  );
+
+  const handleSync = () => {
+    const synced = syncPendingCollections(userId!);
+    if (synced > 0) setRefreshKey((k) => k + 1);
+  };
+
+  const pendingCount = producers.filter((p) => p.status === 'pending').length;
+  const total = producers.length;
+  const done = producers.filter((p) => p.status !== 'next').length;
 
   const renderProdRow = useCallback(
     ({ item }: { item: RouteProducer }) => (
@@ -37,8 +70,6 @@ export function MilkmanListPage() {
     [navigation],
   );
 
-  const total = producers.length;
-  const done = producers.filter((p) => p.status !== 'next').length;
   const filtered = search.trim()
     ? producers.filter(
         (p) =>
@@ -49,8 +80,19 @@ export function MilkmanListPage() {
 
   return (
     <View style={styles.container}>
-      <ScreenHeader title="Minha rota" subtitle={`${total} produtores · ${done} coletados`} />
-      <OfflineBanner pendingCount={producers.filter((p) => p.status === 'pending').length} />
+      <ScreenHeader
+        title="Minha rota"
+        subtitle={`${total} produtores · ${done} coletados`}
+        right={
+          pendingCount > 0 && isConnected ? (
+            <TouchableOpacity style={styles.syncBtn} onPress={handleSync} activeOpacity={0.7}>
+              <SyncIcon size={16} color={colors.primary} />
+              <Text style={styles.syncBtnText}>Sincronizar</Text>
+            </TouchableOpacity>
+          ) : undefined
+        }
+      />
+      <OfflineBanner pendingCount={pendingCount} />
 
       {/* Search */}
       <View style={[styles.searchWrap, { paddingHorizontal: 20 }]}>
