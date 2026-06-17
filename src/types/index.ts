@@ -10,6 +10,7 @@ export type RootStackParamList = {
   AdminRegisterRoute: { routeId?: string } | undefined;
   AdminRegisterMilkman: { milkmanId?: string } | undefined;
   AdminProducerDetail: { producerId: string };
+  ProducerCollectionDetail: { collectionId: string };
   MilkmanRegisterCollection: { producerId: string };
 };
 
@@ -62,12 +63,27 @@ export interface CollectionRow {
   updated_at: string;
 }
 
+export type CollectionDetailRow = Pick<
+  CollectionRow,
+  'id' | 'date' | 'time' | 'volume' | 'status' | 'photo_uri'
+>;
+
 export interface Collection {
   id: string;
   date: string;
   time: string;
   volume: number;
   status: CollectionStatus;
+}
+
+export interface ProducerCollectionDetail {
+  id: string;
+  date: string;
+  time: string;
+  volume: number;
+  status: CollectionStatus;
+  photoUri: string | null;
+  value: number;
 }
 
 export interface ProducerProfile {
