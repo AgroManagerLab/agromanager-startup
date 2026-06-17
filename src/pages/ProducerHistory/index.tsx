@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react';
 import { View, Text, FlatList } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { ScreenHeader } from '../../components/ScreenHeader';
 import { Card } from '../../components/Card';
 import { Divider } from '../../components/Divider';
@@ -11,13 +12,19 @@ import type { Collection } from '../../types';
 import { styles } from './styles';
 
 export function ProducerHistoryPage() {
+  const navigation = useNavigation<any>();
   const data = loadProducerData(CURRENT_PRODUCER_ID);
 
   const renderCollection = useCallback(
     ({ item }: { item: Collection }) => (
-      <CollectionRow row={item} variant="detailed" pricePerLiter={data?.pricePerLiter ?? 0} />
+      <CollectionRow
+        row={item}
+        variant="detailed"
+        pricePerLiter={data?.pricePerLiter ?? 0}
+        onPress={() => navigation.navigate('ProducerCollectionDetail', { collectionId: item.id })}
+      />
     ),
-    [data?.pricePerLiter],
+    [data?.pricePerLiter, navigation],
   );
 
   if (!data) {
