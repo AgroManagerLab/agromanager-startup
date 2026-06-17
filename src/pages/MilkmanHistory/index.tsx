@@ -1,5 +1,7 @@
 import React, { useCallback, useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity } from 'react-native';
+import { Image, View, Text, FlatList, TouchableOpacity } from 'react-native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { colors } from '../../global/themes';
 import { Card } from '../../components/Card';
 import { Divider } from '../../components/Divider';
@@ -7,18 +9,32 @@ import { ScreenHeader } from '../../components/ScreenHeader';
 import { OfflineBanner } from '../../components/OfflineBanner';
 import { FilterPill } from '../../components/FilterPill';
 import { SyncBadge } from '../../components/SyncBadge';
-import { ChevronIcon } from '../../components/icons/Icon';
+import { ChevronIcon, SyncIcon } from '../../components/icons/Icon';
 import { useAuth } from '../../context/AuthContext';
-import { getMilkmanHistory } from '../../services/milkmanService';
-import type { MilkmanCollectionRow } from '../../types';
+import { useConnectivity } from '../../context/ConnectivityContext';
+import { getMilkmanHistory, syncPendingCollections } from '../../services/milkmanService';
+import type { MilkmanCollectionRow, RootStackParamList } from '../../types';
 import { styles } from './styles';
 
 type Filter = 'all' | 'synced' | 'pending';
 
 export function MilkmanHistoryPage() {
   const { userId } = useAuth();
-  const groups = getMilkmanHistory(userId!);
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const { isConnected } = useConnectivity();
+  const [groups, setGroups] = useState(() => getMilkmanHistory(userId!));
   const [filter, setFilter] = useState<Filter>('all');
+
+  useFocusEffect(
+    useCallback(() => {
+      setGroups(getMilkmanHistory(userId!));
+    }, [userId]),
+  );
+
+  const handleSync = useCallback(() => {
+    syncPendingCollections(userId!);
+    setGroups(getMilkmanHistory(userId!));
+  }, [userId]);
 
   const renderGroup = useCallback(
     ({ item: group }: { item: { date: string; rows: MilkmanCollectionRow[] } }) => (
@@ -28,13 +44,16 @@ export function MilkmanHistoryPage() {
           {group.rows.map((row, i) => (
             <View key={row.id}>
               {i > 0 ? <Divider /> : null}
-              <MilkmanCollectionRowComponent row={row} />
+              <MilkmanCollectionRowComponent
+                row={row}
+                onPress={() => navigation.navigate('MilkmanCollectionDetail', { collectionId: row.id })}
+              />
             </View>
           ))}
         </Card>
       </View>
     ),
-    [],
+    [navigation],
   );
 
   const totalPending = groups.reduce(
@@ -81,6 +100,16 @@ export function MilkmanHistoryPage() {
         />
       </View>
 
+      {filter === 'pending' && totalPending > 0 && isConnected && (
+        <View style={styles.syncBar}>
+          <Text style={styles.syncBarText}>{totalPending} pendente{totalPending > 1 ? 's' : ''}</Text>
+          <TouchableOpacity style={styles.syncBtn} onPress={handleSync} activeOpacity={0.7}>
+            <SyncIcon size={16} color={colors.contrast} />
+            <Text style={styles.syncBtnText}>Sincronizar</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+
       {/* List */}
       <View style={styles.listWrap}>
         {filteredGroups.length === 0 ? (
@@ -100,10 +129,14 @@ export function MilkmanHistoryPage() {
   );
 }
 
-function MilkmanCollectionRowComponent({ row }: { row: MilkmanCollectionRow }) {
+function MilkmanCollectionRowComponent({ row, onPress }: { row: MilkmanCollectionRow; onPress: () => void }) {
   return (
-    <TouchableOpacity style={styles.coletaRow} activeOpacity={0.7}>
-      <View style={styles.photoPlaceholder} />
+    <TouchableOpacity style={styles.coletaRow} activeOpacity={0.7} onPress={onPress}>
+      {row.photoUri ? (
+        <Image source={{ uri: row.photoUri }} style={styles.coletaPhoto} />
+      ) : (
+        <View style={styles.photoPlaceholder} />
+      )}
       <View style={styles.coletaInfo}>
         <Text style={styles.coletaName}>{row.producer}</Text>
         <View style={styles.coletaMeta}>
