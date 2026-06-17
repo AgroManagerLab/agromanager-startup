@@ -116,12 +116,44 @@ export const styles = StyleSheet.create({
   forgotWrap: {
     alignItems: 'flex-end',
     marginTop: 2,
-    marginBottom: 22,
+    marginBottom: 14,
+  },
+  forgotButton: {
+    minHeight: 44,
+    justifyContent: 'center',
+    paddingHorizontal: 2,
   },
   forgot: {
     fontFamily: FONT.uiBold,
     fontSize: 14,
     color: colors.primary,
+  },
+  recoveryBox: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 10,
+    backgroundColor: colors.primarySofter,
+    borderRadius: colors.radii.md,
+    borderWidth: 1,
+    borderColor: colors.primarySoft,
+    paddingVertical: 12,
+    paddingHorizontal: 14,
+    marginBottom: 16,
+  },
+  recoveryContent: {
+    flex: 1,
+  },
+  recoveryTitle: {
+    fontFamily: FONT.uiBold,
+    fontSize: 14,
+    color: colors.primaryDark,
+  },
+  recoveryDescription: {
+    fontFamily: FONT.ui,
+    fontSize: 13,
+    color: colors.primaryDark,
+    opacity: 0.85,
+    marginTop: 2,
   },
   button: {
     height: 60,
