@@ -18,7 +18,7 @@ export function SyncBadge({ state = 'synced' }: SyncBadgeProps) {
         <CheckIcon size={11} color={colors.syncOk} />
       )}
       <Text style={pending ? styles.syncBadgeTextPending : styles.syncBadgeTextOk}>
-        {pending ? 'Pendente' : 'Sincronizada'}
+        {pending ? 'Pendente' : 'Registrada'}
       </Text>
     </View>
   );
