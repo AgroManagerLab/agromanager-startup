@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Card } from '../../components/Card';
-import { CowMark } from '../../components/CowMark';
+import { MilkrouteLogo } from '../../components/MilkrouteLogo';
 import { MailIcon, LockIcon, AlertIcon } from '../../components/AuthIcons';
 import { colors } from '../../global/themes';
 import { useAuth } from '../../context/AuthContext';
@@ -52,8 +52,8 @@ export function LoginPage() {
           contentContainerStyle={styles.content}
         >
           <View style={styles.brand}>
-            <CowMark size={156} />
-            <Text style={styles.brandSubtitle}>Coleta de leite cooperada</Text>
+            <MilkrouteLogo size={180} />
+            <Text style={styles.brandTitle}>Milkroute</Text>
           </View>
 
           <View style={styles.spacer} />

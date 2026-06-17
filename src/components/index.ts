@@ -3,6 +3,7 @@ export { Card } from './Card';
 export { CollectionRow } from './CollectionRow';
 export { CowMark } from './CowMark';
 export { Logo } from './Logo';
+export { MilkrouteLogo, MilkrouteBrand } from './MilkrouteLogo';
 export { Divider } from './Divider';
 export { Field } from './Field';
 export { FilterPill } from './FilterPill';
