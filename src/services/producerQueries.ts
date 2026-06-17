@@ -1,5 +1,5 @@
 import { getDatabase } from '../database/client';
-import type { Collection, ProducerProfile } from '../types';
+import type { Collection, CollectionDetailRow, ProducerProfile } from '../types';
 
 interface ProfileQueryRow {
   id: string;
@@ -42,4 +42,20 @@ export function getProducerCollections(producerId: string): Collection[] {
       ORDER BY id DESC;`,
     [producerId],
   );
+}
+
+// Detalhe de uma coleta específica do produtor (inclui a foto).
+// Filtra por producer_id para não vazar coleta de outro produtor. Null se não existir.
+export function getProducerCollectionDetail(
+  collectionId: string,
+  producerId: string,
+): CollectionDetailRow | null {
+  const db = getDatabase();
+  const row = db.getFirstSync<CollectionDetailRow>(
+    `SELECT id, date, time, volume, status, photo_uri
+       FROM collections
+      WHERE id = ? AND producer_id = ?;`,
+    [collectionId, producerId],
+  );
+  return row;
 }

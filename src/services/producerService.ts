@@ -1,5 +1,9 @@
-import { getProducerCollections, getProducerProfile } from './producerQueries';
-import type { ProducerData } from '../types';
+import {
+  getProducerCollectionDetail,
+  getProducerCollections,
+  getProducerProfile,
+} from './producerQueries';
+import type { CollectionDetailRow, ProducerCollectionDetail, ProducerData } from '../types';
 import { avgPerDay, calcProjection, sumSyncedVolume, syncedCollections } from '../utils/projection';
 
 export const CURRENT_PRODUCER_ID = 'P-014';
@@ -35,5 +39,38 @@ export function buildProducerHomeSummary(data: ProducerData): ProducerHomeSummar
   return {
     firstName: data.profile.name.split(' ')[0],
     recentCollections: data.synced.slice(0, 3),
+  };
+}
+
+// Carrega o detalhe de uma coleta a partir do SQLite, já com o valor calculado
+// usando o preço por litro da cooperativa do produtor. Retorna null se a coleta
+// não existir ou o perfil não for encontrado.
+export function loadProducerCollectionDetail(
+  collectionId: string,
+  producerId: string = CURRENT_PRODUCER_ID,
+): ProducerCollectionDetail | null {
+  const row = getProducerCollectionDetail(collectionId, producerId);
+  if (!row) return null;
+
+  const profileResult = getProducerProfile(producerId);
+  if (!profileResult) return null;
+
+  return buildProducerCollectionDetail(row, profileResult.pricePerLiter);
+}
+
+// Monta o detalhe da coleta a partir da linha do banco + preço por litro.
+// Função pura (sem acesso a DB) para manter `pages/` fino e testável.
+export function buildProducerCollectionDetail(
+  row: CollectionDetailRow,
+  pricePerLiter: number,
+): ProducerCollectionDetail {
+  return {
+    id: row.id,
+    date: row.date,
+    time: row.time,
+    volume: row.volume,
+    status: row.status,
+    photoUri: row.photo_uri,
+    value: row.volume * pricePerLiter,
   };
 }
