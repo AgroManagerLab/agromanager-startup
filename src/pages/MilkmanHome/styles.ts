@@ -1,0 +1,176 @@
+import { StyleSheet } from 'react-native';
+import { colors, FONT } from '../../global/themes';
+
+export const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: colors.bg,
+  },
+  hero: {
+    backgroundColor: colors.primaryDark,
+    paddingHorizontal: 20,
+    paddingBottom: 24,
+  },
+  heroTop: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 14,
+  },
+  dateBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 999,
+    backgroundColor: colors.contrast14,
+  },
+  dateDot: {
+    width: 7,
+    height: 7,
+    borderRadius: 4,
+    backgroundColor: colors.accent,
+  },
+  dateText: {
+    fontFamily: FONT.uiBold,
+    fontSize: 12,
+    color: colors.contrast,
+  },
+  greeting: {
+    fontFamily: FONT.uiSemi,
+    fontSize: 13,
+    color: colors.contrast75,
+  },
+  routeName: {
+    fontFamily: FONT.uiExtra,
+    fontSize: 28,
+    color: colors.contrast,
+    letterSpacing: -0.6,
+    lineHeight: 32,
+    marginTop: 2,
+  },
+  progressCard: {
+    marginTop: 18,
+    backgroundColor: colors.contrast14,
+    borderWidth: 1,
+    borderColor: colors.contrast14,
+    borderRadius: colors.radii.lg,
+    padding: 16,
+  },
+  progressHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'baseline',
+  },
+  progressLabel: {
+    fontFamily: FONT.uiBold,
+    fontSize: 12,
+    color: colors.contrast75,
+    letterSpacing: 0.4,
+    textTransform: 'uppercase',
+  },
+  progressCount: {
+    fontFamily: FONT.monoBold,
+    fontSize: 14,
+    color: colors.contrast,
+  },
+  progressBarBg: {
+    marginTop: 8,
+    height: 8,
+    backgroundColor: 'rgba(255,255,255,0.20)',
+    borderRadius: 4,
+    overflow: 'hidden',
+  },
+  progressBarFill: {
+    height: '100%',
+    backgroundColor: colors.accent,
+    borderRadius: 4,
+  },
+  progressMetrics: {
+    marginTop: 14,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  miniLabel: {
+    fontFamily: FONT.uiBold,
+    fontSize: 11,
+    color: 'rgba(255,255,255,0.6)',
+    letterSpacing: 0.4,
+    textTransform: 'uppercase',
+  },
+  miniValue: {
+    fontFamily: FONT.monoBold,
+    fontSize: 18,
+    color: colors.contrast,
+    marginTop: 2,
+  },
+  miniValueWarn: {
+    color: colors.accent,
+  },
+  body: {
+    flex: 1,
+    padding: 20,
+    gap: 18,
+  },
+  registerBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    backgroundColor: colors.accent,
+    borderRadius: colors.radii.md,
+    paddingVertical: 16,
+  },
+  registerBtnText: {
+    fontFamily: FONT.uiExtra,
+    fontSize: 15,
+    color: colors.accentInk,
+    letterSpacing: -0.2,
+  },
+  nextStopsLabel: {
+    fontFamily: FONT.uiExtra,
+    fontSize: 13,
+    color: colors.ink2,
+    letterSpacing: 0.4,
+    textTransform: 'uppercase',
+  },
+  nextStopsCard: {
+    overflow: 'hidden',
+  },
+  nextStopRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 14,
+    padding: 14,
+  },
+  nextStopBadge: {
+    width: 40,
+    height: 40,
+    borderRadius: 14,
+    backgroundColor: colors.primarySoft,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  nextStopBadgeText: {
+    fontFamily: FONT.monoBold,
+    fontSize: 16,
+    color: colors.primaryDark,
+  },
+  nextStopInfo: {
+    flex: 1,
+    minWidth: 0,
+  },
+  nextStopName: {
+    fontFamily: FONT.uiBold,
+    fontSize: 15.5,
+    color: colors.ink,
+    letterSpacing: -0.2,
+  },
+  nextStopFarm: {
+    fontFamily: FONT.uiSemi,
+    fontSize: 13,
+    color: colors.ink2,
+    marginTop: 2,
+  },
+});
