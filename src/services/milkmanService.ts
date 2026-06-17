@@ -4,6 +4,7 @@ import type {
   RouteProducer,
   MilkmanHomeData,
   MilkmanCollectionRow,
+  MilkmanCollectionDetail,
   CollectionRow,
 } from '../types';
 import { todayDate, nowTime } from '../utils/date';
@@ -51,9 +52,11 @@ export function getMilkmanRouteProducers(milkmanId: string): RouteProducer[] {
                  WHEN c.status = 'synced' THEN 'synced'
                  ELSE 'pending' END AS status_text
      FROM producers p
-     JOIN milkman_routes mr ON mr.route_id = p.route_id
      LEFT JOIN collections c ON c.producer_id = p.id AND c.date = ? AND c.milkman_id = ?
-     WHERE mr.milkman_id = ?
+     WHERE EXISTS (
+       SELECT 1 FROM milkman_routes mr
+       WHERE mr.milkman_id = ? AND mr.route_id = p.route_id
+     )
      ORDER BY p.route_order`,
     [today, milkmanId, milkmanId],
   );
@@ -93,8 +96,10 @@ export function getMilkmanTodayCollections(milkmanId: string): {
   const totalRow = db.getFirstSync<{ count: number }>(
     `SELECT COUNT(*) AS count
      FROM producers p
-     JOIN milkman_routes mr ON mr.route_id = p.route_id
-     WHERE mr.milkman_id = ?`,
+     WHERE EXISTS (
+       SELECT 1 FROM milkman_routes mr
+       WHERE mr.milkman_id = ? AND mr.route_id = p.route_id
+     )`,
     [milkmanId],
   );
   const total = totalRow?.count ?? 0;
@@ -141,16 +146,29 @@ export function registerCollection(data: {
   milkmanId: string;
   volume: number;
   photoUri: string | null;
+  isConnected?: boolean;
 }): void {
   const db = getDatabase();
   const id = `C-${Date.now()}`;
   const date = todayDate();
   const time = nowTime();
+  const status = data.isConnected === false ? 'pending' : 'synced';
   db.runSync(
     `INSERT INTO collections (id, producer_id, milkman_id, date, time, volume, status, photo_uri, created_at, updated_at)
-     VALUES (?, ?, ?, ?, ?, ?, 'pending', ?, ?, ?)`,
-    [id, data.producerId, data.milkmanId, date, time, data.volume, data.photoUri, date, date],
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    [id, data.producerId, data.milkmanId, date, time, data.volume, status, data.photoUri, date, date],
   );
+}
+
+// Sync all pending collections for a milkman
+export function syncPendingCollections(milkmanId: string): number {
+  const db = getDatabase();
+  const today = todayDate();
+  const result = db.runSync(
+    `UPDATE collections SET status = 'synced', updated_at = ? WHERE milkman_id = ? AND status = 'pending'`,
+    [today, milkmanId],
+  );
+  return result.changes;
 }
 
 interface HistoryQueryRow {
@@ -161,6 +179,7 @@ interface HistoryQueryRow {
   time: string;
   status: string;
   date: string;
+  photo_uri: string | null;
 }
 
 // Get history grouped by date
@@ -169,7 +188,7 @@ export function getMilkmanHistory(
 ): { date: string; rows: MilkmanCollectionRow[] }[] {
   const db = getDatabase();
   const rows = db.getAllSync<HistoryQueryRow>(
-    `SELECT c.id, p.name AS producer_name, p.farm, c.volume, c.time, c.status, c.date
+    `SELECT c.id, p.name AS producer_name, p.farm, c.volume, c.time, c.status, c.date, c.photo_uri
      FROM collections c
      JOIN producers p ON p.id = c.producer_id
      WHERE c.milkman_id = ?
@@ -187,6 +206,7 @@ export function getMilkmanHistory(
       volume: row.volume,
       time: row.time,
       status: row.status as 'synced' | 'pending',
+      photoUri: row.photo_uri,
     };
     if (last && last.date === row.date) {
       last.rows.push(item);
@@ -208,4 +228,20 @@ export function getProducerTodayCollection(
     `SELECT * FROM collections WHERE milkman_id = ? AND producer_id = ? AND date = ?`,
     [milkmanId, producerId, today],
   );
+}
+
+// Get full collection detail for the milkman view (includes producer info)
+export function getMilkmanCollectionDetail(
+  collectionId: string,
+  milkmanId: string,
+): MilkmanCollectionDetail | null {
+  const db = getDatabase();
+  const row = db.getFirstSync<MilkmanCollectionDetail>(
+    `SELECT c.id, p.name AS producer, p.farm, c.date, c.time, c.volume, c.status, c.photo_uri AS photoUri
+     FROM collections c
+     JOIN producers p ON p.id = c.producer_id
+     WHERE c.id = ? AND c.milkman_id = ?`,
+    [collectionId, milkmanId],
+  );
+  return row ?? null;
 }
