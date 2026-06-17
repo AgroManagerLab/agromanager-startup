@@ -195,6 +195,11 @@ export default function LoginScreen({ variant = 'default' }: LoginScreenProps) {
   const [email, setEmail] = useState('ricardo@coopvaleleite.coop.br');
   const [password, setPassword] = useState('12345678');
   const [showPassword, setShowPassword] = useState(false);
+  const [showRecoveryMessage, setShowRecoveryMessage] = useState(false);
+
+  const handleForgotPassword = () => {
+    setShowRecoveryMessage(true);
+  };
 
   return (
     <Phone bg={MR.bg}>
@@ -257,9 +262,22 @@ export default function LoginScreen({ variant = 'default' }: LoginScreenProps) {
           </View>
         )}
 
-        <View style={styles.forgotWrap}>
+        <TouchableOpacity
+          accessibilityRole="button"
+          activeOpacity={0.72}
+          style={styles.forgotWrap}
+          onPress={handleForgotPassword}
+        >
           <Text style={styles.forgot}>Esqueci a senha</Text>
-        </View>
+        </TouchableOpacity>
+
+        {showRecoveryMessage && (
+          <View style={styles.recoveryBox}>
+            <Text style={styles.recoveryText}>
+              Enviamos as instruções de recuperação para o e-mail informado.
+            </Text>
+          </View>
+        )}
 
         <BigButton onPress={() => navigation.navigate('Producer')}>Entrar</BigButton>
 
@@ -377,6 +395,22 @@ const styles = StyleSheet.create({
     color: MR.primary,
     fontSize: 14,
     fontWeight: '700',
+  },
+  recoveryBox: {
+    backgroundColor: MR.primarySoft,
+    borderColor: '#c7dfd2',
+    borderRadius: MR.radius.md,
+    borderWidth: 1,
+    marginBottom: 16,
+    marginTop: -8,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+  },
+  recoveryText: {
+    color: MR.primaryDark,
+    fontSize: 13,
+    fontWeight: '600',
+    lineHeight: 18,
   },
   footer: {
     color: MR.ink3,
