@@ -3,9 +3,9 @@ import { buildProducerHomeSummary } from '../services/producerService';
 import type { Collection } from '../types';
 
 const collections: Collection[] = [
-  { id: 'C-3', date: '13 mai', time: '06:14', volume: 138, status: 'synced' },
-  { id: 'C-2', date: '12 mai', time: '06:08', volume: 142, status: 'synced' },
-  { id: 'C-1', date: '11 mai', time: '07:22', volume: 100, status: 'pending' },
+  { id: 'C-3', date: '13 mai', time: '06:14', volume: 138, status: 'synced', photoUri: null },
+  { id: 'C-2', date: '12 mai', time: '06:08', volume: 142, status: 'synced', photoUri: null },
+  { id: 'C-1', date: '11 mai', time: '07:22', volume: 100, status: 'pending', photoUri: null },
 ];
 
 describe('producer projection', () => {
@@ -26,7 +26,7 @@ describe('producer projection', () => {
   });
 
   it('returns 0 average when there are no synced collections', () => {
-    expect(avgPerDay([{ id: 'x', date: '1', time: '1', volume: 9, status: 'pending' }])).toBe(0);
+    expect(avgPerDay([{ id: 'x', date: '1', time: '1', volume: 9, status: 'pending', photoUri: null }])).toBe(0);
   });
 
   it('builds the home summary from derived producer data', () => {

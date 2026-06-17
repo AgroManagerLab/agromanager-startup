@@ -216,6 +216,21 @@ export function TruckIcon({ size = 24, color = colors.ink }: IconProps) {
   );
 }
 
+export function SyncIcon({ size = 18, color = colors.ink }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 18 18" fill="none">
+      <Path
+        d="M15 9A6 6 0 014.3 14M3 9a6 6 0 0110.7-5"
+        stroke={color} strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round"
+      />
+      <Path
+        d="M13 3l2 3h-4M5 15l-2-3h4"
+        stroke={color} strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round"
+      />
+    </Svg>
+  );
+}
+
 export function MilkBottleIcon({ size = 24, color = colors.ink }: IconProps) {
   return (
     <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">

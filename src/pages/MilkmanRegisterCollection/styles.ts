@@ -61,8 +61,8 @@ export const styles = StyleSheet.create({
     color: colors.ink2,
   },
   body: {
-    flex: 1,
     padding: 20,
+    paddingBottom: 100,
     gap: 16,
   },
   producerCard: {

@@ -22,7 +22,7 @@ export function CollectionRow({
   const content =
     variant === 'detailed' ? (
       <View style={styles.coletaDetailedRow}>
-        <PhotoStripe variant="md" />
+        <PhotoStripe variant="md" uri={row.photoUri} />
         <View style={styles.coletaInfo}>
           <Text style={styles.coletaDetailedDate}>{row.date}</Text>
           <View style={styles.coletaDetailedMeta}>
@@ -42,7 +42,7 @@ export function CollectionRow({
       </View>
     ) : (
       <View style={styles.coletaCompactRow}>
-        <PhotoStripe variant="sm" />
+        <PhotoStripe variant="sm" uri={row.photoUri} />
         <View style={styles.coletaInfo}>
           <Text style={styles.coletaCompactDate}>{row.date}</Text>
           <NumText style={styles.coletaCompactTime}>{row.time}</NumText>

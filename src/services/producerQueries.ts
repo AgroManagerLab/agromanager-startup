@@ -36,7 +36,7 @@ export function getProducerProfile(producerId: string): {
 export function getProducerCollections(producerId: string): Collection[] {
   const db = getDatabase();
   return db.getAllSync<Collection>(
-    `SELECT id, date, time, volume, status
+    `SELECT id, date, time, volume, status, photo_uri AS photoUri
        FROM collections
       WHERE producer_id = ?
       ORDER BY id DESC;`,
