@@ -8,7 +8,7 @@ import { Card } from '../../components/Card';
 import { Divider } from '../../components/Divider';
 import { Volume } from '../../components/Volume';
 import { PhotoStripe } from '../../components/PhotoStripe';
-import { EditIcon, HistoryIcon } from '../../components/icons/Icon';
+import { EditIcon, ArrowLeftIcon } from '../../components/icons/Icon';
 import { MoneyBRL } from '../../components/MoneyBRL';
 import { getAdminProducerDetail } from '../../services/adminService';
 import { colors } from '../../global/themes';
@@ -122,8 +122,8 @@ export function AdminProducerDetailPage() {
           style={styles.allBtn}
           onPress={() => navigation.goBack()}
         >
-          <HistoryIcon size={20} color={colors.ink} />
-          <Text style={styles.allBtnText}>Ver todas as coletas</Text>
+          <ArrowLeftIcon size={20} color={colors.ink} />
+          <Text style={styles.allBtnText}>Voltar</Text>
         </TouchableOpacity>
       </View>
     </View>
