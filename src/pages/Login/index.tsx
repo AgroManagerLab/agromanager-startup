@@ -168,7 +168,7 @@ export function LoginPage() {
             </View>
             <DevEntry
               label="Administrador"
-              email="admin@dev.com"
+              email="admin@coopvaleleite.coop.br"
               color={colors.primaryDark}
             />
             <DevEntry

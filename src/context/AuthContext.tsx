@@ -29,7 +29,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signIn = useCallback((email: string, password: string): boolean => {
     if (!email.trim() || !password) return false;
 
-    const result = authenticate(email);
+    const result = authenticate(email, password);
+    if (!result) return false;
+
     setState({ profile: result.profile, userId: result.userId });
     return true;
   }, []);
