@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { colors } from '../../global/themes';
 import { Card } from '../../components/Card';
@@ -10,7 +10,7 @@ import { MilkrouteBrand } from '../../components/MilkrouteLogo';
 import { PlusIcon } from '../../components/icons/Icon';
 import { useAuth } from '../../context/AuthContext';
 import { loadMilkmanHomeData } from '../../services/milkmanService';
-import type { RootStackParamList } from '../../types';
+import type { MilkmanHomeData, RootStackParamList } from '../../types';
 import { formatDate } from '../../utils/date';
 import { styles } from './styles';
 
@@ -18,8 +18,13 @@ export function MilkmanHomePage() {
   const insets = useSafeAreaInsets();
   const { userId } = useAuth();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const [data, setData] = useState<MilkmanHomeData | null>(() => loadMilkmanHomeData(userId!));
 
-  const data = loadMilkmanHomeData(userId!);
+  useFocusEffect(
+    useCallback(() => {
+      setData(loadMilkmanHomeData(userId!));
+    }, [userId]),
+  );
 
   if (!data) {
     return <View style={styles.container} />;
