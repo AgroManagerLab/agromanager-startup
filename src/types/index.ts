@@ -12,6 +12,7 @@ export type RootStackParamList = {
   AdminProducerDetail: { producerId: string };
   ProducerCollectionDetail: { collectionId: string };
   MilkmanRegisterCollection: { producerId: string };
+  MilkmanCollectionDetail: { collectionId: string };
 };
 
 export interface AuthResult {
@@ -74,6 +75,7 @@ export interface Collection {
   time: string;
   volume: number;
   status: CollectionStatus;
+  photoUri: string | null;
 }
 
 export interface ProducerCollectionDetail {
@@ -138,6 +140,18 @@ export interface MilkmanCollectionRow {
   volume: number;
   time: string;
   status: CollectionStatus;
+  photoUri: string | null;
+}
+
+export interface MilkmanCollectionDetail {
+  id: string;
+  producer: string;
+  farm: string;
+  date: string;
+  time: string;
+  volume: number;
+  status: CollectionStatus;
+  photoUri: string | null;
 }
 
 // ─── Admin types ───
