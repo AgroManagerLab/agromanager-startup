@@ -2,15 +2,14 @@ import React from 'react';
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { colors } from '../../global/themes';
 import { Card } from '../../components/Card';
 import { Divider } from '../../components/Divider';
-import { SettingsIcon } from '../../components/icons/Icon';
 import { Volume } from '../../components/Volume';
 import { MilkrouteBrand } from '../../components/MilkrouteLogo';
 import { ProjectionCard } from '../../components/ProjectionCard';
 import { CollectionRow } from '../../components/CollectionRow';
 import { CURRENT_PRODUCER_ID, loadProducerData, buildProducerHomeSummary } from '../../services/producerService';
+import { formatDate } from '../../utils/date';
 import { styles } from './styles';
 
 export function ProducerHomePage() {
@@ -23,14 +22,16 @@ export function ProducerHomePage() {
   }
 
   const home = buildProducerHomeSummary(data);
+  const todayLabel = formatDate(new Date());
 
   return (
     <View style={styles.homeContainer}>
       <View style={[styles.homeHeader, { paddingTop: insets.top + 8 }]}>
         <View style={styles.homeHeaderTop}>
           <MilkrouteBrand />
-          <View style={styles.homeSettingsBtn}>
-            <SettingsIcon size={20} color={colors.contrast} />
+          <View style={styles.dateBadge}>
+            <View style={styles.dateDot} />
+            <Text style={styles.dateText}>{todayLabel}</Text>
           </View>
         </View>
         <Text style={styles.homeGreeting}>Boa tarde, {home.firstName}</Text>

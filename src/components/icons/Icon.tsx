@@ -110,6 +110,21 @@ export function UsersIcon({ size = 24, color = colors.ink }: IconProps) {
   );
 }
 
+export function UserIcon({ size = 24, color = colors.ink }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+      <Path
+        d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" stroke={color} strokeWidth={1.8}
+        strokeLinecap="round" strokeLinejoin="round"
+      />
+      <Path
+        d="M12 11a4 4 0 100-8 4 4 0 000 8z" stroke={color} strokeWidth={1.8}
+        strokeLinecap="round" strokeLinejoin="round"
+      />
+    </Svg>
+  );
+}
+
 export function CameraIcon({ size = 24, color = colors.ink }: IconProps) {
   return (
     <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
@@ -145,6 +160,18 @@ export function EditIcon({ size = 22, color = colors.ink }: IconProps) {
       />
       <Path
         d="M18.5 2.5a2.121 2.121 0 113 3L12 15l-4 1 1-4 9.5-9.5z" stroke={color} strokeWidth={1.8}
+        strokeLinecap="round" strokeLinejoin="round"
+      />
+    </Svg>
+  );
+}
+
+export function ArrowLeftIcon({ size = 22, color = colors.ink }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+      <Path d="M19 12H5" stroke={color} strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" />
+      <Path
+        d="M12 19l-7-7 7-7" stroke={color} strokeWidth={1.8}
         strokeLinecap="round" strokeLinejoin="round"
       />
     </Svg>
