@@ -91,7 +91,8 @@ export function CameraModal({ visible, onCapture, onClose }: CameraModalProps) {
           </View>
         ) : (
           <CameraView ref={cameraRef} style={styles.camera} facing="back">
-            <View style={[styles.cameraTopBar, { paddingTop: Platform.OS === 'ios' ? insets.top + 16 : 20 }]}>              <TouchableOpacity onPress={handleClose}>
+            <View style={[styles.cameraTopBar, { paddingTop: Platform.OS === 'ios' ? insets.top + 16 : 20 }]}>
+              <TouchableOpacity onPress={handleClose}>
                 <Text style={styles.cancelText}>Cancelar</Text>
               </TouchableOpacity>
             </View>
