@@ -1,22 +1,31 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import type { RouteProp } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import type { RootStackParamList } from '../../types';
 import { ScreenHeader } from '../../components/ScreenHeader';
 import { Field } from '../../components/Field';
 import { RouteIcon, ChevronIcon, CheckIcon } from '../../components/icons/Icon';
-import { createProducer, getRoutes } from '../../services/adminService';
+import { createProducer, getProducerById, getRoutes, updateProducer } from '../../services/adminService';
 import { colors } from '../../global/themes';
 import { generatePassword } from '../../utils/password';
 import { styles, footerStyles } from './styles';
 
 export function AdminRegisterProducerPage() {
   const navigation = useNavigation();
-  const routes = getRoutes();
+  const route = useRoute<RouteProp<RootStackParamList, 'AdminRegisterProducer'>>();
+  const producerId = route.params?.producerId;
+  const isEditing = !!producerId;
 
-  const [name, setName] = useState('');
-  const [farm, setFarm] = useState('');
-  const [selectedRouteId, setSelectedRouteId] = useState(routes[0]?.id ?? '');
+  const routes = getRoutes();
+  const existing = isEditing ? getProducerById(producerId) : null;
+
+  const [name, setName] = useState(existing?.name ?? '');
+  const [farm, setFarm] = useState(existing?.farm ?? '');
+  const [selectedRouteId, setSelectedRouteId] = useState(
+    isEditing ? (existing?.route_id ?? '') : (routes[0]?.id ?? ''),
+  );
   const [password, setPassword] = useState('');
   const [showRoutePicker, setShowRoutePicker] = useState(false);
 
@@ -27,6 +36,18 @@ export function AdminRegisterProducerPage() {
   }
 
   function handleSave() {
+    if (isEditing) {
+      if (!name.trim() || !farm.trim() || !selectedRouteId) return;
+      updateProducer({
+        id: producerId,
+        name: name.trim(),
+        farm: farm.trim(),
+        routeId: selectedRouteId,
+      });
+      navigation.goBack();
+      return;
+    }
+
     if (!name.trim() || !farm.trim() || !selectedRouteId || !password.trim()) return;
     createProducer({
       name: name.trim(),
@@ -39,7 +60,11 @@ export function AdminRegisterProducerPage() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScreenHeader title="Novo produtor" subtitle="Dados cadastrais e acesso" onBack={() => navigation.goBack()} />
+      <ScreenHeader
+        title={isEditing ? 'Editar produtor' : 'Novo produtor'}
+        subtitle={isEditing ? 'Dados cadastrais' : 'Dados cadastrais e acesso'}
+        onBack={() => navigation.goBack()}
+      />
       <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent}>
         <Field label="Nome completo" value={name} onChangeText={setName} />
         <Field label="Identificador da fazenda" value={farm} onChangeText={setFarm} />
@@ -77,18 +102,20 @@ export function AdminRegisterProducerPage() {
           </View>
         )}
 
-        <Field
-          label="Senha inicial"
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-          hint="O produtor poderá alterar no primeiro acesso."
-          suffix={
-            <TouchableOpacity activeOpacity={0.7} onPress={handleGenerate}>
-              <Text style={styles.gerarButton}>GERAR</Text>
-            </TouchableOpacity>
-          }
-        />
+        {!isEditing && (
+          <Field
+            label="Senha inicial"
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry
+            hint="O produtor poderá alterar no primeiro acesso."
+            suffix={
+              <TouchableOpacity activeOpacity={0.7} onPress={handleGenerate}>
+                <Text style={styles.gerarButton}>GERAR</Text>
+              </TouchableOpacity>
+            }
+          />
+        )}
       </ScrollView>
 
       <View style={footerStyles.footer}>
@@ -105,7 +132,9 @@ export function AdminRegisterProducerPage() {
           onPress={handleSave}
         >
           <CheckIcon size={20} color="#fff" />
-          <Text style={footerStyles.footerBtnPrimaryText}>Cadastrar</Text>
+          <Text style={footerStyles.footerBtnPrimaryText}>
+            {isEditing ? 'Salvar' : 'Cadastrar'}
+          </Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>

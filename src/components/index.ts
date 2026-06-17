@@ -12,6 +12,7 @@ export { NumText } from './NumText';
 export { OfflineBanner } from './OfflineBanner';
 export { ProfilePlaceholder } from './ProfilePlaceholder';
 export { PhotoStripe } from './PhotoStripe';
+export { CameraModal } from './CameraModal';
 export { ProjectionCard } from './ProjectionCard';
 export { ScreenHeader } from './ScreenHeader';
 export { SyncBadge } from './SyncBadge';

@@ -95,4 +95,18 @@ export const styles = StyleSheet.create({
     fontSize: 12,
     color: colors.ink2,
   },
+  syncBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: colors.primary + '11',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+  },
+  syncBtnText: {
+    fontFamily: FONT.uiBold,
+    fontSize: 13,
+    color: colors.primary,
+  },
 });

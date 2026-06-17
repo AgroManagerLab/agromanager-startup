@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
 import type { RouteProp } from '@react-navigation/native';
 import type { RootStackParamList } from '../../types';
 import { ScreenHeader } from '../../components/ScreenHeader';
@@ -8,7 +8,7 @@ import { Card } from '../../components/Card';
 import { Divider } from '../../components/Divider';
 import { Volume } from '../../components/Volume';
 import { PhotoStripe } from '../../components/PhotoStripe';
-import { EditIcon, HistoryIcon } from '../../components/icons/Icon';
+import { EditIcon, ArrowLeftIcon } from '../../components/icons/Icon';
 import { MoneyBRL } from '../../components/MoneyBRL';
 import { getAdminProducerDetail } from '../../services/adminService';
 import { colors } from '../../global/themes';
@@ -47,7 +47,13 @@ export function AdminProducerDetailPage() {
   const route = useRoute<RouteProp<RootStackParamList, 'AdminProducerDetail'>>();
   const { producerId } = route.params;
 
-  const detail = getAdminProducerDetail(producerId);
+  const [detail, setDetail] = useState(() => getAdminProducerDetail(producerId));
+
+  useFocusEffect(
+    useCallback(() => {
+      setDetail(getAdminProducerDetail(producerId));
+    }, [producerId]),
+  );
 
   if (!detail) {
     return (
@@ -67,9 +73,13 @@ export function AdminProducerDetailPage() {
         subtitle={`${profile.farm} · ${profile.route}`}
         onBack={() => navigation.goBack()}
         right={
-          <View style={styles.editBtn}>
+          <TouchableOpacity
+            activeOpacity={0.7}
+            style={styles.editBtn}
+            onPress={() => navigation.navigate('AdminRegisterProducer', { producerId })}
+          >
             <EditIcon size={20} color={colors.ink2} />
-          </View>
+          </TouchableOpacity>
         }
       />
 
@@ -122,8 +132,8 @@ export function AdminProducerDetailPage() {
           style={styles.allBtn}
           onPress={() => navigation.goBack()}
         >
-          <HistoryIcon size={20} color={colors.ink} />
-          <Text style={styles.allBtnText}>Ver todas as coletas</Text>
+          <ArrowLeftIcon size={20} color={colors.ink} />
+          <Text style={styles.allBtnText}>Voltar</Text>
         </TouchableOpacity>
       </View>
     </View>

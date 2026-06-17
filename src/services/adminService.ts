@@ -175,7 +175,7 @@ export function getAdminProducerDetail(producerId: string): {
   );
 
   const price = db.getFirstSync<{ p: number }>(
-    'SELECT price_per_liter FROM coops LIMIT 1',
+    'SELECT price_per_liter AS p FROM coops LIMIT 1',
   ) ?? { p: 0 };
 
   return {
@@ -208,6 +208,54 @@ export function createProducer(data: {
     `INSERT INTO producers (id, coop_id, route_id, name, farm, password, route_order)
      VALUES (?, (SELECT id FROM coops LIMIT 1), ?, ?, ?, ?, ?)`,
     [id, data.routeId, data.name, data.farm, data.password, order.o],
+  );
+}
+
+export function getProducerById(
+  producerId: string,
+): { id: string; name: string; farm: string; route_id: string | null } | null {
+  const db = getDatabase();
+  const row = db.getFirstSync<{
+    id: string;
+    name: string;
+    farm: string;
+    route_id: string | null;
+  }>(
+    'SELECT id, name, farm, route_id FROM producers WHERE id = ?',
+    [producerId],
+  );
+  return row ?? null;
+}
+
+export function updateProducer(data: {
+  id: string;
+  name: string;
+  farm: string;
+  routeId: string;
+}): void {
+  const db = getDatabase();
+  const current = db.getFirstSync<{ route_id: string | null }>(
+    'SELECT route_id FROM producers WHERE id = ?',
+    [data.id],
+  );
+
+  // Rota mudou: reatribui route_order (MAX+1 na rota nova), como em createProducer.
+  if (current && current.route_id !== data.routeId) {
+    const order = db.getFirstSync<{ o: number }>(
+      'SELECT COALESCE(MAX(route_order), 0) + 1 AS o FROM producers WHERE route_id = ?',
+      [data.routeId],
+    ) ?? { o: 1 };
+    db.runSync(
+      'UPDATE producers SET name = ?, farm = ?, route_id = ?, route_order = ? WHERE id = ?',
+      [data.name, data.farm, data.routeId, order.o, data.id],
+    );
+    return;
+  }
+
+  // Rota inalterada: mantém route_order.
+  db.runSync(
+    'UPDATE producers SET name = ?, farm = ?, route_id = ? WHERE id = ?',
+    [data.name, data.farm, data.routeId, data.id],
   );
 }
 

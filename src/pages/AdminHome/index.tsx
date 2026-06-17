@@ -6,8 +6,9 @@ import { MilkrouteBrand } from '../../components/MilkrouteLogo';
 import { Card } from '../../components/Card';
 import { Volume } from '../../components/Volume';
 import { Divider } from '../../components/Divider';
-import { SettingsIcon, PlusIcon, UsersIcon } from '../../components/icons/Icon';
+import { PlusIcon, UsersIcon } from '../../components/icons/Icon';
 import { loadAdminDashboard } from '../../services/adminService';
+import { formatDate } from '../../utils/date';
 import { colors, FONT } from '../../global/themes';
 import { styles } from './styles';
 
@@ -90,6 +91,7 @@ export function AdminHomePage() {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<any>();
   const data = loadAdminDashboard();
+  const todayLabel = formatDate(new Date());
 
   return (
     <View style={styles.container}>
@@ -97,8 +99,9 @@ export function AdminHomePage() {
         <View style={[styles.hero, { paddingTop: insets.top + 16 }]}>
           <View style={styles.heroTop}>
             <MilkrouteBrand />
-            <View style={styles.heroSettings}>
-              <SettingsIcon size={22} color="#fff" />
+            <View style={styles.dateBadge}>
+              <View style={styles.dateDot} />
+              <Text style={styles.dateText}>{todayLabel}</Text>
             </View>
           </View>
           <Text style={styles.heroCoop}>{data.coopName}</Text>
@@ -145,7 +148,7 @@ export function AdminHomePage() {
               textColor={colors.primaryDark}
               label="Cadastros"
               hint="Produtor · Rota · Leiteiro"
-              onPress={() => navigation.navigate('AdminRegistrationsHub')}
+              onPress={() => navigation.navigate('Cadastros')}
             />
             <ShortcutCard
               icon={<UsersIcon size={22} color={colors.accentInk} />}
@@ -153,7 +156,7 @@ export function AdminHomePage() {
               textColor={colors.accentInk}
               label="Produtores"
               hint={`${data.totalProducers} ativos`}
-              onPress={() => navigation.navigate('AdminProducerList')}
+              onPress={() => navigation.navigate('Produtores')}
             />
           </View>
 

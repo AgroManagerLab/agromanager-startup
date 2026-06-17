@@ -57,6 +57,12 @@ export const styles = StyleSheet.create({
     borderColor: colors.border,
     flexShrink: 0,
   },
+  coletaPhoto: {
+    width: 48,
+    height: 48,
+    borderRadius: 10,
+    flexShrink: 0,
+  },
   coletaInfo: {
     flex: 1,
     minWidth: 0,
@@ -95,5 +101,35 @@ export const styles = StyleSheet.create({
   coletaVolumeUnit: {
     fontSize: 12,
     color: colors.ink2,
+  },
+  syncBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: '#3D3530',
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    marginHorizontal: 20,
+    borderRadius: colors.radii.md,
+    marginBottom: 8,
+  },
+  syncBarText: {
+    fontFamily: FONT.uiBold,
+    fontSize: 13,
+    color: colors.contrast,
+  },
+  syncBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: colors.primary,
+    paddingHorizontal: 14,
+    paddingVertical: 6,
+    borderRadius: 20,
+  },
+  syncBtnText: {
+    fontFamily: FONT.uiBold,
+    fontSize: 13,
+    color: colors.contrast,
   },
 });

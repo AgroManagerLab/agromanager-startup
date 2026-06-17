@@ -1,7 +1,8 @@
-import React, { useState, useMemo } from 'react';
+import React, { useCallback, useState, useMemo } from 'react';
 import { View, Text, TextInput, TouchableOpacity, ScrollView } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import type { AdminProducerSummary } from '../../types';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import type { AdminProducerSummary, RootStackParamList } from '../../types';
 import { ScreenHeader } from '../../components/ScreenHeader';
 import { Card } from '../../components/Card';
 import { Divider } from '../../components/Divider';
@@ -43,16 +44,22 @@ function ProdutorListItem({
 }
 
 export function AdminProducerListPage() {
-  const navigation = useNavigation<any>();
-  const routes = getRoutes();
-  const dashboard = loadAdminDashboard();
-
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [search, setSearch] = useState('');
   const [activeRouteId, setActiveRouteId] = useState<string | undefined>(undefined);
+  const [refreshKey, setRefreshKey] = useState(0);
 
+  useFocusEffect(
+    useCallback(() => {
+      setRefreshKey((k) => k + 1);
+    }, []),
+  );
+
+  const routes = useMemo(() => getRoutes(), [refreshKey]); // eslint-disable-line react-hooks/exhaustive-deps
+  const dashboard = useMemo(() => loadAdminDashboard(), [refreshKey]); // eslint-disable-line react-hooks/exhaustive-deps
   const producers = useMemo(
     () => getAdminProducers(search || undefined, activeRouteId),
-    [search, activeRouteId],
+    [search, activeRouteId, refreshKey], // eslint-disable-line react-hooks/exhaustive-deps
   );
 
   return (
