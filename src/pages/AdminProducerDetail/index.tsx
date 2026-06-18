@@ -12,6 +12,7 @@ import { EditIcon, ArrowLeftIcon } from '../../components/icons/Icon';
 import { MoneyBRL } from '../../components/MoneyBRL';
 import { getAdminProducerDetail } from '../../services/adminService';
 import { colors } from '../../global/themes';
+import { currentMonthName } from '../../utils/date';
 import { styles } from './styles';
 
 function AdminCollectionRow({
@@ -63,8 +64,10 @@ export function AdminProducerDetailPage() {
     );
   }
 
-  const { profile, monthVolume, projection, history } = detail;
+  const { profile, monthVolume, projection, pricePerLiter, history } = detail;
   const syncCount = history.filter((h) => h.status === 'synced').length;
+  const month = currentMonthName();
+  const priceLabel = `× R$ ${pricePerLiter.toFixed(2).replace('.', ',')}/L`;
 
   return (
     <View style={styles.container}>
@@ -86,7 +89,7 @@ export function AdminProducerDetailPage() {
       <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent}>
         <View style={styles.metricsRow}>
           <Card style={styles.metricCard}>
-            <Text style={styles.metricLabel}>Volume · maio</Text>
+            <Text style={styles.metricLabel}>Volume · {month}</Text>
             <Volume value={monthVolume} />
             <Text style={styles.metricHint}>{syncCount} coletas sincronizadas</Text>
           </Card>
@@ -94,7 +97,7 @@ export function AdminProducerDetailPage() {
           <Card style={styles.projectionCard}>
             <Text style={styles.projectionLabel}>Projeção *</Text>
             <MoneyBRL value={projection} variant="dark" />
-            <Text style={styles.projectionPrice}>× R$ 2,45/L</Text>
+            <Text style={styles.projectionPrice}>{priceLabel}</Text>
           </Card>
         </View>
 
@@ -102,7 +105,7 @@ export function AdminProducerDetailPage() {
 
         <View style={styles.historyHeader}>
           <Text style={styles.historyTitle}>Histórico de coletas</Text>
-          <Text style={styles.historyPeriod}>maio · {history.length} mais recentes</Text>
+          <Text style={styles.historyPeriod}>{month} · {history.length} mais recentes</Text>
         </View>
 
         <Card style={styles.historyCard}>

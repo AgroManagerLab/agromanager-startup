@@ -8,7 +8,8 @@ import { Volume } from '../../components/Volume';
 import { Divider } from '../../components/Divider';
 import { PlusIcon, UsersIcon } from '../../components/icons/Icon';
 import { loadAdminDashboard } from '../../services/adminService';
-import { formatDate } from '../../utils/date';
+import { useAuth } from '../../context/AuthContext';
+import { formatDate, currentMonthName } from '../../utils/date';
 import { colors, FONT } from '../../global/themes';
 import { styles } from './styles';
 
@@ -90,8 +91,11 @@ function RouteRow({
 export function AdminHomePage() {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<any>();
-  const data = loadAdminDashboard();
+  const { userId } = useAuth();
+  const data = loadAdminDashboard(userId ?? undefined);
   const todayLabel = formatDate(new Date());
+  const monthLabel = currentMonthName().replace(/^./, (c) => c.toUpperCase());
+  const dayOfMonth = new Date().getDate();
 
   return (
     <View style={styles.container}>
@@ -108,7 +112,7 @@ export function AdminHomePage() {
           <Text style={styles.heroGreeting}>Olá, {data.adminName}</Text>
           <View style={styles.heroBadgeRow}>
             <View style={styles.heroBadge} />
-            <Text style={styles.heroBadgeText}>Maio · 14 dias</Text>
+            <Text style={styles.heroBadgeText}>{monthLabel} · {dayOfMonth} dias</Text>
           </View>
 
           <View style={styles.heroMetric}>

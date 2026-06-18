@@ -8,14 +8,16 @@ import { Volume } from '../../components/Volume';
 import { MilkrouteBrand } from '../../components/MilkrouteLogo';
 import { ProjectionCard } from '../../components/ProjectionCard';
 import { CollectionRow } from '../../components/CollectionRow';
-import { CURRENT_PRODUCER_ID, loadProducerData, buildProducerHomeSummary } from '../../services/producerService';
-import { formatDate } from '../../utils/date';
+import { loadProducerData, buildProducerHomeSummary } from '../../services/producerService';
+import { useAuth } from '../../context/AuthContext';
+import { formatDate, currentMonthName } from '../../utils/date';
 import { styles } from './styles';
 
 export function ProducerHomePage() {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<any>();
-  const data = loadProducerData(CURRENT_PRODUCER_ID);
+  const { userId } = useAuth();
+  const data = userId ? loadProducerData(userId) : null;
 
   if (!data) {
     return <View style={styles.homeContainer} />;
@@ -37,7 +39,7 @@ export function ProducerHomePage() {
         <Text style={styles.homeGreeting}>Boa tarde, {home.firstName}</Text>
         <Text style={styles.homeFarm}>{data.profile.farm}</Text>
         <View style={styles.homeVolumeSection}>
-          <Text style={styles.homeVolumeLabel}>Volume do mês · maio</Text>
+          <Text style={styles.homeVolumeLabel}>Volume do mês · {currentMonthName()}</Text>
           <Volume value={data.monthVolume} variant="hero" />
         </View>
         <ProjectionCard

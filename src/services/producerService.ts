@@ -6,15 +6,13 @@ import {
 import type { CollectionDetailRow, ProducerCollectionDetail, ProducerData } from '../types';
 import { avgPerDay, calcProjection, sumSyncedVolume, syncedCollections } from '../utils/projection';
 
-export const CURRENT_PRODUCER_ID = 'P-014';
-
 export interface ProducerHomeSummary {
   firstName: string;
   recentCollections: ProducerData['synced'];
 }
 
 // Carrega tudo que o módulo Produtor precisa a partir do SQLite.
-export function loadProducerData(producerId: string = CURRENT_PRODUCER_ID): ProducerData | null {
+export function loadProducerData(producerId: string): ProducerData | null {
   const profileResult = getProducerProfile(producerId);
   if (!profileResult) return null;
 
@@ -47,7 +45,7 @@ export function buildProducerHomeSummary(data: ProducerData): ProducerHomeSummar
 // não existir ou o perfil não for encontrado.
 export function loadProducerCollectionDetail(
   collectionId: string,
-  producerId: string = CURRENT_PRODUCER_ID,
+  producerId: string,
 ): ProducerCollectionDetail | null {
   const row = getProducerCollectionDetail(collectionId, producerId);
   if (!row) return null;

@@ -13,6 +13,7 @@ import {
   getMilkmanRouteProducers,
   registerCollection,
 } from '../../services/milkmanService';
+import { isPositiveNumber, parseVolume } from '../../utils/validation';
 import type { RootStackParamList } from '../../types';
 import { styles } from './styles';
 
@@ -41,16 +42,22 @@ export function MilkmanRegisterCollectionPage() {
     return <View style={styles.container} />;
   }
 
-  const canSubmit = photoUri !== null && volume.trim().length > 0 && !submitting;
+  // FR-5.5 — volume deve ser número > 0 e foto é obrigatória.
+  const volumeValid = isPositiveNumber(volume);
+  const volumeError = volume.trim().length > 0 && !volumeValid
+    ? 'Informe um volume maior que zero.'
+    : null;
+  const canSubmit = photoUri !== null && volumeValid && !submitting;
 
   const handleConfirm = () => {
-    if (!canSubmit) return;
+    const parsed = parseVolume(volume);
+    if (parsed === null || photoUri === null || submitting) return;
     setSubmitting(true);
     try {
       registerCollection({
         producerId: producer.id,
         milkmanId: userId!,
-        volume: parseFloat(volume),
+        volume: parsed,
         photoUri,
         isConnected,
       });
@@ -134,6 +141,9 @@ export function MilkmanRegisterCollectionPage() {
               />
               <Text style={styles.volumeSuffix}>L</Text>
             </View>
+            {volumeError ? (
+              <Text style={{ fontSize: 13, color: colors.danger, marginTop: 8 }}>{volumeError}</Text>
+            ) : null}
           </View>
 
           {/* Photo */}

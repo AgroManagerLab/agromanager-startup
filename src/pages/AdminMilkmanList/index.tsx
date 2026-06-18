@@ -2,25 +2,24 @@ import React, { useCallback, useState, useMemo } from 'react';
 import { View, Text, TextInput, TouchableOpacity, ScrollView } from 'react-native';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import type { AdminProducerSummary, RootStackParamList } from '../../types';
+import type { AdminMilkmanSummary, RootStackParamList } from '../../types';
 import { ScreenHeader } from '../../components/ScreenHeader';
 import { Card } from '../../components/Card';
 import { Divider } from '../../components/Divider';
-import { FilterPill } from '../../components/FilterPill';
 import { SearchIcon, PlusIcon } from '../../components/icons/Icon';
-import { getAdminProducers, getRoutes, loadAdminDashboard } from '../../services/adminService';
-import { thisMonth } from '../../utils/date';
+import { getAdminMilkmen } from '../../services/adminService';
 import { colors } from '../../global/themes';
 import { styles } from './styles';
 
-function ProdutorListItem({
+function MilkmanListItem({
   item,
   onPress,
 }: {
-  item: AdminProducerSummary;
+  item: AdminMilkmanSummary;
   onPress: () => void;
 }) {
   const initials = item.name.split(' ').map((s: string) => s[0]).slice(0, 2).join('');
+  const routeLabel = item.routeCount === 1 ? '1 rota' : `${item.routeCount} rotas`;
   return (
     <TouchableOpacity activeOpacity={0.7} onPress={onPress} style={styles.listItem}>
       <View style={[styles.listAvatar, { backgroundColor: `hsl(${item.hue}, 40%, 85%)` }]}>
@@ -30,24 +29,18 @@ function ProdutorListItem({
       </View>
       <View style={styles.listInfo}>
         <Text style={styles.listName} numberOfLines={1}>{item.name}</Text>
-        <Text style={styles.listMeta} numberOfLines={1}>
-          {item.farm} · {item.route}
-        </Text>
+        <Text style={styles.listMeta} numberOfLines={1}>{item.email}</Text>
       </View>
-      <View style={styles.listRight}>
-        <Text style={styles.listVolume}>
-          {item.monthVolume.toLocaleString('pt-BR')} L
-        </Text>
-        <Text style={styles.listMonthLabel}>{thisMonth()}</Text>
+      <View style={styles.routeBadge}>
+        <Text style={styles.routeBadgeText}>{routeLabel}</Text>
       </View>
     </TouchableOpacity>
   );
 }
 
-export function AdminProducerListPage() {
+export function AdminMilkmanListPage() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [search, setSearch] = useState('');
-  const [activeRouteId, setActiveRouteId] = useState<string | undefined>(undefined);
   const [refreshKey, setRefreshKey] = useState(0);
 
   useFocusEffect(
@@ -56,23 +49,22 @@ export function AdminProducerListPage() {
     }, []),
   );
 
-  const routes = useMemo(() => getRoutes(), [refreshKey]); // eslint-disable-line react-hooks/exhaustive-deps
-  const dashboard = useMemo(() => loadAdminDashboard(), [refreshKey]); // eslint-disable-line react-hooks/exhaustive-deps
-  const producers = useMemo(
-    () => getAdminProducers(search || undefined, activeRouteId),
-    [search, activeRouteId, refreshKey], // eslint-disable-line react-hooks/exhaustive-deps
+  const milkmen = useMemo(
+    () => getAdminMilkmen(search || undefined),
+    [search, refreshKey], // eslint-disable-line react-hooks/exhaustive-deps
   );
 
   return (
     <View style={styles.container}>
       <ScreenHeader
-        title="Produtores"
-        subtitle={`${dashboard.totalProducers} ativos · ${activeRouteId ? routes.find((r) => r.id === activeRouteId)?.name ?? '' : 'todas as rotas'}`}
+        title="Leiteiros"
+        subtitle={`${milkmen.length} cadastrados`}
+        onBack={() => navigation.goBack()}
         right={
           <TouchableOpacity
             activeOpacity={0.7}
             style={styles.headerPlus}
-            onPress={() => navigation.navigate('AdminRegisterProducer')}
+            onPress={() => navigation.navigate('AdminRegisterMilkman')}
           >
             <PlusIcon size={22} color="#fff" />
           </TouchableOpacity>
@@ -86,43 +78,27 @@ export function AdminProducerListPage() {
             style={styles.searchInput}
             value={search}
             onChangeText={setSearch}
-            placeholder="Buscar por nome ou fazenda"
+            placeholder="Buscar por nome ou e-mail"
             placeholderTextColor={colors.ink3}
           />
         </View>
-
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.pillRow}>
-          <FilterPill
-            label="Todas rotas"
-            active={!activeRouteId}
-            onPress={() => setActiveRouteId(undefined)}
-          />
-          {routes.map((r) => (
-            <FilterPill
-              key={r.id}
-              label={r.name}
-              active={activeRouteId === r.id}
-              onPress={() => setActiveRouteId(r.id)}
-            />
-          ))}
-        </ScrollView>
       </View>
 
       <ScrollView style={styles.listScroll} contentContainerStyle={styles.listContent}>
-        {producers.length === 0 ? (
+        {milkmen.length === 0 ? (
           <Card style={styles.emptyCard}>
             <Text style={styles.emptyText}>
-              {search ? 'Nenhum produtor encontrado' : 'Nenhum produtor cadastrado'}
+              {search ? 'Nenhum leiteiro encontrado' : 'Nenhum leiteiro cadastrado'}
             </Text>
           </Card>
         ) : (
           <Card style={styles.listCard}>
-            {producers.map((p, i) => (
-              <React.Fragment key={p.id}>
+            {milkmen.map((m, i) => (
+              <React.Fragment key={m.id}>
                 {i > 0 && <Divider />}
-                <ProdutorListItem
-                  item={p}
-                  onPress={() => navigation.navigate('AdminProducerDetail', { producerId: p.id })}
+                <MilkmanListItem
+                  item={m}
+                  onPress={() => navigation.navigate('AdminMilkmanDetail', { milkmanId: m.id })}
                 />
               </React.Fragment>
             ))}

@@ -7,7 +7,9 @@ import { Field } from '../../components/Field';
 import { Card } from '../../components/Card';
 import { Divider } from '../../components/Divider';
 import { CheckIcon } from '../../components/icons/Icon';
-import { createRoute, getAllProducers } from '../../services/adminService';
+import { createRoute, getAllProducers, isRouteIdentifierTaken } from '../../services/adminService';
+import { requiredText } from '../../utils/validation';
+import { colors } from '../../global/themes';
 import { styles, footerStyles } from './styles';
 
 interface ProducerOption {
@@ -24,6 +26,7 @@ export function AdminRegisterRoutePage() {
 
   const [name, setName] = useState('');
   const [identifier, setIdentifier] = useState('');
+  const [errors, setErrors] = useState<{ name?: string; identifier?: string; submit?: string }>({});
   const [producers, setProducers] = useState<ProducerOption[]>(
     allProducers.map((p, i) => ({
       id: p.id,
@@ -53,26 +56,46 @@ export function AdminRegisterRoutePage() {
     });
   }
 
+  // FR-5.4 — nome obrigatório; identificador obrigatório e único.
+  function validate(): boolean {
+    const next: { name?: string; identifier?: string } = {};
+    if (!requiredText(name)) next.name = 'Informe o nome da rota.';
+    if (!requiredText(identifier)) next.identifier = 'Informe o identificador.';
+    else if (isRouteIdentifierTaken(identifier)) next.identifier = 'Identificador já em uso.';
+    setErrors(next);
+    return Object.keys(next).length === 0;
+  }
+
   function handleSave() {
-    if (!name.trim() || !identifier.trim()) return;
+    if (!validate()) return;
     const producerIds = producers.flatMap((p) => (p.checked ? [p.id] : []));
-    createRoute({
-      name: name.trim(),
-      identifier: identifier.trim(),
-      producerIds,
-    });
-    navigation.goBack();
+    try {
+      createRoute({
+        name: name.trim(),
+        identifier: identifier.trim(),
+        producerIds,
+      });
+      navigation.goBack();
+    } catch {
+      setErrors((e) => ({ ...e, submit: 'Não foi possível salvar a rota. Tente novamente.' }));
+    }
   }
 
   return (
     <SafeAreaView style={styles.container}>
       <ScreenHeader title="Nova rota" subtitle="Sequência de coleta" onBack={() => navigation.goBack()} />
       <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent}>
-        <Field label="Nome da rota" value={name} onChangeText={setName} />
+        <Field
+          label="Nome da rota"
+          value={name}
+          onChangeText={(v) => { setName(v); setErrors((e) => ({ ...e, name: undefined })); }}
+          error={errors.name}
+        />
         <Field
           label="Identificador"
           value={identifier}
-          onChangeText={setIdentifier}
+          onChangeText={(v) => { setIdentifier(v); setErrors((e) => ({ ...e, identifier: undefined })); }}
+          error={errors.identifier}
           suffix={<Text style={styles.charHint}>4 caracteres</Text>}
         />
 
@@ -116,6 +139,10 @@ export function AdminRegisterRoutePage() {
             </React.Fragment>
           ))}
         </Card>
+
+        {errors.submit ? (
+          <Text style={{ fontSize: 13, color: colors.danger, marginTop: 12 }}>{errors.submit}</Text>
+        ) : null}
       </ScrollView>
 
       <View style={footerStyles.footer}>

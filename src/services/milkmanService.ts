@@ -1,6 +1,7 @@
 import { getDatabase } from '../database/client';
 import type {
   MilkmanProfile,
+  MilkmanRouteStatus,
   RouteProducer,
   MilkmanHomeData,
   MilkmanCollectionRow,
@@ -9,27 +10,48 @@ import type {
 } from '../types';
 import { todayDate, nowTime } from '../utils/date';
 
-interface ProfileRow {
-  id: string;
-  name: string;
-  routeId: string;
-  routeName: string;
-}
-
-// Get milkman profile + first linked route
-export function getMilkmanProfile(milkmanId: string): MilkmanProfile | null {
+// Rota ativa do leiteiro (NULL = todas as rotas). FR-3.2/FR-3.3.
+export function getActiveRouteId(milkmanId: string): string | null {
   const db = getDatabase();
-  const row = db.getFirstSync<ProfileRow>(
-    `SELECT m.id, m.name, mr.route_id AS routeId, r.name AS routeName
-     FROM milkmen m
-     JOIN milkman_routes mr ON mr.milkman_id = m.id
-     JOIN routes r ON r.id = mr.route_id
-     WHERE m.id = ?
-     LIMIT 1`,
+  const row = db.getFirstSync<{ active_route_id: string | null }>(
+    'SELECT active_route_id FROM milkmen WHERE id = ?',
     [milkmanId],
   );
-  if (!row) return null;
-  return { id: row.id, name: row.name, routeId: row.routeId, routeName: row.routeName };
+  return row?.active_route_id ?? null;
+}
+
+export function setActiveRoute(milkmanId: string, routeId: string | null): void {
+  const db = getDatabase();
+  db.runSync('UPDATE milkmen SET active_route_id = ? WHERE id = ?', [routeId, milkmanId]);
+}
+
+// Perfil do leiteiro refletindo a rota ativa (ou "Todas as rotas"). FR-3.3.
+export function getMilkmanProfile(milkmanId: string): MilkmanProfile | null {
+  const db = getDatabase();
+  const milkman = db.getFirstSync<{ id: string; name: string; active_route_id: string | null }>(
+    'SELECT id, name, active_route_id FROM milkmen WHERE id = ?',
+    [milkmanId],
+  );
+  if (!milkman) return null;
+
+  // Garante que pelo menos uma rota está vinculada.
+  const hasRoute = db.getFirstSync<{ c: number }>(
+    'SELECT COUNT(*) AS c FROM milkman_routes WHERE milkman_id = ?',
+    [milkmanId],
+  );
+  if (!hasRoute || hasRoute.c === 0) return null;
+
+  if (milkman.active_route_id) {
+    const r = db.getFirstSync<{ id: string; name: string }>(
+      'SELECT id, name FROM routes WHERE id = ?',
+      [milkman.active_route_id],
+    );
+    if (r) {
+      return { id: milkman.id, name: milkman.name, routeId: r.id, routeName: r.name };
+    }
+  }
+
+  return { id: milkman.id, name: milkman.name, routeId: '', routeName: 'Todas as rotas' };
 }
 
 interface RouteProducerRow {
@@ -45,6 +67,7 @@ interface RouteProducerRow {
 export function getMilkmanRouteProducers(milkmanId: string): RouteProducer[] {
   const db = getDatabase();
   const today = todayDate();
+  const activeId = getActiveRouteId(milkmanId); // FR-3.3 — filtra pela rota ativa, se houver.
   const rows = db.getAllSync<RouteProducerRow>(
     `SELECT p.id, p.name, p.farm, p.route_order,
             c.volume,
@@ -57,8 +80,9 @@ export function getMilkmanRouteProducers(milkmanId: string): RouteProducer[] {
        SELECT 1 FROM milkman_routes mr
        WHERE mr.milkman_id = ? AND mr.route_id = p.route_id
      )
+     AND (? IS NULL OR p.route_id = ?)
      ORDER BY p.route_order`,
-    [today, milkmanId, milkmanId],
+    [today, milkmanId, milkmanId, activeId, activeId],
   );
 
   const HUES = [30, 200, 150, 350, 80, 260, 170, 40, 310, 100, 220, 60];
@@ -92,6 +116,7 @@ export function getMilkmanTodayCollections(milkmanId: string): {
 } {
   const db = getDatabase();
   const today = todayDate();
+  const activeId = getActiveRouteId(milkmanId); // FR-3.3
 
   const totalRow = db.getFirstSync<{ count: number }>(
     `SELECT COUNT(*) AS count
@@ -99,14 +124,18 @@ export function getMilkmanTodayCollections(milkmanId: string): {
      WHERE EXISTS (
        SELECT 1 FROM milkman_routes mr
        WHERE mr.milkman_id = ? AND mr.route_id = p.route_id
-     )`,
-    [milkmanId],
+     )
+     AND (? IS NULL OR p.route_id = ?)`,
+    [milkmanId, activeId, activeId],
   );
   const total = totalRow?.count ?? 0;
 
   const collections = db.getAllSync<TodayCountRow>(
-    `SELECT volume, status FROM collections WHERE milkman_id = ? AND date = ?`,
-    [milkmanId, today],
+    `SELECT c.volume, c.status
+     FROM collections c
+     JOIN producers p ON p.id = c.producer_id
+     WHERE c.milkman_id = ? AND c.date = ? AND (? IS NULL OR p.route_id = ?)`,
+    [milkmanId, today, activeId, activeId],
   );
 
   return {
@@ -138,6 +167,44 @@ export function loadMilkmanHomeData(milkmanId: string): MilkmanHomeData | null {
     syncedCount: todayColl.syncedCount,
     nextStops: routeProducers.filter((p) => p.status === 'next'),
   };
+}
+
+// Todas as rotas atreladas ao leiteiro, com progresso de hoje e rota ativa. FR-3.1.
+export function getMilkmanRoutesWithStatus(milkmanId: string): MilkmanRouteStatus[] {
+  const db = getDatabase();
+  const today = todayDate();
+  const activeId = getActiveRouteId(milkmanId);
+
+  const routeRows = db.getAllSync<{ id: string; name: string; identifier: string | null }>(
+    `SELECT r.id, r.name, r.identifier
+     FROM routes r
+     JOIN milkman_routes mr ON mr.route_id = r.id
+     WHERE mr.milkman_id = ?
+     ORDER BY r.name`,
+    [milkmanId],
+  );
+
+  return routeRows.map((r) => {
+    const total = db.getFirstSync<{ c: number }>(
+      'SELECT COUNT(*) AS c FROM producers WHERE route_id = ?',
+      [r.id],
+    ) ?? { c: 0 };
+    const done = db.getFirstSync<{ c: number }>(
+      `SELECT COUNT(*) AS c FROM collections c
+       JOIN producers p ON p.id = c.producer_id
+       WHERE p.route_id = ? AND c.date = ? AND c.milkman_id = ?`,
+      [r.id, today, milkmanId],
+    ) ?? { c: 0 };
+    return {
+      routeId: r.id,
+      routeName: r.name,
+      identifier: r.identifier,
+      producerCount: total.c,
+      done: done.c,
+      total: total.c,
+      active: activeId === r.id,
+    };
+  });
 }
 
 // Register a collection

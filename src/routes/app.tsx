@@ -10,6 +10,8 @@ import { AdminRegisterProducerPage } from '../pages/AdminRegisterProducer';
 import { AdminRegisterRoutePage } from '../pages/AdminRegisterRoute';
 import { AdminRegisterMilkmanPage } from '../pages/AdminRegisterMilkman';
 import { AdminProducerDetailPage } from '../pages/AdminProducerDetail';
+import { AdminMilkmanListPage } from '../pages/AdminMilkmanList';
+import { AdminMilkmanDetailPage } from '../pages/AdminMilkmanDetail';
 import { ProducerCollectionDetailPage } from '../pages/ProducerCollectionDetail';
 import { MilkmanCollectionDetailPage } from '../pages/MilkmanCollectionDetail';
 
@@ -37,6 +39,8 @@ export function AppNavigator() {
       <Stack.Screen name="AdminRegisterRoute" component={AdminRegisterRoutePage} />
       <Stack.Screen name="AdminRegisterMilkman" component={AdminRegisterMilkmanPage} />
       <Stack.Screen name="AdminProducerDetail" component={AdminProducerDetailPage} />
+      <Stack.Screen name="AdminMilkmanList" component={AdminMilkmanListPage} />
+      <Stack.Screen name="AdminMilkmanDetail" component={AdminMilkmanDetailPage} />
       <Stack.Screen name="ProducerCollectionDetail" component={ProducerCollectionDetailPage} />
       <Stack.Screen name="MilkmanCollectionDetail" component={MilkmanCollectionDetailPage} />
     </Stack.Navigator>

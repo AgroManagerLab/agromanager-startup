@@ -29,6 +29,15 @@ export function migrateDatabase(): void {
       // milkman_routes já é criada pelo SCHEMA_SQL acima;
       // só precisa ser populada em bancos existentes.
     }
+    if (currentVersion < 4) {
+      // admins já é criada pelo SCHEMA_SQL; só as colunas novas precisam de ALTER.
+      if (!columnExists(db, 'producers', 'email')) {
+        db.execSync('ALTER TABLE producers ADD COLUMN email TEXT;'); // FR-2.1
+      }
+      if (!columnExists(db, 'milkmen', 'active_route_id')) {
+        db.execSync('ALTER TABLE milkmen ADD COLUMN active_route_id TEXT;'); // FR-3.2
+      }
+    }
     db.execSync(`PRAGMA user_version = ${SCHEMA_VERSION};`);
   }
 

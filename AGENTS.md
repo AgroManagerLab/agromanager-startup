@@ -40,8 +40,11 @@ rules/                 # regras do projeto (abaixo)
 .specs/                # planejamento spec-driven (visão, roadmap, memória, specs)
 ```
 
-Hoje as páginas **Login**, **ProducerHome** e **ProducerHistory** estão
-implementadas; **AdminHome** e **MilkmanHome** são scaffolds ("Em breve").
+Os três perfis estão implementados de ponta a ponta: **Produtor** (home,
+histórico, detalhe da coleta), **Leiteiro** (home, rotas, produtores da rota,
+registro de coleta, histórico, detalhe) e **Admin** (dashboard, lista/detalhe/
+cadastro/edição de produtores e leiteiros, cadastro de rotas). O leiteiro escolhe
+uma **rota ativa** (`milkmen.active_route_id`) que foca Início/Produtores.
 
 ## Comandos
 
@@ -54,8 +57,10 @@ npm test           # jest
 npx tsc --noEmit   # checagem de tipos
 ```
 
-Banco local: `agromanager.db`. O seed (idempotente) popula a cooperativa, rotas,
-leiteiro, produtores e as coletas do produtor logado (P-014) no primeiro boot.
+Banco local: `agromanager.db`. O seed (idempotente) popula a cooperativa, **admin**,
+rotas, leiteiro, produtores (todos com e-mail de login) e coletas com **datas
+relativas a hoje** no primeiro boot. Não há dados mockados em telas/serviços:
+admin, leiteiro e produtor autenticam por e-mail+senha no banco.
 
 ## Regras do projeto (LEITURA OBRIGATÓRIA)
 

@@ -10,6 +10,8 @@ export type RootStackParamList = {
   AdminRegisterRoute: { routeId?: string } | undefined;
   AdminRegisterMilkman: { milkmanId?: string } | undefined;
   AdminProducerDetail: { producerId: string };
+  AdminMilkmanList: undefined;
+  AdminMilkmanDetail: { milkmanId: string };
   ProducerCollectionDetail: { collectionId: string };
   MilkmanRegisterCollection: { producerId: string };
   MilkmanCollectionDetail: { collectionId: string };
@@ -33,12 +35,21 @@ export interface RouteRow {
   identifier: string | null;
 }
 
+export interface AdminRow {
+  id: string;
+  coop_id: string;
+  name: string;
+  email: string;
+  password: string;
+}
+
 export interface MilkmanRow {
   id: string;
   coop_id: string;
   name: string;
   email: string;
   password: string;
+  active_route_id: string | null;
 }
 
 export interface ProducerRow {
@@ -47,6 +58,7 @@ export interface ProducerRow {
   route_id: string | null;
   name: string;
   farm: string;
+  email: string | null;
   password: string;
   route_order: number;
 }
@@ -183,6 +195,32 @@ export interface AdminProducerSummary {
   route: string;
   monthVolume: number;
   hue: number;
+}
+
+export interface AdminMilkmanSummary {
+  id: string;
+  name: string;
+  email: string;
+  routeCount: number;
+  hue: number;
+}
+
+export interface MilkmanRouteStatus {
+  routeId: string;
+  routeName: string;
+  identifier: string | null;
+  producerCount: number;
+  done: number;
+  total: number;
+  active: boolean;
+}
+
+export interface AdminMilkmanDetailData {
+  id: string;
+  name: string;
+  email: string;
+  todayCollected: number;
+  routes: MilkmanRouteStatus[];
 }
 
 export interface RegistrationFormData {

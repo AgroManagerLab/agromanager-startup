@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text, ScrollView, Image } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, ScrollView, Image, TouchableOpacity } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import type { RouteProp } from '@react-navigation/native';
 import type { RootStackParamList } from '../../types';
@@ -11,7 +11,9 @@ import { NumText } from '../../components/NumText';
 import { SyncBadge } from '../../components/SyncBadge';
 import { MoneyBRL } from '../../components/MoneyBRL';
 import { MilkBottleIcon } from '../../components/icons/Icon';
-import { CURRENT_PRODUCER_ID, loadProducerCollectionDetail } from '../../services/producerService';
+import { ImageViewerModal } from '../../components/ImageViewerModal';
+import { loadProducerCollectionDetail } from '../../services/producerService';
+import { useAuth } from '../../context/AuthContext';
 import { colors } from '../../global/themes';
 import { styles } from './styles';
 
@@ -19,8 +21,10 @@ export function ProducerCollectionDetailPage() {
   const navigation = useNavigation<any>();
   const route = useRoute<RouteProp<RootStackParamList, 'ProducerCollectionDetail'>>();
   const { collectionId } = route.params;
+  const { userId } = useAuth();
+  const [viewerOpen, setViewerOpen] = useState(false);
 
-  const detail = loadProducerCollectionDetail(collectionId, CURRENT_PRODUCER_ID);
+  const detail = userId ? loadProducerCollectionDetail(collectionId, userId) : null;
 
   if (!detail) {
     return (
@@ -43,7 +47,9 @@ export function ProducerCollectionDetailPage() {
       <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent}>
         <View style={styles.photoWrap}>
           {detail.photoUri ? (
-            <Image source={{ uri: detail.photoUri }} style={styles.photoBase} resizeMode="cover" />
+            <TouchableOpacity activeOpacity={0.85} onPress={() => setViewerOpen(true)}>
+              <Image source={{ uri: detail.photoUri }} style={styles.photoBase} resizeMode="cover" />
+            </TouchableOpacity>
           ) : (
             <View style={[styles.photoBase, styles.photoPlaceholder]}>
               <MilkBottleIcon size={40} color={colors.ink3} />
@@ -76,6 +82,12 @@ export function ProducerCollectionDetailPage() {
 
         <Text style={styles.disclaimer}>* Valor estimado, não é o pagamento final.</Text>
       </ScrollView>
+
+      <ImageViewerModal
+        visible={viewerOpen}
+        uri={detail.photoUri}
+        onClose={() => setViewerOpen(false)}
+      />
     </View>
   );
 }

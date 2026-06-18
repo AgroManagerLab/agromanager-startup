@@ -15,13 +15,16 @@ interface FieldProps {
   big?: boolean;
   secureTextEntry?: boolean;
   editable?: boolean;
+  error?: string;
 }
 
 export function Field({
   label, value, onChangeText, placeholder, focused,
   hint, suffix, icon, type = 'text', big = false,
-  secureTextEntry, editable = true,
+  secureTextEntry, editable = true, error,
 }: FieldProps) {
+  // Borda vermelha quando há erro; senão verde ao focar; senão neutra. FR-5.1.
+  const borderColor = error ? colors.danger : focused ? colors.primary : colors.border;
   return (
     <View style={{ marginBottom: 16 }}>
       <Text style={{
@@ -31,7 +34,7 @@ export function Field({
       <View style={{
         flexDirection: 'row', alignItems: 'center', gap: 10,
         backgroundColor: colors.surface, borderRadius: colors.radii.md,
-        borderWidth: 1.5, borderColor: focused ? colors.primary : colors.border,
+        borderWidth: 1.5, borderColor,
         paddingHorizontal: big ? 18 : 16,
         height: big ? 72 : 56,
       }}>
@@ -59,7 +62,9 @@ export function Field({
           ) : suffix
         ) : null}
       </View>
-      {hint ? (
+      {error ? (
+        <Text style={{ fontSize: 13, color: colors.danger, marginTop: 6 }}>{error}</Text>
+      ) : hint ? (
         <Text style={{ fontSize: 13, color: colors.ink3, marginTop: 6 }}>{hint}</Text>
       ) : null}
     </View>
