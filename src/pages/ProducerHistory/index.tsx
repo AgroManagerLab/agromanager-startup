@@ -7,13 +7,16 @@ import { Divider } from '../../components/Divider';
 import { Volume } from '../../components/Volume';
 import { NumText } from '../../components/NumText';
 import { CollectionRow } from '../../components/CollectionRow';
-import { CURRENT_PRODUCER_ID, loadProducerData } from '../../services/producerService';
+import { loadProducerData } from '../../services/producerService';
+import { useAuth } from '../../context/AuthContext';
+import { currentMonthName } from '../../utils/date';
 import type { Collection } from '../../types';
 import { styles } from './styles';
 
 export function ProducerHistoryPage() {
   const navigation = useNavigation<any>();
-  const data = loadProducerData(CURRENT_PRODUCER_ID);
+  const { userId } = useAuth();
+  const data = userId ? loadProducerData(userId) : null;
 
   const renderCollection = useCallback(
     ({ item }: { item: Collection }) => (
@@ -31,9 +34,11 @@ export function ProducerHistoryPage() {
     return <View style={styles.historyContainer} />;
   }
 
+  const monthLabel = currentMonthName().replace(/^./, (c) => c.toUpperCase());
+
   return (
     <View style={styles.historyContainer}>
-      <ScreenHeader title="Minhas coletas" subtitle={`Maio · ${data.synced.length} sincronizadas`} />
+      <ScreenHeader title="Minhas coletas" subtitle={`${monthLabel} · ${data.synced.length} sincronizadas`} />
 
       <View style={styles.historySummaryWrap}>
         <Card style={styles.historySummaryCard}>

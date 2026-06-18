@@ -4,6 +4,7 @@ import { MoneyBRL } from './MoneyBRL';
 import { NumText } from './NumText';
 import { WalletIcon, InfoIcon } from './icons/Icon';
 import { colors } from '../global/themes';
+import { currentMonthName } from '../utils/date';
 import { styles } from './styles';
 
 interface ProjectionCardProps {
@@ -22,7 +23,7 @@ export function ProjectionCard({ projection, monthVolume, pricePerLiter }: Proje
           <WalletIcon size={24} color={colors.accentInk} />
         </View>
         <View style={styles.projectionContent}>
-          <Text style={styles.projectionLabel}>Projeção · maio</Text>
+          <Text style={styles.projectionLabel}>Projeção · {currentMonthName()}</Text>
           <View style={styles.projectionMoneyWrap}>
             <MoneyBRL value={projection} />
           </View>
