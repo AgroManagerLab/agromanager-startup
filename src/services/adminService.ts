@@ -2,7 +2,10 @@ import { getDatabase } from '../database/client';
 import type {
   AdminDashboardData,
   AdminProducerSummary,
+  AdminMilkmanSummary,
+  AdminMilkmanDetailData,
   AdminHistoryRow,
+  MilkmanRouteStatus,
   ProducerRow,
   ProducerProfile,
   RouteStatusRow,
@@ -17,7 +20,7 @@ function nameToHue(name: string): number {
   return Math.abs(hash) % 360;
 }
 
-export function loadAdminDashboard(): AdminDashboardData {
+export function loadAdminDashboard(adminId?: string): AdminDashboardData {
   const db = getDatabase();
   const today = todayDate();
   const month = thisMonth();
@@ -25,6 +28,11 @@ export function loadAdminDashboard(): AdminDashboardData {
   const coop = db.getFirstSync<{ name: string; price_per_liter: number }>(
     'SELECT name, price_per_liter FROM coops LIMIT 1',
   )!;
+
+  // Nome do admin vindo do banco (FR-4.3). Fallback genérico se id ausente.
+  const admin = adminId
+    ? db.getFirstSync<{ name: string }>('SELECT name FROM admins WHERE id = ?', [adminId])
+    : db.getFirstSync<{ name: string }>('SELECT name FROM admins LIMIT 1');
 
   const monthVol = db.getFirstSync<{ v: number }>(
     'SELECT COALESCE(SUM(volume), 0) AS v FROM collections WHERE date LIKE ?',
@@ -92,7 +100,7 @@ export function loadAdminDashboard(): AdminDashboardData {
 
   return {
     coopName: coop.name,
-    adminName: 'Helena',
+    adminName: admin?.name ?? 'Administrador',
     monthVolume: monthVol.v,
     todayVolume: todayVol.v,
     projection,
@@ -146,6 +154,7 @@ export function getAdminProducerDetail(producerId: string): {
   profile: ProducerProfile;
   monthVolume: number;
   projection: number;
+  pricePerLiter: number;
   history: AdminHistoryRow[];
 } {
   const db = getDatabase();
@@ -182,6 +191,7 @@ export function getAdminProducerDetail(producerId: string): {
     profile,
     monthVolume: monthVol.v,
     projection: monthVol.v * price.p,
+    pricePerLiter: price.p,
     history,
   };
 }
@@ -189,6 +199,7 @@ export function getAdminProducerDetail(producerId: string): {
 export function createProducer(data: {
   name: string;
   farm: string;
+  email: string;
   routeId: string;
   password: string;
 }): void {
@@ -205,32 +216,43 @@ export function createProducer(data: {
   ) ?? { o: 1 };
 
   db.runSync(
-    `INSERT INTO producers (id, coop_id, route_id, name, farm, password, route_order)
-     VALUES (?, (SELECT id FROM coops LIMIT 1), ?, ?, ?, ?, ?)`,
-    [id, data.routeId, data.name, data.farm, data.password, order.o],
+    `INSERT INTO producers (id, coop_id, route_id, name, farm, email, password, route_order)
+     VALUES (?, (SELECT id FROM coops LIMIT 1), ?, ?, ?, ?, ?, ?)`,
+    [id, data.routeId, data.name, data.farm, data.email, data.password, order.o],
   );
 }
 
 export function getProducerById(
   producerId: string,
-): { id: string; name: string; farm: string; route_id: string | null } | null {
+): { id: string; name: string; farm: string; email: string | null; route_id: string | null } | null {
   const db = getDatabase();
   const row = db.getFirstSync<{
     id: string;
     name: string;
     farm: string;
+    email: string | null;
     route_id: string | null;
   }>(
-    'SELECT id, name, farm, route_id FROM producers WHERE id = ?',
+    'SELECT id, name, farm, email, route_id FROM producers WHERE id = ?',
     [producerId],
   );
   return row ?? null;
+}
+
+export function isProducerEmailTaken(email: string, exceptId?: string): boolean {
+  const db = getDatabase();
+  const row = db.getFirstSync<{ c: number }>(
+    'SELECT COUNT(*) AS c FROM producers WHERE lower(email) = ? AND id != ?',
+    [email.trim().toLowerCase(), exceptId ?? ''],
+  ) ?? { c: 0 };
+  return row.c > 0;
 }
 
 export function updateProducer(data: {
   id: string;
   name: string;
   farm: string;
+  email: string;
   routeId: string;
 }): void {
   const db = getDatabase();
@@ -246,16 +268,16 @@ export function updateProducer(data: {
       [data.routeId],
     ) ?? { o: 1 };
     db.runSync(
-      'UPDATE producers SET name = ?, farm = ?, route_id = ?, route_order = ? WHERE id = ?',
-      [data.name, data.farm, data.routeId, order.o, data.id],
+      'UPDATE producers SET name = ?, farm = ?, email = ?, route_id = ?, route_order = ? WHERE id = ?',
+      [data.name, data.farm, data.email, data.routeId, order.o, data.id],
     );
     return;
   }
 
   // Rota inalterada: mantém route_order.
   db.runSync(
-    'UPDATE producers SET name = ?, farm = ?, route_id = ? WHERE id = ?',
-    [data.name, data.farm, data.routeId, data.id],
+    'UPDATE producers SET name = ?, farm = ?, email = ?, route_id = ? WHERE id = ?',
+    [data.name, data.farm, data.email, data.routeId, data.id],
   );
 }
 
@@ -351,4 +373,170 @@ export function getAllProducers(): (ProducerRow & { route_name: string })[] {
      LEFT JOIN routes r ON r.id = p.route_id
      ORDER BY p.name`,
   );
+}
+
+// ─── Gestão de leiteiros (FR-1) ───
+
+// Lista de leiteiros com a contagem de rotas vinculadas. FR-1.1.
+export function getAdminMilkmen(search?: string): AdminMilkmanSummary[] {
+  const db = getDatabase();
+  let sql = `
+    SELECT m.id, m.name, m.email,
+      (SELECT COUNT(*) FROM milkman_routes mr WHERE mr.milkman_id = m.id) AS routeCount
+    FROM milkmen m
+    WHERE 1=1
+  `;
+  const params: string[] = [];
+  if (search) {
+    sql += ' AND (m.name LIKE ? OR m.email LIKE ?)';
+    params.push(`%${search}%`, `%${search}%`);
+  }
+  sql += ' ORDER BY m.name';
+
+  const rows = db.getAllSync<Omit<AdminMilkmanSummary, 'hue'>>(sql, params);
+  return rows.map((r) => ({ ...r, hue: nameToHue(r.name) }));
+}
+
+// Detalhe do leiteiro: dados + rotas vinculadas com progresso de hoje. FR-1.2.
+export function getAdminMilkmanDetail(milkmanId: string): AdminMilkmanDetailData | null {
+  const db = getDatabase();
+  const today = todayDate();
+
+  const milkman = db.getFirstSync<{ id: string; name: string; email: string; active_route_id: string | null }>(
+    'SELECT id, name, email, active_route_id FROM milkmen WHERE id = ?',
+    [milkmanId],
+  );
+  if (!milkman) return null;
+
+  const routeRows = db.getAllSync<{ id: string; name: string; identifier: string | null }>(
+    `SELECT r.id, r.name, r.identifier
+     FROM routes r
+     JOIN milkman_routes mr ON mr.route_id = r.id
+     WHERE mr.milkman_id = ?
+     ORDER BY r.name`,
+    [milkmanId],
+  );
+
+  const routes: MilkmanRouteStatus[] = routeRows.map((r) => {
+    const total = db.getFirstSync<{ c: number }>(
+      'SELECT COUNT(*) AS c FROM producers WHERE route_id = ?',
+      [r.id],
+    ) ?? { c: 0 };
+    const done = db.getFirstSync<{ c: number }>(
+      `SELECT COUNT(*) AS c FROM collections c
+       JOIN producers p ON p.id = c.producer_id
+       WHERE p.route_id = ? AND c.date = ? AND c.milkman_id = ?`,
+      [r.id, today, milkmanId],
+    ) ?? { c: 0 };
+    return {
+      routeId: r.id,
+      routeName: r.name,
+      identifier: r.identifier,
+      producerCount: total.c,
+      done: done.c,
+      total: total.c,
+      active: milkman.active_route_id === r.id,
+    };
+  });
+
+  const collected = db.getFirstSync<{ v: number }>(
+    "SELECT COALESCE(SUM(volume), 0) AS v FROM collections WHERE milkman_id = ? AND date = ?",
+    [milkmanId, today],
+  ) ?? { v: 0 };
+
+  return {
+    id: milkman.id,
+    name: milkman.name,
+    email: milkman.email,
+    todayCollected: collected.v,
+    routes,
+  };
+}
+
+// Dados do leiteiro para preencher o formulário de edição. FR-1.3.
+export function getMilkmanById(milkmanId: string): {
+  id: string;
+  name: string;
+  email: string;
+  routeIds: string[];
+} | null {
+  const db = getDatabase();
+  const row = db.getFirstSync<{ id: string; name: string; email: string }>(
+    'SELECT id, name, email FROM milkmen WHERE id = ?',
+    [milkmanId],
+  );
+  if (!row) return null;
+  const links = db.getAllSync<{ route_id: string }>(
+    'SELECT route_id FROM milkman_routes WHERE milkman_id = ?',
+    [milkmanId],
+  );
+  return { ...row, routeIds: links.map((l) => l.route_id) };
+}
+
+export function isMilkmanEmailTaken(email: string, exceptId?: string): boolean {
+  const db = getDatabase();
+  const row = db.getFirstSync<{ c: number }>(
+    'SELECT COUNT(*) AS c FROM milkmen WHERE lower(email) = ? AND id != ?',
+    [email.trim().toLowerCase(), exceptId ?? ''],
+  ) ?? { c: 0 };
+  return row.c > 0;
+}
+
+export function isRouteIdentifierTaken(identifier: string, exceptId?: string): boolean {
+  const db = getDatabase();
+  const row = db.getFirstSync<{ c: number }>(
+    'SELECT COUNT(*) AS c FROM routes WHERE lower(identifier) = ? AND id != ?',
+    [identifier.trim().toLowerCase(), exceptId ?? ''],
+  ) ?? { c: 0 };
+  return row.c > 0;
+}
+
+// Atualiza dados do leiteiro e re-sincroniza os vínculos de rota. FR-1.3.
+export function updateMilkman(data: {
+  id: string;
+  name: string;
+  email: string;
+  password?: string;
+  routeIds: string[];
+}): void {
+  const db = getDatabase();
+  db.withTransactionSync(() => {
+    if (data.password && data.password.trim()) {
+      db.runSync('UPDATE milkmen SET name = ?, email = ?, password = ? WHERE id = ?', [
+        data.name,
+        data.email,
+        data.password.trim(),
+        data.id,
+      ]);
+    } else {
+      db.runSync('UPDATE milkmen SET name = ?, email = ? WHERE id = ?', [
+        data.name,
+        data.email,
+        data.id,
+      ]);
+    }
+
+    db.runSync('DELETE FROM milkman_routes WHERE milkman_id = ?', [data.id]);
+    for (const routeId of data.routeIds) {
+      db.runSync('INSERT INTO milkman_routes (milkman_id, route_id) VALUES (?, ?)', [data.id, routeId]);
+    }
+
+    // Limpa rota ativa se ela não pertence mais ao leiteiro. FR-3.2.
+    db.runSync(
+      `UPDATE milkmen SET active_route_id = NULL
+       WHERE id = ? AND active_route_id IS NOT NULL
+       AND active_route_id NOT IN (SELECT route_id FROM milkman_routes WHERE milkman_id = ?)`,
+      [data.id, data.id],
+    );
+  });
+}
+
+// Remove o leiteiro preservando o histórico de coletas (desassocia). FR-1.4.
+export function deleteMilkman(milkmanId: string): void {
+  const db = getDatabase();
+  db.withTransactionSync(() => {
+    db.runSync('UPDATE collections SET milkman_id = NULL WHERE milkman_id = ?', [milkmanId]);
+    db.runSync('DELETE FROM milkman_routes WHERE milkman_id = ?', [milkmanId]);
+    db.runSync('DELETE FROM milkmen WHERE id = ?', [milkmanId]);
+  });
 }

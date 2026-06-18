@@ -72,7 +72,7 @@ export function AdminRegistrationsHubPage() {
           title="Leiteiro"
           subtitle="E-mail, senha e rotas vinculadas"
           count={`${data.totalMilkmen} cadastrados`}
-          onPress={() => navigation.navigate('AdminRegisterMilkman')}
+          onPress={() => navigation.navigate('AdminMilkmanList')}
         />
       </ScrollView>
     </View>
