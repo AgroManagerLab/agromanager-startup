@@ -70,6 +70,30 @@ export const styles = StyleSheet.create({
     color: colors.ink2,
     marginTop: 8,
   },
+  startBtn: {
+    marginTop: 12,
+    height: 44,
+    borderRadius: colors.radii.md,
+    backgroundColor: colors.accent,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  startBtnText: {
+    fontFamily: FONT.uiBold,
+    fontSize: 14.5,
+    color: colors.accentInk,
+  },
+  startedRow: {
+    marginTop: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  startedText: {
+    fontFamily: FONT.uiBold,
+    fontSize: 13.5,
+    color: colors.primary,
+  },
   allCardLabel: {
     fontFamily: FONT.uiSemi,
     fontSize: 13,
