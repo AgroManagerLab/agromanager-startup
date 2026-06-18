@@ -17,7 +17,6 @@ interface ProducerOption {
   name: string;
   farm: string;
   checked: boolean;
-  order: number;
 }
 
 export function AdminRegisterRoutePage() {
@@ -28,32 +27,20 @@ export function AdminRegisterRoutePage() {
   const [identifier, setIdentifier] = useState('');
   const [errors, setErrors] = useState<{ name?: string; identifier?: string; submit?: string }>({});
   const [producers, setProducers] = useState<ProducerOption[]>(
-    allProducers.map((p, i) => ({
+    allProducers.map((p) => ({
       id: p.id,
       name: p.name,
       farm: p.farm,
-      checked: i < 3,
-      order: i < 3 ? i + 1 : 0,
+      checked: false,
     })),
   );
 
   const checkedCount = producers.filter((p) => p.checked).length;
 
   function toggleProducer(id: string) {
-    setProducers((prev) => {
-      const next = prev.map((p) =>
-        p.id === id ? { ...p, checked: !p.checked } : p,
-      );
-      let order = 1;
-      return next.map((p) => {
-        if (p.checked) {
-          const o = order;
-          order += 1;
-          return { ...p, order: o };
-        }
-        return { ...p, order: 0 };
-      });
-    });
+    setProducers((prev) =>
+      prev.map((p) => (p.id === id ? { ...p, checked: !p.checked } : p)),
+    );
   }
 
   // FR-5.4 — nome obrigatório; identificador obrigatório e único.
@@ -130,11 +117,6 @@ export function AdminRegisterRoutePage() {
                   <Text style={styles.producerName}>{p.name}</Text>
                   <Text style={styles.producerFarm}>{p.farm}</Text>
                 </View>
-                {p.checked && (
-                  <View style={styles.orderBadge}>
-                    <Text style={styles.orderText}>{p.order}</Text>
-                  </View>
-                )}
               </TouchableOpacity>
             </React.Fragment>
           ))}

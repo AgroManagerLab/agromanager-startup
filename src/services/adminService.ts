@@ -4,6 +4,10 @@ import type {
   AdminProducerSummary,
   AdminMilkmanSummary,
   AdminMilkmanDetailData,
+  AdminRouteSummary,
+  AdminRouteDetailData,
+  AdminRouteProducer,
+  AdminRouteMilkman,
   AdminHistoryRow,
   MilkmanRouteStatus,
   ProducerRow,
@@ -80,10 +84,16 @@ export function loadAdminDashboard(adminId?: string): AdminDashboardData {
       [route.id, today],
     ) ?? { c: 0 };
 
+    // Rota iniciada hoje por qualquer leiteiro (mesmo sem coleta ainda).
+    const started = db.getFirstSync<{ c: number }>(
+      'SELECT COUNT(*) AS c FROM route_starts WHERE route_id = ? AND date = ?',
+      [route.id, today],
+    ) ?? { c: 0 };
+
     let status: 'rota' | 'concluida' | 'esperando';
     if (done.c >= total.c && total.c > 0) {
       status = 'concluida';
-    } else if (done.c > 0) {
+    } else if (done.c > 0 || started.c > 0) {
       status = 'rota';
     } else {
       status = 'esperando';
@@ -299,12 +309,9 @@ export function createRoute(data: {
       [nextId, data.name, data.identifier],
     );
 
-    data.producerIds.forEach((pid, idx) => {
-      db.runSync(
-        'UPDATE producers SET route_id = ?, route_order = ? WHERE id = ?',
-        [nextId, idx + 1, pid],
-      );
-    });
+    for (const pid of data.producerIds) {
+      db.runSync('UPDATE producers SET route_id = ? WHERE id = ?', [nextId, pid]);
+    }
   });
 }
 
@@ -375,6 +382,85 @@ export function getAllProducers(): (ProducerRow & { route_name: string })[] {
   );
 }
 
+// ─── Listagem de rotas (admin) ───
+
+// Lista de rotas com nº de produtores e leiteiros responsáveis.
+export function getAdminRoutes(search?: string): AdminRouteSummary[] {
+  const db = getDatabase();
+  let sql = `
+    SELECT r.id, r.name, r.identifier,
+      (SELECT COUNT(*) FROM producers p WHERE p.route_id = r.id) AS producerCount
+    FROM routes r
+    WHERE 1=1
+  `;
+  const params: string[] = [];
+  if (search) {
+    sql += ' AND (r.name LIKE ? OR r.identifier LIKE ?)';
+    params.push(`%${search}%`, `%${search}%`);
+  }
+  sql += ' ORDER BY r.name';
+
+  const rows = db.getAllSync<{ id: string; name: string; identifier: string | null; producerCount: number }>(
+    sql,
+    params,
+  );
+
+  return rows.map((r) => {
+    const milkmen = db.getAllSync<{ name: string }>(
+      `SELECT m.name FROM milkmen m
+       JOIN milkman_routes mr ON mr.milkman_id = m.id
+       WHERE mr.route_id = ?
+       ORDER BY m.name`,
+      [r.id],
+    );
+    return {
+      id: r.id,
+      name: r.name,
+      identifier: r.identifier,
+      producerCount: r.producerCount,
+      milkmanNames: milkmen.map((m) => m.name),
+    };
+  });
+}
+
+// Detalhe da rota: leiteiros responsáveis + produtores ordenados.
+export function getAdminRouteDetail(routeId: string): AdminRouteDetailData | null {
+  const db = getDatabase();
+  const route = db.getFirstSync<{ id: string; name: string; identifier: string | null }>(
+    'SELECT id, name, identifier FROM routes WHERE id = ?',
+    [routeId],
+  );
+  if (!route) return null;
+
+  const milkmenRows = db.getAllSync<{ id: string; name: string }>(
+    `SELECT m.id, m.name FROM milkmen m
+     JOIN milkman_routes mr ON mr.milkman_id = m.id
+     WHERE mr.route_id = ?
+     ORDER BY m.name`,
+    [routeId],
+  );
+  const milkmen: AdminRouteMilkman[] = milkmenRows.map((m) => ({ ...m, hue: nameToHue(m.name) }));
+
+  const producerRows = db.getAllSync<{ id: string; name: string; farm: string }>(
+    'SELECT id, name, farm FROM producers WHERE route_id = ? ORDER BY name',
+    [routeId],
+  );
+  const producers: AdminRouteProducer[] = producerRows.map((p) => ({
+    id: p.id,
+    name: p.name,
+    farm: p.farm,
+    hue: nameToHue(p.name),
+  }));
+
+  return {
+    id: route.id,
+    name: route.name,
+    identifier: route.identifier,
+    milkmen,
+    producers,
+  };
+}
+
 // ─── Gestão de leiteiros (FR-1) ───
 
 // Lista de leiteiros com a contagem de rotas vinculadas. FR-1.1.
@@ -428,6 +514,10 @@ export function getAdminMilkmanDetail(milkmanId: string): AdminMilkmanDetailData
        WHERE p.route_id = ? AND c.date = ? AND c.milkman_id = ?`,
       [r.id, today, milkmanId],
     ) ?? { c: 0 };
+    const started = db.getFirstSync<{ c: number }>(
+      'SELECT COUNT(*) AS c FROM route_starts WHERE milkman_id = ? AND route_id = ? AND date = ?',
+      [milkmanId, r.id, today],
+    ) ?? { c: 0 };
     return {
       routeId: r.id,
       routeName: r.name,
@@ -436,6 +526,7 @@ export function getAdminMilkmanDetail(milkmanId: string): AdminMilkmanDetailData
       done: done.c,
       total: total.c,
       active: milkman.active_route_id === r.id,
+      startedToday: started.c > 0,
     };
   });
 
