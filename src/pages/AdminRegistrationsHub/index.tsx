@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useCallback, useState, useMemo } from 'react';
 import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { ScreenHeader } from '../../components/ScreenHeader';
 import { UsersIcon, RouteIcon, TruckIcon, ChevronIcon } from '../../components/icons/Icon';
 import { loadAdminDashboard } from '../../services/adminService';
@@ -41,7 +41,18 @@ function CadastroCard({
 
 export function AdminRegistrationsHubPage() {
   const navigation = useNavigation<any>();
-  const data = loadAdminDashboard();
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  useFocusEffect(
+    useCallback(() => {
+      setRefreshKey((k) => k + 1);
+    }, []),
+  );
+
+  const data = useMemo(
+    () => loadAdminDashboard(),
+    [refreshKey], // eslint-disable-line react-hooks/exhaustive-deps
+  );
 
   return (
     <View style={styles.container}>
@@ -63,7 +74,7 @@ export function AdminRegistrationsHubPage() {
           title="Rota"
           subtitle="Sequência de coleta e produtores"
           count={`${data.totalRoutes} ativas`}
-          onPress={() => navigation.navigate('AdminRegisterRoute')}
+          onPress={() => navigation.navigate('AdminRouteList')}
         />
         <CadastroCard
           icon={<TruckIcon size={28} color={'#1F4D38'} />}

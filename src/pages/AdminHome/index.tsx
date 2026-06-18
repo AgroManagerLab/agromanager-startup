@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useCallback, useState, useMemo } from 'react';
 import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { MilkrouteBrand } from '../../components/MilkrouteLogo';
 import { Card } from '../../components/Card';
 import { Volume } from '../../components/Volume';
@@ -92,7 +92,18 @@ export function AdminHomePage() {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<any>();
   const { userId } = useAuth();
-  const data = loadAdminDashboard(userId ?? undefined);
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  useFocusEffect(
+    useCallback(() => {
+      setRefreshKey((k) => k + 1);
+    }, []),
+  );
+
+  const data = useMemo(
+    () => loadAdminDashboard(userId ?? undefined),
+    [userId, refreshKey], // eslint-disable-line react-hooks/exhaustive-deps
+  );
   const todayLabel = formatDate(new Date());
   const monthLabel = currentMonthName().replace(/^./, (c) => c.toUpperCase());
   const dayOfMonth = new Date().getDate();

@@ -349,6 +349,130 @@ export function getRoutes(): { id: string; name: string }[] {
   );
 }
 
+export function getAllRoutes(): {
+  id: string;
+  name: string;
+  identifier: string | null;
+  producerCount: number;
+  milkmanName: string | null;
+}[] {
+  const db = getDatabase();
+  const rows = db.getAllSync<{
+    id: string;
+    name: string;
+    identifier: string | null;
+  }>('SELECT id, name, identifier FROM routes ORDER BY name');
+
+  return rows.map((r) => {
+    const producerCount =
+      db.getFirstSync<{ c: number }>(
+        'SELECT COUNT(*) AS c FROM producers WHERE route_id = ?',
+        [r.id],
+      ) ?? { c: 0 };
+    const milkman = db.getFirstSync<{ name: string }>(
+      `SELECT m.name FROM milkmen m
+       JOIN milkman_routes mr ON mr.milkman_id = m.id
+       WHERE mr.route_id = ? LIMIT 1`,
+      [r.id],
+    );
+    return {
+      id: r.id,
+      name: r.name,
+      identifier: r.identifier,
+      producerCount: producerCount.c,
+      milkmanName: milkman?.name ?? null,
+    };
+  });
+}
+
+export function getRouteById(routeId: string): {
+  id: string;
+  name: string;
+  identifier: string | null;
+  milkmanName: string | null;
+  producerCount: number;
+  done: number;
+  total: number;
+} | null {
+  const db = getDatabase();
+  const today = todayDate();
+  const row = db.getFirstSync<{
+    id: string;
+    name: string;
+    identifier: string | null;
+  }>('SELECT id, name, identifier FROM routes WHERE id = ?', [routeId]);
+  if (!row) return null;
+
+  const producerCount =
+    db.getFirstSync<{ c: number }>(
+      'SELECT COUNT(*) AS c FROM producers WHERE route_id = ?',
+      [routeId],
+    ) ?? { c: 0 };
+  const milkman = db.getFirstSync<{ name: string }>(
+    `SELECT m.name FROM milkmen m
+     JOIN milkman_routes mr ON mr.milkman_id = m.id
+     WHERE mr.route_id = ? LIMIT 1`,
+    [routeId],
+  );
+  const done =
+    db.getFirstSync<{ c: number }>(
+      `SELECT COUNT(*) AS c FROM collections c
+       JOIN producers p ON p.id = c.producer_id
+       WHERE p.route_id = ? AND c.date = ?`,
+      [routeId, today],
+    ) ?? { c: 0 };
+
+  return {
+    id: row.id,
+    name: row.name,
+    identifier: row.identifier,
+    milkmanName: milkman?.name ?? null,
+    producerCount: producerCount.c,
+    done: done.c,
+    total: producerCount.c,
+  };
+}
+
+export function getRouteProducers(
+  routeId: string,
+): AdminProducerSummary[] {
+  return getAdminProducers(undefined, routeId);
+}
+
+export function updateRoute(data: {
+  id: string;
+  name: string;
+  identifier: string;
+  producerIds: string[];
+}): void {
+  const db = getDatabase();
+  db.withTransactionSync(() => {
+    db.runSync('UPDATE routes SET name = ?, identifier = ? WHERE id = ?', [
+      data.name,
+      data.identifier,
+      data.id,
+    ]);
+
+    db.runSync('UPDATE producers SET route_id = NULL, route_order = 0 WHERE route_id = ?', [data.id]);
+
+    data.producerIds.forEach((pid, idx) => {
+      db.runSync(
+        'UPDATE producers SET route_id = ?, route_order = ? WHERE id = ?',
+        [data.id, idx + 1, pid],
+      );
+    });
+  });
+}
+
+export function deleteRoute(routeId: string): void {
+  const db = getDatabase();
+  db.withTransactionSync(() => {
+    db.runSync('UPDATE producers SET route_id = NULL, route_order = 0 WHERE route_id = ?', [routeId]);
+    db.runSync('DELETE FROM milkman_routes WHERE route_id = ?', [routeId]);
+    db.runSync('DELETE FROM routes WHERE id = ?', [routeId]);
+  });
+}
+
 export function getProducersNotOnRoute(
   routeId: string,
 ): AdminProducerSummary[] {

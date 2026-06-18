@@ -10,6 +10,8 @@ export type RootStackParamList = {
   AdminRegisterRoute: { routeId?: string } | undefined;
   AdminRegisterMilkman: { milkmanId?: string } | undefined;
   AdminProducerDetail: { producerId: string };
+  AdminRouteList: undefined;
+  AdminRouteDetail: { routeId: string };
   AdminMilkmanList: undefined;
   AdminMilkmanDetail: { milkmanId: string };
   ProducerCollectionDetail: { collectionId: string };
