@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { View, Text, ScrollView, Image } from 'react-native';
+import { View, Text, ScrollView, Image, TouchableOpacity } from 'react-native';
 import { useFocusEffect, useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../../types';
@@ -8,6 +8,7 @@ import { Card } from '../../components/Card';
 import { Divider } from '../../components/Divider';
 import { SyncBadge } from '../../components/SyncBadge';
 import { MilkBottleIcon } from '../../components/icons/Icon';
+import { ImageViewerModal } from '../../components/ImageViewerModal';
 import { useAuth } from '../../context/AuthContext';
 import { getMilkmanCollectionDetail } from '../../services/milkmanService';
 import { colors } from '../../global/themes';
@@ -19,6 +20,7 @@ export function MilkmanCollectionDetailPage() {
   const { collectionId } = route.params;
   const { userId } = useAuth();
   const [detail, setDetail] = useState(() => getMilkmanCollectionDetail(collectionId, userId!));
+  const [viewerOpen, setViewerOpen] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
@@ -44,7 +46,9 @@ export function MilkmanCollectionDetailPage() {
       <ScrollView style={styles.scroll} bounces={false} contentContainerStyle={styles.scrollContent}>
         <View style={styles.photoWrap}>
           {detail.photoUri ? (
-            <Image source={{ uri: detail.photoUri }} style={styles.photoBase} resizeMode="cover" />
+            <TouchableOpacity activeOpacity={0.85} onPress={() => setViewerOpen(true)}>
+              <Image source={{ uri: detail.photoUri }} style={styles.photoBase} resizeMode="cover" />
+            </TouchableOpacity>
           ) : (
             <View style={[styles.photoBase, styles.photoPlaceholder]}>
               <MilkBottleIcon size={40} color={colors.ink3} />
@@ -94,6 +98,12 @@ export function MilkmanCollectionDetailPage() {
           </View>
         </Card>
       </ScrollView>
+
+      <ImageViewerModal
+        visible={viewerOpen}
+        uri={detail.photoUri}
+        onClose={() => setViewerOpen(false)}
+      />
     </View>
   );
 }
