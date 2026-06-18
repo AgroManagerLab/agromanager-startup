@@ -38,6 +38,9 @@ export function migrateDatabase(): void {
         db.execSync('ALTER TABLE milkmen ADD COLUMN active_route_id TEXT;'); // FR-3.2
       }
     }
+    if (currentVersion < 5) {
+      // Tabela route_starts (início de rota por dia) é criada pelo SCHEMA_SQL acima.
+    }
     db.execSync(`PRAGMA user_version = ${SCHEMA_VERSION};`);
   }
 

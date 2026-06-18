@@ -1,4 +1,4 @@
-export const SCHEMA_VERSION = 4;
+export const SCHEMA_VERSION = 5;
 
 export const SCHEMA_SQL = `
 CREATE TABLE IF NOT EXISTS coops (
@@ -52,6 +52,15 @@ CREATE TABLE IF NOT EXISTS milkman_routes (
   milkman_id TEXT NOT NULL,
   route_id TEXT NOT NULL,
   PRIMARY KEY (milkman_id, route_id),
+  FOREIGN KEY (milkman_id) REFERENCES milkmen (id),
+  FOREIGN KEY (route_id) REFERENCES routes (id)
+);
+
+CREATE TABLE IF NOT EXISTS route_starts (
+  milkman_id TEXT NOT NULL,
+  route_id TEXT NOT NULL,
+  date TEXT NOT NULL,
+  PRIMARY KEY (milkman_id, route_id, date),
   FOREIGN KEY (milkman_id) REFERENCES milkmen (id),
   FOREIGN KEY (route_id) REFERENCES routes (id)
 );

@@ -26,17 +26,27 @@ export function MilkmanRegisterCollectionPage() {
   const { producerId } = route.params;
 
   const producers = useMemo(() => getMilkmanRouteProducers(userId!), [userId]);
+  const [selectedId, setSelectedId] = useState(producerId);
+  const [showPicker, setShowPicker] = useState(false);
   const producer = useMemo(
-    () => producers.find((p) => p.id === producerId),
-    [producers, producerId],
+    () => producers.find((p) => p.id === selectedId),
+    [producers, selectedId],
   );
   const total = producers.length;
-  const producerIndex = producers.findIndex((p) => p.id === producerId);
+  const producerIndex = producers.findIndex((p) => p.id === selectedId);
 
   const [volume, setVolume] = useState('');
   const [photoUri, setPhotoUri] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [cameraOpen, setCameraOpen] = useState(false);
+
+  // Troca o produtor sem sair da tela; limpa volume/foto da seleção anterior.
+  function changeProducer(id: string) {
+    setSelectedId(id);
+    setShowPicker(false);
+    setVolume('');
+    setPhotoUri(null);
+  }
 
   if (!producer) {
     return <View style={styles.container} />;
@@ -117,10 +127,26 @@ export function MilkmanRegisterCollectionPage() {
               <Text style={styles.producerName}>{producer.name}</Text>
               <Text style={styles.producerFarm}>{producer.farm}</Text>
             </View>
-            <TouchableOpacity onPress={() => navigation.goBack()}>
-              <Text style={styles.trocarText}>Trocar</Text>
+            <TouchableOpacity onPress={() => setShowPicker((v) => !v)}>
+              <Text style={styles.trocarText}>{showPicker ? 'Fechar' : 'Trocar'}</Text>
             </TouchableOpacity>
           </View>
+
+          {showPicker && (
+            <View style={styles.pickerCard}>
+              {producers.map((p) => (
+                <TouchableOpacity
+                  key={p.id}
+                  activeOpacity={0.7}
+                  style={[styles.pickerItem, p.id === selectedId && styles.pickerItemActive]}
+                  onPress={() => changeProducer(p.id)}
+                >
+                  <Text style={styles.pickerName}>{p.name}</Text>
+                  <Text style={styles.pickerFarm}>{p.farm}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          )}
 
           {/* Volume */}
           <View style={styles.volumeSection}>

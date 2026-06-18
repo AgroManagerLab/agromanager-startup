@@ -103,6 +103,34 @@ export const styles = StyleSheet.create({
     fontSize: 13.5,
     color: colors.primary,
   },
+  pickerCard: {
+    marginTop: 10,
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: colors.radii.lg,
+    overflow: 'hidden',
+  },
+  pickerItem: {
+    paddingVertical: 12,
+    paddingHorizontal: 14,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.divider,
+  },
+  pickerItemActive: {
+    backgroundColor: colors.primarySofter,
+  },
+  pickerName: {
+    fontFamily: FONT.uiBold,
+    fontSize: 15,
+    color: colors.ink,
+  },
+  pickerFarm: {
+    fontFamily: FONT.uiSemi,
+    fontSize: 12.5,
+    color: colors.ink2,
+    marginTop: 2,
+  },
   volumeSection: {
     gap: 6,
   },

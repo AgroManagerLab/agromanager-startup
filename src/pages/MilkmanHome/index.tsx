@@ -136,9 +136,6 @@ function MiniMetric({
 function NextStopRow({ stop }: { stop: import('../../types').RouteProducer }) {
   return (
     <View style={styles.nextStopRow}>
-      <View style={styles.nextStopBadge}>
-        <Text style={styles.nextStopBadgeText}>{stop.seq}</Text>
-      </View>
       <View style={styles.nextStopInfo}>
         <Text style={styles.nextStopName}>{stop.name}</Text>
         <Text style={styles.nextStopFarm}>{stop.farm}</Text>

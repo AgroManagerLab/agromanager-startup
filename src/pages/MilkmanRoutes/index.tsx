@@ -5,7 +5,7 @@ import type { MilkmanRouteStatus } from '../../types';
 import { ScreenHeader } from '../../components/ScreenHeader';
 import { Card } from '../../components/Card';
 import { useAuth } from '../../context/AuthContext';
-import { getMilkmanRoutesWithStatus, getActiveRouteId, setActiveRoute } from '../../services/milkmanService';
+import { getMilkmanRoutesWithStatus, getActiveRouteId, setActiveRoute, startRoute } from '../../services/milkmanService';
 import { styles } from './styles';
 
 export function MilkmanRoutesPage() {
@@ -29,6 +29,13 @@ export function MilkmanRoutesPage() {
   function selectRoute(routeId: string | null) {
     if (!userId) return;
     setActiveRoute(userId, routeId);
+    reload();
+  }
+
+  // Marca a rota como iniciada hoje (visível para o admin no painel).
+  function beginRoute(routeId: string) {
+    if (!userId) return;
+    startRoute(userId, routeId);
     reload();
   }
 
@@ -62,8 +69,8 @@ export function MilkmanRoutesPage() {
           routes.map((r) => {
             const isActive = activeId === r.routeId;
             return (
-              <TouchableOpacity key={r.routeId} activeOpacity={0.8} onPress={() => selectRoute(r.routeId)}>
-                <Card style={[styles.card, isActive && styles.cardActive]}>
+              <Card key={r.routeId} style={[styles.card, isActive && styles.cardActive]}>
+                <TouchableOpacity activeOpacity={0.8} onPress={() => selectRoute(r.routeId)}>
                   <View style={styles.cardTop}>
                     <View>
                       <Text style={styles.routeName}>{r.routeName}</Text>
@@ -84,8 +91,22 @@ export function MilkmanRoutesPage() {
                   <Text style={styles.routeMeta}>
                     {r.producerCount === 1 ? '1 produtor' : `${r.producerCount} produtores`} · {r.done}/{r.total} coletados hoje
                   </Text>
-                </Card>
-              </TouchableOpacity>
+                </TouchableOpacity>
+
+                {r.startedToday ? (
+                  <View style={styles.startedRow}>
+                    <Text style={styles.startedText}>✓ Rota iniciada hoje</Text>
+                  </View>
+                ) : (
+                  <TouchableOpacity
+                    activeOpacity={0.85}
+                    style={styles.startBtn}
+                    onPress={() => beginRoute(r.routeId)}
+                  >
+                    <Text style={styles.startBtnText}>Iniciar rota</Text>
+                  </TouchableOpacity>
+                )}
+              </Card>
             );
           })
         )}

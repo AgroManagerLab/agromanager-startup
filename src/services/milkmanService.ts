@@ -25,6 +25,24 @@ export function setActiveRoute(milkmanId: string, routeId: string | null): void 
   db.runSync('UPDATE milkmen SET active_route_id = ? WHERE id = ?', [routeId, milkmanId]);
 }
 
+// Marca o início da rota no dia (idempotente). Reseta naturalmente por data.
+export function startRoute(milkmanId: string, routeId: string): void {
+  const db = getDatabase();
+  db.runSync(
+    'INSERT OR IGNORE INTO route_starts (milkman_id, route_id, date) VALUES (?, ?, ?)',
+    [milkmanId, routeId, todayDate()],
+  );
+}
+
+export function isRouteStartedToday(milkmanId: string, routeId: string): boolean {
+  const db = getDatabase();
+  const row = db.getFirstSync<{ c: number }>(
+    'SELECT COUNT(*) AS c FROM route_starts WHERE milkman_id = ? AND route_id = ? AND date = ?',
+    [milkmanId, routeId, todayDate()],
+  ) ?? { c: 0 };
+  return row.c > 0;
+}
+
 // Perfil do leiteiro refletindo a rota ativa (ou "Todas as rotas"). FR-3.3.
 export function getMilkmanProfile(milkmanId: string): MilkmanProfile | null {
   const db = getDatabase();
@@ -195,6 +213,10 @@ export function getMilkmanRoutesWithStatus(milkmanId: string): MilkmanRouteStatu
        WHERE p.route_id = ? AND c.date = ? AND c.milkman_id = ?`,
       [r.id, today, milkmanId],
     ) ?? { c: 0 };
+    const started = db.getFirstSync<{ c: number }>(
+      'SELECT COUNT(*) AS c FROM route_starts WHERE milkman_id = ? AND route_id = ? AND date = ?',
+      [milkmanId, r.id, today],
+    ) ?? { c: 0 };
     return {
       routeId: r.id,
       routeName: r.name,
@@ -203,6 +225,7 @@ export function getMilkmanRoutesWithStatus(milkmanId: string): MilkmanRouteStatu
       done: done.c,
       total: total.c,
       active: activeId === r.id,
+      startedToday: started.c > 0,
     };
   });
 }
@@ -225,6 +248,18 @@ export function registerCollection(data: {
      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [id, data.producerId, data.milkmanId, date, time, data.volume, status, data.photoUri, date, date],
   );
+
+  // Auto-início: registrar coleta marca a rota do produtor como iniciada hoje.
+  const producerRoute = db.getFirstSync<{ route_id: string | null }>(
+    'SELECT route_id FROM producers WHERE id = ?',
+    [data.producerId],
+  );
+  if (producerRoute?.route_id) {
+    db.runSync(
+      'INSERT OR IGNORE INTO route_starts (milkman_id, route_id, date) VALUES (?, ?, ?)',
+      [data.milkmanId, producerRoute.route_id, date],
+    );
+  }
 }
 
 // Sync all pending collections for a milkman
