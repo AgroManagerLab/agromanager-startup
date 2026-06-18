@@ -6,6 +6,7 @@ import { MilkrouteLogo } from '../../components/MilkrouteLogo';
 import { MailIcon, LockIcon, AlertIcon } from '../../components/AuthIcons';
 import { colors } from '../../global/themes';
 import { useAuth } from '../../context/AuthContext';
+import { isValidEmail, requiredText } from '../../utils/validation';
 import { styles } from './styles';
 
 function DevEntry({
@@ -32,28 +33,45 @@ function DevEntry({
 
 export function LoginPage() {
   const { signIn } = useAuth();
-  const [email, setEmail] = useState('joao@coopvaleleite.coop.br');
-  const [password, setPassword] = useState('milkroute');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [focused, setFocused] = useState<'email' | 'password' | null>(null);
   const [error, setError] = useState(false);
+  const [fieldErrors, setFieldErrors] = useState<{ email?: string; password?: string }>({});
   const [recoveryRequested, setRecoveryRequested] = useState(false);
 
   function handleEmailChange(value: string) {
     setEmail(value);
     setError(false);
+    setFieldErrors((e) => ({ ...e, email: undefined }));
     setRecoveryRequested(false);
   }
 
   function handlePasswordChange(value: string) {
     setPassword(value);
     setError(false);
+    setFieldErrors((e) => ({ ...e, password: undefined }));
+  }
+
+  // Valida formato/obrigatoriedade antes de tentar autenticar. FR-5.6.
+  function validate(): boolean {
+    const next: { email?: string; password?: string } = {};
+    if (!requiredText(email)) next.email = 'Informe seu e-mail.';
+    else if (!isValidEmail(email)) next.email = 'E-mail inválido.';
+    if (!requiredText(password)) next.password = 'Informe sua senha.';
+    setFieldErrors(next);
+    return Object.keys(next).length === 0;
   }
 
   function handleLogin() {
+    setRecoveryRequested(false);
+    if (!validate()) {
+      setError(false);
+      return;
+    }
     const ok = signIn(email, password);
     setError(!ok);
-    setRecoveryRequested(false);
   }
 
   function handleForgotPassword() {
@@ -82,7 +100,11 @@ export function LoginPage() {
 
             <View style={styles.fieldWrap}>
               <Text style={styles.fieldLabel}>E-mail</Text>
-              <View style={[styles.fieldBox, focused === 'email' && styles.fieldBoxFocused]}>
+              <View style={[
+                styles.fieldBox,
+                focused === 'email' && styles.fieldBoxFocused,
+                fieldErrors.email && { borderColor: colors.danger },
+              ]}>
                 <MailIcon />
                 <TextInput
                   style={styles.fieldInput}
@@ -96,11 +118,18 @@ export function LoginPage() {
                   autoCorrect={false}
                 />
               </View>
+              {fieldErrors.email ? (
+                <Text style={styles.fieldError}>{fieldErrors.email}</Text>
+              ) : null}
             </View>
 
             <View style={styles.fieldWrap}>
               <Text style={styles.fieldLabel}>Senha</Text>
-              <View style={[styles.fieldBox, focused === 'password' && styles.fieldBoxFocused]}>
+              <View style={[
+                styles.fieldBox,
+                focused === 'password' && styles.fieldBoxFocused,
+                fieldErrors.password && { borderColor: colors.danger },
+              ]}>
                 <LockIcon />
                 <TextInput
                   style={styles.fieldInput}
@@ -115,6 +144,9 @@ export function LoginPage() {
                   <Text style={styles.fieldSuffix}>{showPassword ? 'OCULTAR' : 'MOSTRAR'}</Text>
                 </TouchableOpacity>
               </View>
+              {fieldErrors.password ? (
+                <Text style={styles.fieldError}>{fieldErrors.password}</Text>
+              ) : null}
             </View>
 
             {error && (
@@ -158,7 +190,8 @@ export function LoginPage() {
             </Text>
           </View>
 
-          {/* Dev quick-login card — não aparece em produção */}
+          {/* Dev quick-login card — só em desenvolvimento (FR-4.6) */}
+          {__DEV__ && (
           <Card style={styles.devCard}>
             <View style={styles.devHeader}>
               <View style={styles.devBadge}>
@@ -182,6 +215,7 @@ export function LoginPage() {
               color={colors.pending}
             />
           </Card>
+          )}
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>

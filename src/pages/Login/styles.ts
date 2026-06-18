@@ -85,6 +85,12 @@ export const styles = StyleSheet.create({
     fontSize: 13,
     color: colors.primary,
   },
+  fieldError: {
+    fontFamily: FONT.uiSemi,
+    fontSize: 13,
+    color: colors.danger,
+    marginTop: 6,
+  },
   errorBox: {
     flexDirection: 'row',
     alignItems: 'flex-start',
